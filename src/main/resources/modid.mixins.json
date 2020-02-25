@@ -13,7 +13,8 @@
     "ClientPlayNetworkHandlerMixin",
     "KeyboardMixin",
     "MouseMixin",
-    "NetworkThreadUtilsMixin"
+    "NetworkThreadUtilsMixin",
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

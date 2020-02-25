@@ -16,9 +16,4 @@ public abstract class ClientWorldMixin {
         Playback.tickCounter = 0;
     }
 
-    @Inject(method = "tick", at = @At("HEAD"))
-    public void tick(CallbackInfo ci) {
-        Playback.update();
-    }
-
 }
