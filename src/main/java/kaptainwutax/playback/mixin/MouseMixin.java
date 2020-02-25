@@ -19,6 +19,8 @@ public abstract class MouseMixin implements IMouse {
 
 	@Shadow protected abstract void onMouseScroll(long window, double d, double e);
 
+	@Shadow public abstract void updateMouse();
+
 	@Inject(method = "onCursorPos", at = @At("HEAD"), cancellable = true)
 	private void onCursorPos(long window, double x, double y, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null)return;
@@ -52,6 +54,17 @@ public abstract class MouseMixin implements IMouse {
 		}
 	}
 
+	@Inject(method = "updateMouse", at = @At("HEAD"), cancellable = true)
+	private void updateMouse(CallbackInfo ci) {
+		if(MinecraftClient.getInstance().player == null)return;
+
+		if(!Playback.isReplaying) {
+			Playback.recording.recordMouse(3, 0, 0,0, 0);
+		} else if(!Playback.allowInputs) {
+			ci.cancel();
+		}
+	}
+
 	@Override
 	public void execute(int action, long window, double d1, double d2, int i1) {
 		if(action == 0) {
@@ -60,6 +73,8 @@ public abstract class MouseMixin implements IMouse {
 			this.onMouseButton(window, (int)d1, (int)d2, i1);
 		} else if(action == 2) {
 			this.onMouseScroll(window, d1, d2);
+		} else if(action == 3) {
+			this.updateMouse();
 		}
 	}
 
