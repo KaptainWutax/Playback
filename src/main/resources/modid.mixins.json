@@ -14,7 +14,8 @@
     "KeyboardMixin",
     "MouseMixin",
     "NetworkThreadUtilsMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "ServerChunkManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

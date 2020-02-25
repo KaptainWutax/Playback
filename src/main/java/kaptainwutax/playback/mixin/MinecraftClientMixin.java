@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
 
-	@Inject(method = "render", at = @At(value="INVOKE", target="Lnet/minecraft/client/MinecraftClient;tick()V",shift=At.Shift.BEFORE))
-	private void render(boolean tick, CallbackInfo ci) {
+	@Inject(method = "tick", at = @At("HEAD"))
+	private void tick(CallbackInfo ci) {
 		Playback.update();
 	}
 
