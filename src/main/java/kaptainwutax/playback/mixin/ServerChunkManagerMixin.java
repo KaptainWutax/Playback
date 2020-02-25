@@ -12,7 +12,7 @@ public class ServerChunkManagerMixin {
 
 	/**
 	 * Trick the server to think spawn is always loaded.
-	 * */
+	 **/
 	@Inject(method = "getTotalChunksLoadedCount", at = @At("HEAD"), cancellable = true)
 	private void getTotalChunksLoadedCount(CallbackInfoReturnable<Integer> ci) {
 		if(Playback.isReplaying)ci.setReturnValue(441);
