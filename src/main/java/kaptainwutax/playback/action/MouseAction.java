@@ -22,9 +22,9 @@ public class MouseAction implements IAction {
 
 	@Override
 	public void play() {
-		Playback.keysOpen = true;
+		Playback.allowInputs = true;
 		((IMouse)MinecraftClient.getInstance().mouse).execute(this.action, this.window, this.d1, this.d2, this.i1);
-		Playback.keysOpen = false;
+		Playback.allowInputs = false;
 	}
 
 }

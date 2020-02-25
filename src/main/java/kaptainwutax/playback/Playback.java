@@ -5,22 +5,22 @@ import net.fabricmc.api.ModInitializer;
 public class Playback implements ModInitializer {
 
 	public static Recording recording = new Recording();
-	public static boolean play = false;
-	public static long tick;
-	public static boolean keysOpen = false;
+	public static boolean isReplaying = false;
+	public static long tickCounter;
+	public static boolean allowInputs = false;
 
 	@Override
 	public void onInitialize() {
 	}
 
 	public static void update() {
-		if(!play) {
-			recording.update(tick);
+		if(!isReplaying) {
+			recording.update(tickCounter);
 		} else {
-			recording.play(tick);
+			recording.play(tickCounter);
 		}
 
-		tick++;
+		tickCounter++;
 	}
 
 }

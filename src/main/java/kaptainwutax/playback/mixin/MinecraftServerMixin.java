@@ -45,14 +45,14 @@ public abstract class MinecraftServerMixin {
 
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	protected void tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
-		if(!Playback.play)return;
+		if(!Playback.isReplaying)return;
 		this.getNetworkIo().tick();
 		ci.cancel();
 	}
 
 	@Inject(method = "prepareStartRegion", at = @At("HEAD"), cancellable = true)
 	protected void prepareStartRegion(WorldGenerationProgressListener listener, CallbackInfo ci) {
-		if(!Playback.play)return;
+		if(!Playback.isReplaying)return;
 		this.setLoadingStage(new TranslatableText("menu.generatingTerrain"));
 		ServerWorld serverWorld = this.getWorld(DimensionType.OVERWORLD);
 		LOGGER.info("Preparing start region for dimension " + DimensionType.getId(serverWorld.dimension.getType()));

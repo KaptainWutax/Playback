@@ -17,7 +17,7 @@ public class ChunkTicketManagerMixin {
 	 * */
 	@Inject(method = "addTicket(JLnet/minecraft/server/world/ChunkTicket;)V", at = @At("HEAD"), cancellable = true)
 	private void addTicket(long position, ChunkTicket<?> chunkTicket, CallbackInfo ci) {
-		if(Playback.play && chunkTicket.getType() != ChunkTicketType.UNKNOWN) {
+		if(Playback.isReplaying && chunkTicket.getType() != ChunkTicketType.UNKNOWN) {
 			ci.cancel();
 		}
 	}

@@ -38,7 +38,7 @@ public abstract class ClientConnectionMixin {
 	 * */
 	@Inject(method = "sendImmediately", at = @At("HEAD"), cancellable = true)
 	private void sendImmediately(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> callback, CallbackInfo ci) {
-		if(this.side == NetworkSide.CLIENTBOUND && Playback.play && !WHITELIST.contains(packet.getClass())) {
+		if(this.side == NetworkSide.CLIENTBOUND && Playback.isReplaying && !WHITELIST.contains(packet.getClass())) {
 			ci.cancel();
 		}
 	}

@@ -15,7 +15,7 @@ public class ServerPlayNetworkHandlerMixin {
 	 * */
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	public void tick(CallbackInfo ci) {
-		if(Playback.play) {
+		if(Playback.isReplaying) {
 			ci.cancel();
 		}
 	}

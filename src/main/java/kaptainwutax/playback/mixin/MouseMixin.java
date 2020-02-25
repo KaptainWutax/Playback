@@ -23,9 +23,9 @@ public abstract class MouseMixin implements IMouse {
 	private void onCursorPos(long window, double x, double y, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null)return;
 
-		if(!Playback.play) {
+		if(!Playback.isReplaying) {
 			Playback.recording.recordMouse(0, window, x, y, 0);
-		} else if(!Playback.keysOpen) {
+		} else if(!Playback.allowInputs) {
 			ci.cancel();
 		}
 	}
@@ -34,9 +34,9 @@ public abstract class MouseMixin implements IMouse {
 	private void onMouseButton(long window, int button, int action, int mods, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null)return;
 
-		if(!Playback.play) {
+		if(!Playback.isReplaying) {
 			Playback.recording.recordMouse(1, window, (double)button, (double)action, mods);
-		} else if(!Playback.keysOpen) {
+		} else if(!Playback.allowInputs) {
 			ci.cancel();
 		}
 	}
@@ -45,9 +45,9 @@ public abstract class MouseMixin implements IMouse {
 	private void onMouseScroll(long window, double d, double e, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null)return;
 
-		if(!Playback.play) {
+		if(!Playback.isReplaying) {
 			Playback.recording.recordMouse(2, window, d, e, 0);
-		} else if(!Playback.keysOpen) {
+		} else if(!Playback.allowInputs) {
 			ci.cancel();
 		}
 	}

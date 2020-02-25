@@ -23,7 +23,7 @@ public class ClientPlayNetworkHandlerMixin {
 	 * */
 	@Inject(method = "onGameJoin", at = @At(value="INVOKE", target="Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",shift=At.Shift.AFTER), cancellable = true)
 	public void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-		if(!Playback.play)return;
+		if(!Playback.isReplaying)return;
 
 		if(this.ranOnce && this.client.player != null) {
 			this.client.player.setEntityId(packet.getEntityId());

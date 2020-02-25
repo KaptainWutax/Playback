@@ -38,12 +38,6 @@ public class Recording {
 	}
 
 	public void recordMouse(int action, long window, double d1, double d2, int i1) {
-		//Ignore the first tick mouse crap that causes the game to freak out. I don't know how it works, but it does.
-		if(this.currentTick == 0) {
-			System.out.println();
-			//return;
-		}
-
 		this.currentTickCapture.addMouseAction(action, window, d1, d2, i1);
 	}
 

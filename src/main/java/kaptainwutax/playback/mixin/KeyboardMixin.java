@@ -21,9 +21,9 @@ public abstract class KeyboardMixin implements IKeyboard {
 	public void onKey(long window, int key, int scancode, int i, int j, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null)return;
 
-		if(!Playback.play) {
+		if(!Playback.isReplaying) {
 			Playback.recording.recordKey(0, window, key, scancode, i, j);
-		} else if(!Playback.keysOpen) {
+		} else if(!Playback.allowInputs) {
 			ci.cancel();
 		}
 	}
@@ -32,9 +32,9 @@ public abstract class KeyboardMixin implements IKeyboard {
 	private void onChar(long window, int i, int j, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null)return;
 
-		if(!Playback.play) {
+		if(!Playback.isReplaying) {
 			Playback.recording.recordKey(1, window, 0, 0, i, j);
-		} else if(!Playback.keysOpen) {
+		} else if(!Playback.allowInputs) {
 			ci.cancel();
 		}
 	}

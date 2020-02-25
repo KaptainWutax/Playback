@@ -12,8 +12,8 @@ public abstract class ClientWorldMixin {
 
     @Inject(method = "disconnect", at = @At("HEAD"))
     private void disconnect(CallbackInfo ci) {
-        Playback.play = true;
-        Playback.tick = 0;
+        Playback.isReplaying = true;
+        Playback.tickCounter = 0;
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
