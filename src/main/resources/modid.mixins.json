@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "kaptainwutax.playback.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "MinecraftServerMixin",
+    "ServerPlayNetworkHandlerMixin",
+    "ClientConnectionMixin",
+    "ChunkTicketManagerMixin",
+    "ClientWorldMixin",
+    "ClientPlayNetworkHandlerMixin",
+    "KeyboardMixin",
+    "MouseMixin",
+    "NetworkThreadUtilsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
