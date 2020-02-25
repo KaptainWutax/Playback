@@ -4,6 +4,7 @@ import kaptainwutax.playback.Playback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
+import net.minecraft.world.level.LevelInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,13 +21,17 @@ public class ClientPlayNetworkHandlerMixin {
 	/**
 	 * GameJoinS2CPacket is the only troublesome packet in the replay since it recreates the world and player
 	 * instance. This allows handling of the second GameJoinS2CPacket packet from the recording.
-	 * */
+	 **/
 	@Inject(method = "onGameJoin", at = @At(value="INVOKE", target="Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",shift=At.Shift.AFTER), cancellable = true)
 	public void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
 		if(!Playback.isReplaying)return;
 
 		if(this.ranOnce && this.client.player != null) {
+			this.client.world.getLevelProperties().loadLevelInfo(new LevelInfo(packet.getSeed(), packet.getGameMode(), false, packet.isHardcore(), packet.getGeneratorType()));
+			this.client.player.dimension = packet.getDimension();
 			this.client.player.setEntityId(packet.getEntityId());
+			this.client.player.setReducedDebugInfo(packet.hasReducedDebugInfo());
+			this.client.player.setShowsDeathScreen(packet.showsDeathScreen());
 			this.client.interactionManager.setGameMode(packet.getGameMode());
 			ci.cancel();
 		}

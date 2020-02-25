@@ -29,13 +29,14 @@ public abstract class ClientConnectionMixin {
 
 	private static Set<Class<? extends Packet<?>>> WHITELIST = ImmutableSet.of(
 			DisconnectS2CPacket.class, HandshakeC2SPacket.class, LoginHelloC2SPacket.class,
-			RequestCommandCompletionsC2SPacket.class, ClientStatusC2SPacket.class, ChatMessageC2SPacket.class
+			RequestCommandCompletionsC2SPacket.class, ClientStatusC2SPacket.class
+			//, ChatMessageC2SPacket.class
 	);
 
 	/**
 	 * In replay worlds, the client can't send any packet it desires. Check the whitelist for a full list of
 	 * allowed packets.
-	 * */
+	 **/
 	@Inject(method = "sendImmediately", at = @At("HEAD"), cancellable = true)
 	private void sendImmediately(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> callback, CallbackInfo ci) {
 		if(this.side == NetworkSide.CLIENTBOUND && Playback.isReplaying && !WHITELIST.contains(packet.getClass())) {

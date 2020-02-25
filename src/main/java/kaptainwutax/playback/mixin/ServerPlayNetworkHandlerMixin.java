@@ -12,7 +12,7 @@ public class ServerPlayNetworkHandlerMixin {
 
 	/**
 	 * Disables the anti-cheat in replay worlds.
-	 * */
+	 **/
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	public void tick(CallbackInfo ci) {
 		if(Playback.isReplaying) {

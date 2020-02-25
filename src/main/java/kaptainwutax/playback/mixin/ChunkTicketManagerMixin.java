@@ -14,7 +14,7 @@ public class ChunkTicketManagerMixin {
 
 	/**
 	 * Disables server chunk loading in replay worlds.
-	 * */
+	 **/
 	@Inject(method = "addTicket(JLnet/minecraft/server/world/ChunkTicket;)V", at = @At("HEAD"), cancellable = true)
 	private void addTicket(long position, ChunkTicket<?> chunkTicket, CallbackInfo ci) {
 		if(Playback.isReplaying && chunkTicket.getType() != ChunkTicketType.UNKNOWN) {
