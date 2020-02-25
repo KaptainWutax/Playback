@@ -6,21 +6,21 @@ import kaptainwutax.playback.action.MouseAction;
 import kaptainwutax.playback.action.PacketAction;
 import net.minecraft.network.Packet;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TickCapture {
 
+	public static final TickCapture EMPTY = new TickCapture();
+
 	protected List<IAction> actions = new ArrayList<>();
+	protected Map<Long, Set<Integer>> keyStates = new HashMap<>();
 
 	public TickCapture() {
 
 	}
 
 	public void play() {
-		for(IAction action: this.actions) {
-			action.play();
-		}
+		this.actions.forEach(IAction::play);
 	}
 
 	public void addPacketAction(Packet<?> packet) {
@@ -35,8 +35,24 @@ public class TickCapture {
 		this.actions.add(new MouseAction(action, window, d1, d2, i1));
 	}
 
+	public void addKeyState(long handle, int i) {
+		if(!this.keyStates.containsKey(handle)) {
+			this.keyStates.put(handle, new HashSet<>());
+		}
+
+		this.keyStates.get(handle).add(i);
+	}
+
+	public boolean getKeyState(long handle, int i) {
+		if(!this.keyStates.containsKey(handle)) {
+			return false;
+		}
+
+		return this.keyStates.get(handle).contains(i);
+	}
+
 	public boolean isEmpty() {
-		return this.actions.isEmpty();
+		return this.actions.isEmpty() && this.keyStates.isEmpty();
 	}
 
 }

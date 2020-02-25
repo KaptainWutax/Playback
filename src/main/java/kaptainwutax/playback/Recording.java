@@ -24,9 +24,7 @@ public class Recording {
 	}
 
 	public void play(long tick) {
-		if(this.recording.containsKey(tick)) {
-			this.recording.get(tick).play();
-		}
+		this.recording.getOrDefault(tick, TickCapture.EMPTY).play();
 	}
 
 	public void recordPacket(Packet<?> packet) {
@@ -39,6 +37,18 @@ public class Recording {
 
 	public void recordMouse(int action, long window, double d1, double d2, int i1) {
 		this.currentTickCapture.addMouseAction(action, window, d1, d2, i1);
+	}
+
+	public void addKeyState(long handle, int i) {
+		this.currentTickCapture.addKeyState(handle, i);
+	}
+
+	public boolean getKeyState(long tick, long handle, int i) {
+		if(this.recording.containsKey(tick)) {
+			return this.recording.get(tick).getKeyState(handle, i);
+		}
+
+		return false;
 	}
 
 }
