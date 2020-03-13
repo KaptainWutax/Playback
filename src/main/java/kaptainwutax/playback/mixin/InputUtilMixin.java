@@ -14,9 +14,9 @@ public class InputUtilMixin {
 	@Inject(method = "isKeyPressed", at = @At("HEAD"), cancellable = true)
 	private static void isKeyPressed(long handle, int i, CallbackInfoReturnable<Boolean> ci) {
 		if(!Playback.isReplaying && GLFW.glfwGetKey(handle, i) == 1) {
-			Playback.recording.addKeyState(handle, i);
+			Playback.recording.getCurrentTickCapture().recordKeyState(handle, i);
 		} else if(Playback.isReplaying) {
-			ci.setReturnValue(Playback.recording.getKeyState(Playback.tickCounter, handle, i));
+			ci.setReturnValue(Playback.recording.getCurrentTickCapture().getKeyState(handle, i));
 		}
 	}
 

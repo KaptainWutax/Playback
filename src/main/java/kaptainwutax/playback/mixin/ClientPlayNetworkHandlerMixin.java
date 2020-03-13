@@ -3,7 +3,12 @@ package kaptainwutax.playback.mixin;
 import kaptainwutax.playback.Playback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.NetworkThreadUtils;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
+import net.minecraft.network.packet.s2c.play.PlayerSpawnPositionS2CPacket;
+import net.minecraft.util.thread.ThreadExecutor;
 import net.minecraft.world.level.LevelInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,6 +42,13 @@ public class ClientPlayNetworkHandlerMixin {
 		}
 
 		this.ranOnce = true;
+	}
+
+	@Inject(method = "onPlayerPositionLook", at = @At(value="INVOKE", target="Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",shift = At.Shift.AFTER), cancellable = true)
+	public void onPlayerPositionLookStart(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
+		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
+			Playback.manager.replayPlayer.getPlayer().updatePositionAndAngles(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch());
+		}
 	}
 
 }

@@ -1,6 +1,5 @@
-package kaptainwutax.playback.action;
+package kaptainwutax.playback.capture.action;
 
-import kaptainwutax.playback.IKeyboard;
 import kaptainwutax.playback.Playback;
 import net.minecraft.client.MinecraftClient;
 

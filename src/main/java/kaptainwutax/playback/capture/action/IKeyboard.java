@@ -1,4 +1,4 @@
-package kaptainwutax.playback;
+package kaptainwutax.playback.capture.action;
 
 public interface IKeyboard {
 

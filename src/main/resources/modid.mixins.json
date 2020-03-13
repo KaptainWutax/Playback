@@ -16,7 +16,11 @@
     "NetworkThreadUtilsMixin",
     "MinecraftClientMixin",
     "ServerChunkManagerMixin",
-    "InputUtilMixin"
+    "InputUtilMixin",
+    "WorldRendererMixin",
+    "ClientPlayerEntityMixin",
+    "KeyboardInputMixin",
+    "EntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

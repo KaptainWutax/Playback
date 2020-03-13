@@ -14,6 +14,8 @@ public abstract class ClientWorldMixin {
     private void disconnect(CallbackInfo ci) {
         Playback.isReplaying = true;
         Playback.tickCounter = 0;
+        Playback.manager.cameraPlayer = null;
+        Playback.manager.replayPlayer = null;
     }
 
 }

@@ -1,6 +1,6 @@
 package kaptainwutax.playback.mixin;
 
-import kaptainwutax.playback.IMouse;
+import kaptainwutax.playback.capture.action.IMouse;
 import kaptainwutax.playback.Playback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
@@ -26,9 +26,9 @@ public abstract class MouseMixin implements IMouse {
 		if(MinecraftClient.getInstance().player == null)return;
 
 		if(!Playback.isReplaying) {
-			Playback.recording.recordMouse(0, window, x, y, 0);
+			Playback.recording.getCurrentTickCapture().recordMouse(0, window, x, y, 0);
 		} else if(!Playback.allowInputs) {
-			ci.cancel();
+			//ci.cancel();
 		}
 	}
 
@@ -37,9 +37,9 @@ public abstract class MouseMixin implements IMouse {
 		if(MinecraftClient.getInstance().player == null)return;
 
 		if(!Playback.isReplaying) {
-			Playback.recording.recordMouse(1, window, (double)button, (double)action, mods);
+			Playback.recording.getCurrentTickCapture().recordMouse(1, window, (double)button, (double)action, mods);
 		} else if(!Playback.allowInputs) {
-			ci.cancel();
+			//ci.cancel();
 		}
 	}
 
@@ -48,9 +48,9 @@ public abstract class MouseMixin implements IMouse {
 		if(MinecraftClient.getInstance().player == null)return;
 
 		if(!Playback.isReplaying) {
-			Playback.recording.recordMouse(2, window, d, e, 0);
+			Playback.recording.getCurrentTickCapture().recordMouse(2, window, d, e, 0);
 		} else if(!Playback.allowInputs) {
-			ci.cancel();
+			//ci.cancel();
 		}
 	}
 
@@ -59,9 +59,14 @@ public abstract class MouseMixin implements IMouse {
 		if(MinecraftClient.getInstance().player == null)return;
 
 		if(!Playback.isReplaying) {
-			Playback.recording.recordMouse(3, 0, 0,0, 0);
-		} else if(!Playback.allowInputs) {
-			ci.cancel();
+			Playback.recording.getCurrentTickCapture().recordMouse(3, 0, 0,0, 0);
+		} //else if(!Playback.allowInputs) {
+			//ci.cancel();
+		//}
+
+		else if(Playback.manager.replayPlayer != null) {
+			//MinecraftClient.getInstance().player = Playback.manager.cameraPlayer.getPlayer();
+			//MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().player = Playback.manager.replayPlayer.getPlayer());
 		}
 	}
 

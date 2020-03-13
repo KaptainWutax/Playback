@@ -1,5 +1,6 @@
 package kaptainwutax.playback;
 
+import kaptainwutax.playback.capture.ReplayView;
 import net.fabricmc.api.ModInitializer;
 
 public class Playback implements ModInitializer {
@@ -9,14 +10,23 @@ public class Playback implements ModInitializer {
 	public static long tickCounter;
 	public static boolean allowInputs = false;
 
+	public static final ReplayManager manager = new ReplayManager();
+
 	@Override
 	public void onInitialize() {
+
 	}
 
 	public static void update() {
 		if(!isReplaying) {
-			recording.update(tickCounter);
+			recording.tickRecord(tickCounter);
 		} else {
+			if(manager.cameraPlayer == null) {
+				manager.cameraPlayer = PlayerFrame.createNew();
+				manager.replayPlayer = PlayerFrame.createFromExisting();
+				manager.updateView(ReplayView.THIRD_PERSON);
+			}
+
 			recording.play(tickCounter);
 		}
 

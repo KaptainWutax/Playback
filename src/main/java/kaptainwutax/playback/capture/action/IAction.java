@@ -1,4 +1,4 @@
-package kaptainwutax.playback.action;
+package kaptainwutax.playback.capture.action;
 
 public interface IAction {
 
