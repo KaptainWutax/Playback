@@ -28,7 +28,7 @@ public abstract class MouseMixin implements IMouse {
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(0, window, x, y, 0);
 		} else if(!Playback.allowInputs) {
-			//ci.cancel();
+			ci.cancel();
 		}
 	}
 
@@ -39,7 +39,7 @@ public abstract class MouseMixin implements IMouse {
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(1, window, (double)button, (double)action, mods);
 		} else if(!Playback.allowInputs) {
-			//ci.cancel();
+			ci.cancel();
 		}
 	}
 
@@ -50,7 +50,7 @@ public abstract class MouseMixin implements IMouse {
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(2, window, d, e, 0);
 		} else if(!Playback.allowInputs) {
-			//ci.cancel();
+			ci.cancel();
 		}
 	}
 
@@ -60,9 +60,9 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(3, 0, 0,0, 0);
-		} //else if(!Playback.allowInputs) {
-			//ci.cancel();
-		//}
+		} else if(!Playback.allowInputs) {
+			ci.cancel();
+		}
 
 		else if(Playback.manager.replayPlayer != null) {
 			//MinecraftClient.getInstance().player = Playback.manager.cameraPlayer.getPlayer();

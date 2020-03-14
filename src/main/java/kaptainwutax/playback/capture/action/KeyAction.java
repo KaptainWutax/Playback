@@ -25,7 +25,7 @@ public class KeyAction implements IAction {
 	public void play() {
 		Playback.allowInputs = true;
 		((IKeyboard)MinecraftClient.getInstance().keyboard).execute(this.action, this.window, this.key, this.scancode, this.i, this.j);
-		Playback.allowInputs = false;
+		Playback.allowInputs = Playback.allowInputDefault;
 	}
 
 }

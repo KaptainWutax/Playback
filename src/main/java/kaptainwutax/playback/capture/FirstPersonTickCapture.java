@@ -1,7 +1,9 @@
 package kaptainwutax.playback.capture;
 
+import kaptainwutax.playback.capture.action.DebugPositionAction;
 import kaptainwutax.playback.capture.action.KeyAction;
 import kaptainwutax.playback.capture.action.MouseAction;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.HashSet;

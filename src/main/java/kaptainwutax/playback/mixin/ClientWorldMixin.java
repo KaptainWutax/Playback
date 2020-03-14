@@ -13,13 +13,17 @@ public abstract class ClientWorldMixin {
 
     @Inject(method = "disconnect", at = @At("HEAD"))
     private void disconnect(CallbackInfo ci) {
-        Playback.isReplaying = !Playback.isReplaying;
+        if (!Playback.isReplaying) { //wasRecording
+            Playback.recording.setEnd();
+        }
+            Playback.isReplaying = true;
         if (!Playback.isReplaying) {
             Playback.recording = new Recording(); //experimental, didn't test yet. allows viewing a recording only once, but allows recording again without restart
         }
-        Playback.tickCounter = 0;
-        Playback.manager.cameraPlayer = null;
-        Playback.manager.replayPlayer = null;
+        //reopening the world will show the replay from the other perspective
+        Playback.toggleView();
+        Playback.restart();
+
     }
 
 }

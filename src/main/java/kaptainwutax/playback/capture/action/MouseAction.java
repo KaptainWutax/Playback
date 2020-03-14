@@ -23,7 +23,7 @@ public class MouseAction implements IAction {
 	public void play() {
 		Playback.allowInputs = true;
 		((IMouse)MinecraftClient.getInstance().mouse).execute(this.action, this.window, this.d1, this.d2, this.i1);
-		Playback.allowInputs = false;
+		Playback.allowInputs = Playback.allowInputDefault;
 	}
 
 }

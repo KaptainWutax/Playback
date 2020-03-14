@@ -22,9 +22,10 @@ public abstract class KeyboardInputMixin {
 
 				ci.cancel();
 			}
-		}
-	}
+		} //else if(Playback.recording.isRecording())
+			//Playback.recording.getCurrentTickCapture().recordInputAction((KeyboardInput)(Object)this);
 
+	}
 	@Inject(method = "tick", at = @At("TAIL"))
 	//take info at TAIL, so we are not outdated
 	//taking info at HEAD is bad, because the info is changed right after, and we probably want the new one

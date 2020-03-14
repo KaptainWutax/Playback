@@ -8,7 +8,7 @@ public class ReplayManager {
 	public PlayerFrame cameraPlayer;
 	private ReplayView view = ReplayView.THIRD_PERSON;
 
-	public void updateView(ReplayView view) {
+	public void updateView(ReplayView view) { //this only runs once per replay
 		this.view = view;
 
 		//What does running both applys at once do? For now: only running one
@@ -24,5 +24,7 @@ public class ReplayManager {
 	public ReplayView getView() {
 		return this.view;
 	}
+
+
 
 }

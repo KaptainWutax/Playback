@@ -1,6 +1,7 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.capture.DebugHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,6 +49,7 @@ public class ClientPlayNetworkHandlerMixin {
 	public void onPlayerPositionLookStart(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
 		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
 			Playback.manager.replayPlayer.getPlayer().updatePositionAndAngles(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch());
+			DebugHelper.counterMixinInvoke++;
 		}
 	}
 

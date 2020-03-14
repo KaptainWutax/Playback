@@ -1,7 +1,11 @@
 package kaptainwutax.playback.capture;
 
+import kaptainwutax.playback.capture.action.DebugPositionAction;
+import kaptainwutax.playback.capture.action.DebugRotationAction;
 import net.minecraft.client.input.Input;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
+import net.minecraft.world.World;
 
 public class TickCaptures {
 
@@ -36,8 +40,17 @@ public class TickCaptures {
 		this.third.addChangeLookAction(cursorDeltaX, cursorDeltaY);
 	}
 
-	public void recordDebugPosition(double x, double y, double z) {
-		this.third.addDebugPositionAction(x,y,z);
+	public void recordDebugPosition(double x, double y, double z, World world) {
+		DebugPositionAction debPosAction = new DebugPositionAction(x,y,z, world);
+		this.first.addDebugPositionAction(debPosAction);
+		this.third.addDebugPositionAction(debPosAction);
+	}
+
+	public void recordDebugRotation(float pitch, float yaw){
+		DebugRotationAction debRotAction = new DebugRotationAction(pitch, yaw);
+		this.first.addDebugRotationAction(debRotAction);
+		this.third.addDebugRotationAction(debRotAction);
+
 	}
 
 	public void recordSprint(boolean pressed) {

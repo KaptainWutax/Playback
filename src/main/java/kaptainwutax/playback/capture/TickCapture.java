@@ -17,7 +17,7 @@ public abstract class TickCapture {
 	public void play() {
 		Playback.allowInputs = true;
 		this.actions.forEach(IAction::play);
-		Playback.allowInputs = false;
+		Playback.allowInputs = Playback.allowInputDefault;
 	}
 
 	protected void addAction(IAction action) {

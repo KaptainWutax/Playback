@@ -1,6 +1,5 @@
 package kaptainwutax.playback;
 
-import kaptainwutax.playback.capture.ReplayView;
 import kaptainwutax.playback.capture.TickCaptures;
 
 import java.util.HashMap;
@@ -9,8 +8,10 @@ import java.util.Map;
 public class Recording {
 
 	protected Map<Long, TickCaptures> recording = new HashMap<>();
+	protected long endTick = Long.MAX_VALUE;
 
-	protected long currentTick = 0;
+
+	public long currentTick = 0;
 	private TickCaptures currentTickCapture = new TickCaptures();
 
 	public boolean isRecording(){
@@ -35,6 +36,14 @@ public class Recording {
 
 	public TickCaptures getCurrentTickCapture() {
 		return this.currentTickCapture;
+	}
+
+	public void setEnd(){
+		endTick = currentTick;
+	}
+
+	public long getEnd(){
+		return endTick;
 	}
 
 }

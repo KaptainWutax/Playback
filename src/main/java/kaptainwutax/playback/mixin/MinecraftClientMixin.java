@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
@@ -21,6 +22,12 @@ public class MinecraftClientMixin  {
 		if(this.world != null) {
 			Playback.update();
 		}
+	}
+
+	//Intended to fix inconsistency depending on fps during replay
+	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"))
+	private int MathMinNoLimit(int i, int i1){
+		return i1;
 	}
 
 }

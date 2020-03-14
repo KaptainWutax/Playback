@@ -50,7 +50,6 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	private void tickMovement(CallbackInfo ci) {
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordSprint(MinecraftClient.getInstance().options.keySprint.isPressed());
-			Playback.recording.getCurrentTickCapture().recordDebugPosition(this.getX(),this.getY(),this.getZ());
 		}
 	}
 
