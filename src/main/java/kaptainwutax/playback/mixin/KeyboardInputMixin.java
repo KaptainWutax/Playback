@@ -16,8 +16,10 @@ public abstract class KeyboardInputMixin {
 		if (Playback.isReplaying) {
 			if(Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.replayPlayer != null
 					&& (Object)this == Playback.manager.replayPlayer.getPlayer().input) {
-				if(Playback.recording.getCurrentTickCapture().third.input != null) {
-					Playback.recording.getCurrentTickCapture().third.input.play((KeyboardInput)(Object)this);
+
+				//get the input action from the future to make up for the delay
+				if(Playback.recording.getNextTickCapture().third.input != null) {
+					Playback.recording.getNextTickCapture().third.input.play((KeyboardInput)(Object)this);
 				}
 
 				ci.cancel();
