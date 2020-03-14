@@ -11,7 +11,10 @@ public class ReplayManager {
 	public void updateView(ReplayView view) {
 		this.view = view;
 
-		this.replayPlayer.apply();
+		//What does running both applys at once do? For now: only running one
+		if(view == ReplayView.FIRST_PERSON) {
+			this.replayPlayer.apply();
+		}
 
 		if(view == ReplayView.THIRD_PERSON) {
 			this.cameraPlayer.apply();

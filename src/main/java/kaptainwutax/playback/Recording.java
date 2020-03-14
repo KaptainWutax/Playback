@@ -13,6 +13,10 @@ public class Recording {
 	protected long currentTick = 0;
 	private TickCaptures currentTickCapture = new TickCaptures();
 
+	public boolean isRecording(){
+		return !Playback.isReplaying;
+	}
+
 	public void tickRecord(long tick) {
 		if(tick == this.currentTick)return;
 

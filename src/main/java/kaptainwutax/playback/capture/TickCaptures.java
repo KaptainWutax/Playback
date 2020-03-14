@@ -36,6 +36,10 @@ public class TickCaptures {
 		this.third.addChangeLookAction(cursorDeltaX, cursorDeltaY);
 	}
 
+	public void recordDebugPosition(double x, double y, double z) {
+		this.third.addDebugPositionAction(x,y,z);
+	}
+
 	public void recordSprint(boolean pressed) {
 		this.third.addSprintAction(pressed);
 	}

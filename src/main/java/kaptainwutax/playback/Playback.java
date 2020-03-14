@@ -18,7 +18,7 @@ public class Playback implements ModInitializer {
 	}
 
 	public static void update() {
-		if(!isReplaying) {
+		if(Playback.recording.isRecording()) {
 			recording.tickRecord(tickCounter);
 		} else {
 			if(manager.cameraPlayer == null) {

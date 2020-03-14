@@ -1,6 +1,7 @@
 package kaptainwutax.playback.capture;
 
 import kaptainwutax.playback.capture.action.ChangeLookAction;
+import kaptainwutax.playback.capture.action.DebugPositionAction;
 import kaptainwutax.playback.capture.action.InputAction;
 import net.minecraft.client.input.Input;
 
@@ -23,6 +24,10 @@ public class ThirdPersonTickCapture extends CommonTickCapture {
 
 	public void addSprintAction(boolean pressed) {
 		this.isSprinting = pressed;
+	}
+
+	public void addDebugPositionAction(double x, double y, double z){
+		this.addAction(new DebugPositionAction(x,y,z));
 	}
 
 }
