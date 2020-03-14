@@ -61,12 +61,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 			return Playback.recording.getCurrentTickCapture().third.isSprinting;
 		}
 
-
-		//this might be BAD, because this key might change without being recorded if it happens offthread, not sure if that can actually happen
-		//return MinecraftClient.getInstance().options.keySprint.isPressed();
-
-		//instead use the possibly outdated, but tracked value. This might affect player movement, but is probably not too noticeable
-		return Playback.recording.getCurrentTickCapture().third.isSprinting;
+		return MinecraftClient.getInstance().options.keySprint.isPressed();
 	}
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;isFlyingLocked()Z"))
@@ -74,7 +69,8 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 		//Attempt to make the cameraPlayer not fall into the void due to gravity
 		AbstractClientPlayerEntity entity = this;
-		if ((entity instanceof FakePlayer)) {
+
+		if (entity instanceof FakePlayer) {
 			return true;
 		} else {
 			return clientPlayerInteractionManager.isFlyingLocked();
