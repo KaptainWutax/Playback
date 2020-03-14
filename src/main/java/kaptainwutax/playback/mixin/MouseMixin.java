@@ -60,14 +60,9 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(3, 0, 0,0, 0);
-		} else if(!Playback.allowInputs) {
-			ci.cancel();
-		}
-
-		else if(Playback.manager.replayPlayer != null) {
-			//MinecraftClient.getInstance().player = Playback.manager.cameraPlayer.getPlayer();
-			//MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().player = Playback.manager.replayPlayer.getPlayer());
-		}
+		}  else if(!Playback.allowInputs) {
+            ci.cancel();
+        }
 	}
 
 	@Override

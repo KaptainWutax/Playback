@@ -58,7 +58,8 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON
 				&&  Playback.manager.replayPlayer != null && Playback.manager.replayPlayer.getPlayer() == (Object)this
 				&& key == MinecraftClient.getInstance().options.keySprint) {
-			return Playback.recording.getCurrentTickCapture().third.isSprinting;
+		    //get sprint information from the future to make up the 1gt delay
+			return Playback.recording.getNextTickCapture().third.isSprinting;
 		}
 
 		return MinecraftClient.getInstance().options.keySprint.isPressed();
