@@ -1,5 +1,6 @@
 package kaptainwutax.playback.mixin;
 
+import kaptainwutax.playback.capture.ReplayView;
 import kaptainwutax.playback.capture.action.IMouse;
 import kaptainwutax.playback.Playback;
 import net.minecraft.client.MinecraftClient;
@@ -27,8 +28,8 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(0, window, x, y, 0);
-		} else if(!Playback.allowInputs) {
-			//ci.cancel();
+		} else if(Playback.manager.getView() == ReplayView.FIRST_PERSON && !Playback.allowInputs) {
+			ci.cancel();
 		}
 	}
 
@@ -38,8 +39,8 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(1, window, (double)button, (double)action, mods);
-		} else if(!Playback.allowInputs) {
-			//ci.cancel();
+		} else if(Playback.manager.getView() == ReplayView.FIRST_PERSON && !Playback.allowInputs) {
+			ci.cancel();
 		}
 	}
 
@@ -49,8 +50,8 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(2, window, d, e, 0);
-		} else if(!Playback.allowInputs) {
-			//ci.cancel();
+		} else if(Playback.manager.getView() == ReplayView.FIRST_PERSON && !Playback.allowInputs) {
+			ci.cancel();
 		}
 	}
 
@@ -60,13 +61,8 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(3, 0, 0,0, 0);
-		} //else if(!Playback.allowInputs) {
-			//ci.cancel();
-		//}
-
-		else if(Playback.manager.replayPlayer != null) {
-			//MinecraftClient.getInstance().player = Playback.manager.cameraPlayer.getPlayer();
-			//MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().player = Playback.manager.replayPlayer.getPlayer());
+		} else if(Playback.manager.getView() == ReplayView.FIRST_PERSON && !Playback.allowInputs) {
+			ci.cancel();
 		}
 	}
 

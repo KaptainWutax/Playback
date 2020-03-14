@@ -1,5 +1,6 @@
 package kaptainwutax.playback.mixin;
 
+import kaptainwutax.playback.capture.ReplayView;
 import kaptainwutax.playback.capture.action.IKeyboard;
 import kaptainwutax.playback.Playback;
 import net.minecraft.client.Keyboard;
@@ -23,8 +24,8 @@ public abstract class KeyboardMixin implements IKeyboard {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordKey(0, window, key, scancode, i, j);
-		} else if(!Playback.allowInputs) {
-			//ci.cancel();
+		} else if(Playback.manager.getView() == ReplayView.FIRST_PERSON && !Playback.allowInputs) {
+			ci.cancel();
 		}
 	}
 
@@ -34,8 +35,8 @@ public abstract class KeyboardMixin implements IKeyboard {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordKey(1, window, 0, 0, i, j);
-		} else if(!Playback.allowInputs) {
-			//ci.cancel();
+		} else if(Playback.manager.getView() == ReplayView.FIRST_PERSON && !Playback.allowInputs) {
+			ci.cancel();
 		}
 	}
 
