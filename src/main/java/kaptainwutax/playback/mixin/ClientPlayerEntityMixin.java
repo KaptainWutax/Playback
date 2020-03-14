@@ -51,7 +51,9 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/options/KeyBinding;isPressed()Z"))
 	private boolean tickMovement(KeyBinding key) {
-		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && key == MinecraftClient.getInstance().options.keySprint) {
+		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON
+				&&  Playback.manager.replayPlayer != null && Playback.manager.replayPlayer.getPlayer() == (Object)this
+				&& key == MinecraftClient.getInstance().options.keySprint) {
 			return Playback.recording.getCurrentTickCapture().third.isSprinting;
 		}
 
