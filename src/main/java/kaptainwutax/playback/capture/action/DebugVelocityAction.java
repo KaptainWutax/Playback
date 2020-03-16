@@ -41,10 +41,10 @@ public class DebugVelocityAction implements IAction {
 
 		++positionTicks;
 		PlayerEntity p = Playback.manager.replayPlayer.getPlayer();
-		if (p.getX() != this.x || p.getY() != this.y || p.getZ() != this.z) {
+		if (p.getVelocity().x != this.x || p.getVelocity().y != this.y || p.getVelocity().z != this.z) {
 			//Put a breakpoint here if wanted
 			System.out.println("Velocity wrong after " + positionTicks + " ticks." +
-					" Is: " + p.getX() + ", " + p.getY() + ", " + p.getZ() + "." +
+					" Is: " + p.getVelocity().x + ", " + p.getVelocity().y + ", " + p.getVelocity().z + "." +
 					" Should be: " + this.x + ", " + this.y + ", " + this.z + ".");
 			//p.setPos(this.x,this.y,this.z);
 
