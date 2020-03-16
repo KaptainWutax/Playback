@@ -28,7 +28,8 @@ public class Recording {
 			this.recording.put(this.currentTick, this.currentTickCapture);
 		}
 
-		this.currentTickCapture = new TickCaptures();
+		this.currentTickCapture = this.nextTickCapture;
+		this.nextTickCapture = new TickCaptures();
 		this.currentTick = tick;
 	}
 

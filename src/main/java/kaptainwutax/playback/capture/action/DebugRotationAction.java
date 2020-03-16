@@ -20,7 +20,6 @@ public class DebugRotationAction implements IAction {
 		this.previous = current;
 		current = this;
 
-		System.out.print(".");
 		rotationTicks=0;
 	}
 

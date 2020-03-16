@@ -4,6 +4,7 @@ import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.capture.DebugHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.world.level.LevelInfo;
@@ -42,12 +43,16 @@ public class ClientPlayNetworkHandlerMixin {
 		this.joinRanOnce = true;
 	}
 
-	@Inject(method = "onPlayerPositionLook", at = @At(value="INVOKE", target="Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",shift = At.Shift.AFTER), cancellable = true)
+	@Inject(method = "onPlayerPositionLook", at = @At(value="INVOKE", target="Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",shift = At.Shift.AFTER))
 	public void onPlayerPositionLookStart(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
 		if(Playback.isReplaying && Playback.manager.replayPlayer != null && !this.tpRanOnce) {
 			Playback.manager.replayPlayer.getPlayer().updatePositionAndAngles(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch());
 			DebugHelper.counterMixinInvoke++;
 			this.tpRanOnce = true;
+		}
+
+		if(Playback.isReplaying && Playback.manager.cameraPlayer != null) {
+			Playback.manager.cameraPlayer.getPlayer().updatePositionAndAngles(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch());
 		}
 	}
 

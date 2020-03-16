@@ -24,7 +24,6 @@ public class DebugPositionAction implements IAction {
 		this.previous = current;
 		current = this;
 
-		System.out.print(".");
 		positionTicks=0;
 	}
 
