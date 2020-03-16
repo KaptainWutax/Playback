@@ -32,7 +32,8 @@ public class Playback implements ModInitializer {
 			PlayerEntity p = MinecraftClient.getInstance().player;
 			if (p != null && p.getEntityWorld() != null) {
 				DebugHelper.trackEntity(MinecraftClient.getInstance().player);
-				Playback.recording.getCurrentTickCapture().recordDebugPosition(p.getX(), p.getY(), p.getZ(), p.getEntityWorld());
+				Playback.recording.getCurrentTickCapture().recordDebugVelocity(p.getVelocity().x, p.getVelocity().y, p.getVelocity().z);
+				Playback.recording.getCurrentTickCapture().recordDebugPosition(p.getX(), p.getY(), p.getZ());
 				Playback.recording.getCurrentTickCapture().recordDebugRotation(p.getPitch(1F), p.getYaw(1F));
 			}
 			recording.tickRecord(tickCounter);

@@ -3,8 +3,8 @@ package kaptainwutax.playback.capture;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.capture.action.DebugPositionAction;
 import kaptainwutax.playback.capture.action.DebugRotationAction;
+import kaptainwutax.playback.capture.action.DebugVelocityAction;
 import net.minecraft.client.input.Input;
-import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
 import net.minecraft.world.World;
 
@@ -17,8 +17,8 @@ public class TickCaptures {
 
 	public void play(ReplayView view) {
 		Playback.manager.replayPlayer.apply();
-		if(view == ReplayView.FIRST_PERSON)this.first.play();
-		else if(view == ReplayView.THIRD_PERSON)this.third.play();
+		if(view == ReplayView.FIRST_PERSON) this.first.play();
+		else if(view == ReplayView.THIRD_PERSON) this.third.play();
 		Playback.manager.updateView(Playback.manager.getView());
 	}
 
@@ -43,10 +43,16 @@ public class TickCaptures {
 		this.third.addChangeLookAction(cursorDeltaX, cursorDeltaY);
 	}
 
-	public void recordDebugPosition(double x, double y, double z, World world) {
-		DebugPositionAction debPosAction = new DebugPositionAction(x,y,z, world);
+	public void recordDebugPosition(double x, double y, double z) {
+		DebugPositionAction debPosAction = new DebugPositionAction(x,y,z);
 		this.first.addDebugPositionAction(debPosAction);
 		this.third.addDebugPositionAction(debPosAction);
+	}
+
+	public void recordDebugVelocity(double x, double y, double z) {
+		DebugVelocityAction debVelAction = new DebugVelocityAction(x,y,z);
+		this.first.addDebugVelocityAction(debVelAction);
+		this.third.addDebugVelocityAction(debVelAction);
 	}
 
 	public void recordDebugRotation(float pitch, float yaw){

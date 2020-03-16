@@ -2,21 +2,19 @@ package kaptainwutax.playback.capture.action;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.capture.DebugHelper;
-import kaptainwutax.playback.capture.ReplayView;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
-public class DebugPositionAction implements IAction {
+public class DebugVelocityAction implements IAction {
 
 	private double x,y,z;
-	private DebugPositionAction previous;
+	private DebugVelocityAction previous;
 	private long worldTick;
 
 	private static int positionTicks;
-	private static DebugPositionAction current;
+	private static DebugVelocityAction current;
 
-	public DebugPositionAction(double x, double y, double z) {
+	public DebugVelocityAction(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -45,7 +43,7 @@ public class DebugPositionAction implements IAction {
 		PlayerEntity p = Playback.manager.replayPlayer.getPlayer();
 		if (p.getX() != this.x || p.getY() != this.y || p.getZ() != this.z) {
 			//Put a breakpoint here if wanted
-			System.out.println("Position wrong after " + positionTicks + " ticks." +
+			System.out.println("Velocity wrong after " + positionTicks + " ticks." +
 					" Is: " + p.getX() + ", " + p.getY() + ", " + p.getZ() + "." +
 					" Should be: " + this.x + ", " + this.y + ", " + this.z + ".");
 			//p.setPos(this.x,this.y,this.z);
