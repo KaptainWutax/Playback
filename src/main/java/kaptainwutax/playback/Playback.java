@@ -36,7 +36,7 @@ public class Playback implements ModInitializer {
 				Playback.recording.getCurrentTickCapture().recordDebugPosition(p.getX(), p.getY(), p.getZ());
 				Playback.recording.getCurrentTickCapture().recordDebugRotation(p.getPitch(1F), p.getYaw(1F));
 			}
-			recording.tickRecord(tickCounter++);
+			recording.tickRecord(++tickCounter);
 		} else {
 			if (tickCounter > recording.getEnd()) {
 				allowInputs = true;
@@ -47,7 +47,7 @@ public class Playback implements ModInitializer {
 				DebugHelper.trackEntity(Playback.manager.replayPlayer.getPlayer());
 			}
 
-			recording.play(++tickCounter);
+			recording.play(tickCounter++);
 		}
 	}
 
