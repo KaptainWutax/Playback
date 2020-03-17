@@ -52,7 +52,7 @@ public class DebugVelocityAction implements IAction {
 
 			DebugHelper.clearStackTraces(p);
 		} else {
-			System.out.println("p fine");
+			System.out.println("v fine");
 			DebugHelper.clearStackTraces(p);
 		}
 
