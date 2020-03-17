@@ -13,10 +13,13 @@ public class ReplayManager {
 
 		//What does running both applys at once do? For now: only running one
 		if(view == ReplayView.FIRST_PERSON) {
+			if(this.replayPlayer == null)this.replayPlayer = PlayerFrame.createFromExisting();
 			this.replayPlayer.apply();
 		}
 
 		if(view == ReplayView.THIRD_PERSON) {
+			if(this.replayPlayer == null)this.replayPlayer = PlayerFrame.createFromExisting();
+			if(this.cameraPlayer == null)this.cameraPlayer = PlayerFrame.createNew();
 			this.cameraPlayer.apply();
 		}
 	}

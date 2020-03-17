@@ -33,7 +33,6 @@ public class ClientPlayNetworkHandlerMixin {
 		if(this.joinRanOnce && this.client.player != null) {
 			this.client.world.getLevelProperties().loadLevelInfo(new LevelInfo(packet.getSeed(), packet.getGameMode(), false, packet.isHardcore(), packet.getGeneratorType()));
 			this.client.player.dimension = packet.getDimension();
-			this.client.player.setEntityId(packet.getEntityId());
 			this.client.player.setReducedDebugInfo(packet.hasReducedDebugInfo());
 			this.client.player.setShowsDeathScreen(packet.showsDeathScreen());
 			this.client.interactionManager.setGameMode(packet.getGameMode());

@@ -36,24 +36,19 @@ public class Playback implements ModInitializer {
 				Playback.recording.getCurrentTickCapture().recordDebugPosition(p.getX(), p.getY(), p.getZ());
 				Playback.recording.getCurrentTickCapture().recordDebugRotation(p.getPitch(1F), p.getYaw(1F));
 			}
-			recording.tickRecord(tickCounter);
+			recording.tickRecord(tickCounter++);
 		} else {
 			if (tickCounter > recording.getEnd()) {
 				allowInputs = true;
 			}
 
 			if(manager.cameraPlayer == null) {
-				manager.cameraPlayer = PlayerFrame.createNew();
-				manager.replayPlayer = PlayerFrame.createFromExisting();
-				DebugHelper.trackEntity(Playback.manager.replayPlayer.getPlayer());
-
 				manager.updateView(mode);
+				DebugHelper.trackEntity(Playback.manager.replayPlayer.getPlayer());
 			}
 
-			recording.play(tickCounter);
+			recording.play(++tickCounter);
 		}
-
-		tickCounter++;
 	}
 
 	public static void restart(){ //restart the replay (intended to have to reload the world right now as well)

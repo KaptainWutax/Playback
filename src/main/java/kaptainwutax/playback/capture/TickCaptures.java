@@ -59,7 +59,6 @@ public class TickCaptures {
 		DebugRotationAction debRotAction = new DebugRotationAction(pitch, yaw);
 		this.first.addDebugRotationAction(debRotAction);
 		this.third.addDebugRotationAction(debRotAction);
-
 	}
 
 	public void recordSprint(boolean pressed) {

@@ -29,4 +29,9 @@ public class FakePlayer extends ClientPlayerEntity {
 		return true;
 	}
 
+	@Override
+	public boolean isPushable() {
+		return false;
+	}
+
 }
