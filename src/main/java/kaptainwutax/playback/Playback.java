@@ -25,7 +25,9 @@ public class Playback implements ModInitializer {
 	public void onInitialize() {
 	}
 
-	public static void update() {
+	public static void update(boolean paused) {
+		if (paused) return; //todo what happens on multiplayer when the menu is opened, would the replay pause?
+
 		allowInputDefault = mode == ReplayView.THIRD_PERSON || tickCounter > recording.getEnd();
 		if(Playback.recording.isRecording()) {
 			//Player position debug
@@ -42,7 +44,7 @@ public class Playback implements ModInitializer {
 				allowInputs = true;
 			}
 
-			if(manager.cameraPlayer == null) {
+			if(manager.replayPlayer == null) {
 				manager.updateView(mode);
 				DebugHelper.trackEntity(Playback.manager.replayPlayer.getPlayer());
 			}
@@ -60,6 +62,8 @@ public class Playback implements ModInitializer {
 	}
 
 	public static void resetRecording(){ //untested, idk when to invoke either
+		restart();
+		DebugHelper.maxIndex = -1;
 		recording = new Recording();
 		isReplaying = false;
 	}

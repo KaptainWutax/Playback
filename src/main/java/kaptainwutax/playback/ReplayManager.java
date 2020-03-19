@@ -6,14 +6,15 @@ public class ReplayManager {
 
 	public PlayerFrame replayPlayer;
 	public PlayerFrame cameraPlayer;
+	private PlayerFrame unusedPlayer;//player to imitate effect of cameraPlayer on entity hashmap
 	private ReplayView view = ReplayView.THIRD_PERSON;
 
 	public void updateView(ReplayView view) { //this only runs once per replay
 		this.view = view;
 
-		//What does running both applys at once do? For now: only running one
 		if(view == ReplayView.FIRST_PERSON) {
 			if(this.replayPlayer == null)this.replayPlayer = PlayerFrame.createFromExisting();
+			if(this.unusedPlayer == null)this.unusedPlayer = PlayerFrame.createNew();
 			this.replayPlayer.apply();
 		}
 

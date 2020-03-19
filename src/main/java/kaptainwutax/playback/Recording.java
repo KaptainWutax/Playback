@@ -10,11 +10,12 @@ public class Recording {
 
 	protected Map<Long, TickCaptures> recording = new HashMap<>();
 	protected long endTick = Long.MAX_VALUE;
+	protected int playerEntityId;
 
 
-	public long currentTick = 0;
-	private TickCaptures currentTickCapture = new TickCaptures();
-	private TickCaptures nextTickCapture = new TickCaptures();
+	transient public long currentTick = 0;
+	transient private TickCaptures currentTickCapture = new TickCaptures();
+	transient private TickCaptures nextTickCapture = new TickCaptures();
 
 
 	public boolean isRecording(){
@@ -57,4 +58,8 @@ public class Recording {
 		return endTick;
 	}
 
+
+	public int getPlayerEntityId() { return playerEntityId; }
+
+	public void setPlayerEntityId(int playerEntityId) { this.playerEntityId = playerEntityId; }
 }

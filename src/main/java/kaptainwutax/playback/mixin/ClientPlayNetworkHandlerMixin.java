@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
@@ -37,9 +38,21 @@ public class ClientPlayNetworkHandlerMixin {
 			this.client.player.setShowsDeathScreen(packet.showsDeathScreen());
 			this.client.interactionManager.setGameMode(packet.getGameMode());
 			ci.cancel();
+			//record the entityId of the player
+			Playback.recording.setPlayerEntityId(packet.getEntityId());
 		}
 
 		this.joinRanOnce = true;
+	}
+
+	/** /todo check if also other things besides entityId have to be fixed
+	 * GameJoinS2CPacket is the only troublesome packet in the replay since it recreates the world and player
+	 * instance. We need to fix the entityId of the player to have the same entity tick order as during the recording.
+	 **/
+	@Redirect(method = "onGameJoin", at = @At(value="INVOKE", target="Lnet/minecraft/network/packet/s2c/play/GameJoinS2CPacket;getEntityId()I"))
+	private int fixPlayerEntityId(GameJoinS2CPacket packet) {
+		if (!Playback.isReplaying) return packet.getEntityId();
+		else return Playback.recording.getPlayerEntityId();
 	}
 
 	@Inject(method = "onPlayerPositionLook", at = @At(value="INVOKE", target="Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",shift = At.Shift.AFTER))
