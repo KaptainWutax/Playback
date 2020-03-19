@@ -3,6 +3,7 @@ package kaptainwutax.playback.capture;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.capture.action.DebugPositionAction;
 import kaptainwutax.playback.capture.action.DebugRotationAction;
+import kaptainwutax.playback.capture.action.DebugVelocityAction;
 import kaptainwutax.playback.capture.action.IAction;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
@@ -75,6 +76,7 @@ public abstract class DebugHelper {
 		index = 0;
 		DebugPositionAction.restart();
 		DebugRotationAction.restart();
+		DebugVelocityAction.restart();
 	}
 
 }

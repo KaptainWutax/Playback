@@ -24,10 +24,10 @@ public class MinecraftClientMixin  {
 		}
 	}
 
-	//Intended to fix inconsistency depending on fps during replay
+	//Intended to fix inconsistency due to differing fps during replay and recording
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"))
-	private int MathMinNoLimit(int i, int i1){
-		return i1;
+	private int MathMinFixed(int i, int i1){
+		return 1;
 	}
 
 }

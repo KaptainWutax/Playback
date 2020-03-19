@@ -40,7 +40,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 	@Inject(method = "isCamera", at = @At("HEAD"), cancellable = true)
 	private void isCamera(CallbackInfoReturnable<Boolean> ci) {
-		//TODO Always or only during recording or replay?
+		//usually returns true, but setting the camera on the cameraplayer shouldn't modify behavior (movement code), so still return true
 		if(Playback.manager.replayPlayer != null && (Object)this == Playback.manager.replayPlayer.getPlayer() && Playback.manager.getView() == ReplayView.THIRD_PERSON) {
 			ci.setReturnValue(true);
 		}
