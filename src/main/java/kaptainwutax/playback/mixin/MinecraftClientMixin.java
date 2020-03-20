@@ -23,8 +23,16 @@ public class MinecraftClientMixin  {
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void tick(CallbackInfo ci) {
+		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
+			Playback.manager.replayPlayer.apply();
+		}
+
 		if(this.world != null) {
 			Playback.update(this.paused);
+		}
+
+		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
+			Playback.manager.updateView(Playback.manager.getView());
 		}
 	}
 

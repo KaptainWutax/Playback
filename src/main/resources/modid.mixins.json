@@ -20,7 +20,8 @@
     "WorldRendererMixin",
     "ClientPlayerEntityMixin",
     "KeyboardInputMixin",
-    "EntityMixin"
+    "EntityMixin",
+    "KeyBindingMixin"
   ],
   "injectors": {
     "defaultRequire": 1

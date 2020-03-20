@@ -14,6 +14,7 @@ public class Recording {
 
 
 	transient public long currentTick = 0;
+	transient private TickCaptures previousTickCapture = new TickCaptures();
 	transient private TickCaptures currentTickCapture = new TickCaptures();
 	transient private TickCaptures nextTickCapture = new TickCaptures();
 
@@ -29,15 +30,21 @@ public class Recording {
 			this.recording.put(this.currentTick, this.currentTickCapture);
 		}
 
+		this.previousTickCapture = this.currentTickCapture;
 		this.currentTickCapture = this.nextTickCapture;
 		this.nextTickCapture = new TickCaptures();
 		this.currentTick = tick;
 	}
 
 	public void play(long tick) {
+		this.previousTickCapture = this.recording.getOrDefault(tick - 1, TickCaptures.EMPTY);
 		this.currentTickCapture = this.recording.getOrDefault(tick, TickCaptures.EMPTY);
-		this.nextTickCapture = this.recording.getOrDefault(tick+1, TickCaptures.EMPTY);
+		this.nextTickCapture = this.recording.getOrDefault(tick + 1, TickCaptures.EMPTY);
 		this.currentTickCapture.play(Playback.manager.getView());
+	}
+
+	public TickCaptures getPreviousTickCapture() {
+		return this.previousTickCapture;
 	}
 
 	public TickCaptures getCurrentTickCapture() {
@@ -47,7 +54,6 @@ public class Recording {
 	public TickCaptures getNextTickCapture() {
 		return this.nextTickCapture;
 	}
-
 
 
 	public void setEnd(){

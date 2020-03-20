@@ -4,7 +4,9 @@ import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.capture.action.DebugPositionAction;
 import kaptainwutax.playback.capture.action.DebugRotationAction;
 import kaptainwutax.playback.capture.action.DebugVelocityAction;
+import kaptainwutax.playback.capture.action.KeyBindingAction;
 import net.minecraft.client.input.Input;
+import net.minecraft.client.options.KeyBinding;
 import net.minecraft.network.Packet;
 import net.minecraft.world.World;
 
@@ -16,10 +18,10 @@ public class TickCaptures {
 	public ThirdPersonTickCapture third = new ThirdPersonTickCapture();
 
 	public void play(ReplayView view) {
-		Playback.manager.replayPlayer.apply();
+		//Playback.manager.replayPlayer.apply();
 		if(view == ReplayView.FIRST_PERSON) this.first.play();
 		else if(view == ReplayView.THIRD_PERSON) this.third.play();
-		Playback.manager.updateView(Playback.manager.getView());
+		//Playback.manager.updateView(Playback.manager.getView());
 	}
 
 	public void recordPacket(Packet<?> packet) {
@@ -63,6 +65,10 @@ public class TickCaptures {
 
 	public void recordSprint(boolean pressed) {
 		this.third.addSprintAction(pressed);
+	}
+
+	public void recordKeyBinding(KeyBinding key, boolean state) {
+		this.third.addKeyBindingAction(key, state);
 	}
 
 	public void recordKeyState(long handle, int i) {

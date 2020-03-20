@@ -13,6 +13,7 @@ public abstract class KeyboardInputMixin {
 
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	private void tick(boolean bl, CallbackInfo ci) {
+		/*
 		if (Playback.isReplaying) {
 			if(Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.replayPlayer != null
 					&& (Object)this == Playback.manager.replayPlayer.getPlayer().input) {
@@ -24,16 +25,16 @@ public abstract class KeyboardInputMixin {
 
 				ci.cancel();
 			}
-		} //else if(Playback.recording.isRecording())
-			//Playback.recording.getCurrentTickCapture().recordInputAction((KeyboardInput)(Object)this);
+		} */
 
 	}
 	@Inject(method = "tick", at = @At("TAIL"))
 	//take info at TAIL, so we are not outdated
 	//taking info at HEAD is bad, because the info is changed right after, and we probably want the new one
 	private void tickEnd(boolean bl, CallbackInfo ci) {
+		/*
 		if(Playback.recording.isRecording()) {
 			Playback.recording.getCurrentTickCapture().recordInputAction((KeyboardInput)(Object)this);
-		}
+		}*/
 	}
 }
