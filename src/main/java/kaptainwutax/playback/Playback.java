@@ -4,6 +4,7 @@ import kaptainwutax.playback.capture.DebugHelper;
 import kaptainwutax.playback.capture.ReplayView;
 import kaptainwutax.playback.capture.action.DebugPositionAction;
 import kaptainwutax.playback.capture.action.DebugRotationAction;
+import kaptainwutax.playback.entity.FakePlayer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,6 +22,8 @@ public class Playback implements ModInitializer {
 
 	public static final ReplayManager manager = new ReplayManager();
 
+	public static PlayerFrame dummy;
+
 	@Override
 	public void onInitialize() {
 	}
@@ -30,6 +33,8 @@ public class Playback implements ModInitializer {
 
 		allowInputDefault = mode == ReplayView.THIRD_PERSON || tickCounter > recording.getEnd();
 		if(Playback.recording.isRecording()) {
+			if(dummy == null)dummy = PlayerFrame.createNew();
+
 			//Player position debug
 			PlayerEntity p = MinecraftClient.getInstance().player;
 			if (p != null && p.getEntityWorld() != null) {
@@ -53,7 +58,8 @@ public class Playback implements ModInitializer {
 		}
 	}
 
-	public static void restart(){ //restart the replay (intended to have to reload the world right now as well)
+	public static void restart() { //restart the replay (intended to have to reload the world right now as well)
+		Playback.dummy = null;
 		Playback.tickCounter = 0;
 		Playback.manager.cameraPlayer = null;
 		Playback.manager.replayPlayer = null;
@@ -61,14 +67,14 @@ public class Playback implements ModInitializer {
 		DebugHelper.restartReplaying();
 	}
 
-	public static void resetRecording(){ //untested, idk when to invoke either
+	public static void resetRecording() { //untested, idk when to invoke either
 		restart();
 		DebugHelper.maxIndex = -1;
 		recording = new Recording();
 		isReplaying = false;
 	}
 
-	public static void toggleView(){ //only for between two replays for now
+	public static void toggleView() { //only for between two replays for now
 		if (mode == ReplayView.THIRD_PERSON)
 			mode = ReplayView.FIRST_PERSON;
 		else

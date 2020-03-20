@@ -29,10 +29,10 @@ public class MinecraftClientMixin  {
 	}
 
 	//Intended to fix inconsistency due to differing fps during replay and recording
-	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"))
-	private int MathMinFixed(int i, int i1){
-		return 1;
-	}
+	//@Redirect(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"))
+	//private int MathMinFixed(int i, int i1) {
+	//	return 1;
+	//}
 
 
 	//During first person replay pretend window has focus so recorded mouse actions always get processed

@@ -29,7 +29,11 @@ public class ClientPlayNetworkHandlerMixin {
 	 **/
 	@Inject(method = "onGameJoin", at = @At(value="INVOKE", target="Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",shift=At.Shift.AFTER), cancellable = true)
 	public void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-		if(!Playback.isReplaying)return;
+		if(!Playback.isReplaying) {
+			//record the entityId of the player
+			Playback.recording.setPlayerEntityId(packet.getEntityId());
+			return;
+		}
 
 		if(this.joinRanOnce && this.client.player != null) {
 			this.client.world.getLevelProperties().loadLevelInfo(new LevelInfo(packet.getSeed(), packet.getGameMode(), false, packet.isHardcore(), packet.getGeneratorType()));
@@ -38,8 +42,6 @@ public class ClientPlayNetworkHandlerMixin {
 			this.client.player.setShowsDeathScreen(packet.showsDeathScreen());
 			this.client.interactionManager.setGameMode(packet.getGameMode());
 			ci.cancel();
-			//record the entityId of the player
-			Playback.recording.setPlayerEntityId(packet.getEntityId());
 		}
 
 		this.joinRanOnce = true;
