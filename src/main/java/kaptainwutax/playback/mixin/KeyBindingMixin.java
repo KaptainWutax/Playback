@@ -19,6 +19,8 @@ public class KeyBindingMixin implements KeyBindingAction.IPublicKeys {
 	@Shadow @Final private static Map<String, KeyBinding> keysById;
 	@Shadow private InputUtil.KeyCode keyCode;
 
+	@Shadow @Final private static Map<InputUtil.KeyCode, KeyBinding> keysByCode;
+
 	@Override
 	public InputUtil.KeyCode getKeyCode(String keyId) {
 		return ((KeyBindingAction.IPublicKeys)keysById.get(keyId)).getKeyCode();
@@ -30,9 +32,16 @@ public class KeyBindingMixin implements KeyBindingAction.IPublicKeys {
 	}
 
 	@Inject(method = "setPressed", at = @At("HEAD"))
-	public void setPressed(boolean pressed, CallbackInfo ci) {
+	private void setPressed(boolean pressed, CallbackInfo ci) {
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().recordKeyBinding((KeyBinding)(Object)this, pressed);
+			Playback.recording.getCurrentTickCapture().recordKeyBinding(KeyBindingAction.SET_KEY_PRESSED, (KeyBinding)(Object)this, pressed);
+		}
+	}
+
+	@Inject(method = "onKeyPressed", at = @At("HEAD"))
+	private static void onKeyPressed(InputUtil.KeyCode keyCode, CallbackInfo ci) {
+		if(!Playback.isReplaying) {
+			Playback.recording.getCurrentTickCapture().recordKeyBinding(KeyBindingAction.ON_KEY_PRESSED, keysByCode.get(keyCode), false);
 		}
 	}
 

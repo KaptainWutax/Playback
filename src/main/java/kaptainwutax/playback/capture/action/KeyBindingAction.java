@@ -22,22 +22,32 @@ public class KeyBindingAction implements IAction {
 			MinecraftClient.getInstance().options.keyAdvancements.getId()
 	);
 
+	public static final int ON_KEY_PRESSED = 0;
+	public static final int SET_KEY_PRESSED = 1;
+
+	private int action;
 	private String keyId;
 	private boolean state;
 
-	public KeyBindingAction(KeyBinding key, boolean state) {
-		this.keyId = key.getId();
+	public KeyBindingAction(int action, KeyBinding key, boolean state) {
+		this.action = action;
+		this.keyId = key == null ? null : key.getId();
 		this.state = state;
 	}
 
 	public boolean isValid() {
-		return !BLACKLIST.contains(this.keyId);
+		return this.keyId != null && !BLACKLIST.contains(this.keyId);
 	}
 
 	@Override
 	public void play() {
 		KeyBinding someRandomKey = MinecraftClient.getInstance().options.keySneak;
-		KeyBinding.setKeyPressed(((IPublicKeys)someRandomKey).getKeyCode(this.keyId), this.state);
+
+		if(this.action == SET_KEY_PRESSED) {
+			KeyBinding.setKeyPressed(((IPublicKeys)someRandomKey).getKeyCode(this.keyId), this.state);
+		} else if(this.action == ON_KEY_PRESSED) {
+			KeyBinding.onKeyPressed(((IPublicKeys)someRandomKey).getKeyCode(this.keyId));
+		}
 	}
 
 	public interface IPublicKeys {

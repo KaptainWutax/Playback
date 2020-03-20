@@ -1,14 +1,11 @@
 package kaptainwutax.playback.capture;
 
-import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.capture.action.DebugPositionAction;
 import kaptainwutax.playback.capture.action.DebugRotationAction;
 import kaptainwutax.playback.capture.action.DebugVelocityAction;
-import kaptainwutax.playback.capture.action.KeyBindingAction;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.network.Packet;
-import net.minecraft.world.World;
 
 public class TickCaptures {
 
@@ -67,8 +64,8 @@ public class TickCaptures {
 		this.third.addSprintAction(pressed);
 	}
 
-	public void recordKeyBinding(KeyBinding key, boolean state) {
-		this.third.addKeyBindingAction(key, state);
+	public void recordKeyBinding(int action, KeyBinding key, boolean state) {
+		this.third.addKeyBindingAction(action, key, state);
 	}
 
 	public void recordKeyState(long handle, int i) {

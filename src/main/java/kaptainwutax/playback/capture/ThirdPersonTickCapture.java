@@ -27,9 +27,9 @@ public class ThirdPersonTickCapture extends CommonTickCapture {
 		this.isSprinting = pressed;
 	}
 
-	public void addKeyBindingAction(KeyBinding key, boolean state) {
-		KeyBindingAction action = new KeyBindingAction(key, state);
-		if(action.isValid())this.addAction(action);
+	public void addKeyBindingAction(int action, KeyBinding key, boolean state) {
+		KeyBindingAction keyBindingAction = new KeyBindingAction(action, key, state);
+		if(keyBindingAction.isValid())this.addAction(keyBindingAction);
 	}
 
 }
