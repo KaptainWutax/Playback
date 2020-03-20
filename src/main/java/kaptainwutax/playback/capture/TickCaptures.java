@@ -34,10 +34,6 @@ public class TickCaptures {
 		this.first.addMouseAction(action, window, d1, d2, i1);
 	}
 
-	public void recordInputAction(Input input) {
-		this.third.addInputAction(input);
-	}
-
 	public void recordChangeLook(double cursorDeltaX, double cursorDeltaY) {
 		this.third.addChangeLookAction(cursorDeltaX, cursorDeltaY);
 	}
@@ -58,10 +54,6 @@ public class TickCaptures {
 		DebugRotationAction debRotAction = new DebugRotationAction(pitch, yaw);
 		this.first.addDebugRotationAction(debRotAction);
 		this.third.addDebugRotationAction(debRotAction);
-	}
-
-	public void recordSprint(boolean pressed) {
-		this.third.addSprintAction(pressed);
 	}
 
 	public void recordKeyBinding(int action, KeyBinding key, boolean state) {

@@ -46,25 +46,6 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		}
 	}
 
-	@Inject(method = "tickMovement", at = @At("HEAD"))
-	private void tickMovement(CallbackInfo ci) {
-		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().recordSprint(MinecraftClient.getInstance().options.keySprint.isPressed());
-		}
-	}
-
-	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/options/KeyBinding;isPressed()Z"), require = 2)
-	private boolean tickMovement(KeyBinding key) {
-		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON
-				&&  Playback.manager.replayPlayer != null && Playback.manager.replayPlayer.getPlayer() == (Object)this
-				&& key == MinecraftClient.getInstance().options.keySprint) {
-		    //get sprint information from the future to make up the 1gt delay
-			return Playback.recording.getNextTickCapture().third.isSprinting;
-		}
-
-		return MinecraftClient.getInstance().options.keySprint.isPressed();
-	}
-
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;isFlyingLocked()Z"))
 	private boolean isFlyingLocked(ClientPlayerInteractionManager clientPlayerInteractionManager) {
 
@@ -77,4 +58,5 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 			return clientPlayerInteractionManager.isFlyingLocked();
 		}
 	}
+
 }
