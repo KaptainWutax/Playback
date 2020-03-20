@@ -38,6 +38,13 @@ public class KeyBindingMixin implements KeyBindingAction.IPublicKeys {
 		}
 	}
 
+	@Inject(method = "unpressAll", at = @At("HEAD"))
+	private static void unpressAll(CallbackInfo ci) {
+		if(!Playback.isReplaying) {
+			Playback.recording.getCurrentTickCapture().recordKeyBinding(KeyBindingAction.UNPRESS_ALL, null, false);
+		}
+	}
+
 	@Inject(method = "onKeyPressed", at = @At("HEAD"))
 	private static void onKeyPressed(InputUtil.KeyCode keyCode, CallbackInfo ci) {
 		if(!Playback.isReplaying) {

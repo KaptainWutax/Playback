@@ -24,6 +24,7 @@ public class KeyBindingAction implements IAction {
 
 	public static final int ON_KEY_PRESSED = 0;
 	public static final int SET_KEY_PRESSED = 1;
+	public static final int UNPRESS_ALL = 2;
 
 	private int action;
 	private String keyId;
@@ -36,7 +37,7 @@ public class KeyBindingAction implements IAction {
 	}
 
 	public boolean isValid() {
-		return this.keyId != null && !BLACKLIST.contains(this.keyId);
+		return (this.keyId != null || this.action == UNPRESS_ALL) && !BLACKLIST.contains(this.keyId);
 	}
 
 	@Override
@@ -47,6 +48,8 @@ public class KeyBindingAction implements IAction {
 			KeyBinding.setKeyPressed(((IPublicKeys)someRandomKey).getKeyCode(this.keyId), this.state);
 		} else if(this.action == ON_KEY_PRESSED) {
 			KeyBinding.onKeyPressed(((IPublicKeys)someRandomKey).getKeyCode(this.keyId));
+		} else if(this.action == UNPRESS_ALL) {
+			KeyBinding.unpressAll();
 		}
 	}
 
