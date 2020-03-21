@@ -42,6 +42,7 @@ public class Playback implements ModInitializer {
 				Playback.recording.getCurrentTickCapture().recordDebugVelocity(p.getVelocity().x, p.getVelocity().y, p.getVelocity().z);
 				Playback.recording.getCurrentTickCapture().recordDebugPosition(p.getX(), p.getY(), p.getZ());
 				Playback.recording.getCurrentTickCapture().recordDebugRotation(p.getPitch(1F), p.getYaw(1F));
+				Playback.recording.getCurrentTickCapture().recordDebugSneaking(p.isSneaking(), p.getPose());
 			}
 			recording.tickRecord(++tickCounter);
 		} else {

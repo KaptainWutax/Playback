@@ -26,13 +26,16 @@ public class Recording {
 	public void tickRecord(long tick) {
 		if(tick == this.currentTick)return;
 
-		if(this.currentTickCapture != null && !this.currentTickCapture.isEmpty()) {
+		if(!this.currentTickCapture.isEmpty()) {
 			this.recording.put(this.currentTick, this.currentTickCapture);
 		}
 
 		this.previousTickCapture = this.currentTickCapture;
 		this.currentTickCapture = this.nextTickCapture;
 		this.nextTickCapture = new TickCaptures();
+
+		this.currentTickCapture.third.setKeyAction(this.previousTickCapture.third.getKeyAction().copy());
+
 		this.currentTick = tick;
 	}
 

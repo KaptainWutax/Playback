@@ -2,9 +2,11 @@ package kaptainwutax.playback.capture;
 
 import kaptainwutax.playback.capture.action.DebugPositionAction;
 import kaptainwutax.playback.capture.action.DebugRotationAction;
+import kaptainwutax.playback.capture.action.DebugSneakingAction;
 import kaptainwutax.playback.capture.action.DebugVelocityAction;
 import net.minecraft.client.input.Input;
 import net.minecraft.client.options.KeyBinding;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.network.Packet;
 
 public class TickCaptures {
@@ -40,24 +42,26 @@ public class TickCaptures {
 
 	public void recordDebugPosition(double x, double y, double z) {
 		DebugPositionAction debPosAction = new DebugPositionAction(x,y,z);
-		this.first.addDebugPositionAction(debPosAction);
-		this.third.addDebugPositionAction(debPosAction);
+		this.first.addDebugAction(debPosAction);
+		this.third.addDebugAction(debPosAction);
 	}
 
 	public void recordDebugVelocity(double x, double y, double z) {
 		DebugVelocityAction debVelAction = new DebugVelocityAction(x,y,z);
-		this.first.addDebugVelocityAction(debVelAction);
-		this.third.addDebugVelocityAction(debVelAction);
+		this.first.addDebugAction(debVelAction);
+		this.third.addDebugAction(debVelAction);
 	}
 
 	public void recordDebugRotation(float pitch, float yaw){
 		DebugRotationAction debRotAction = new DebugRotationAction(pitch, yaw);
-		this.first.addDebugRotationAction(debRotAction);
-		this.third.addDebugRotationAction(debRotAction);
+		this.first.addDebugAction(debRotAction);
+		this.third.addDebugAction(debRotAction);
 	}
 
-	public void recordKeyBinding(int action, KeyBinding key, boolean state) {
-		this.third.addKeyBindingAction(action, key, state);
+	public void recordDebugSneaking(boolean state, EntityPose pose) {
+		DebugSneakingAction debSneakAction = new DebugSneakingAction(state, pose);
+		this.first.addDebugAction(debSneakAction);
+		this.third.addDebugAction(debSneakAction);
 	}
 
 	public void recordKeyState(long handle, int i) {

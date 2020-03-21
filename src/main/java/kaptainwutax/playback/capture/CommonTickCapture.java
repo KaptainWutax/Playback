@@ -1,9 +1,6 @@
 package kaptainwutax.playback.capture;
 
-import kaptainwutax.playback.capture.action.DebugPositionAction;
-import kaptainwutax.playback.capture.action.DebugRotationAction;
-import kaptainwutax.playback.capture.action.DebugVelocityAction;
-import kaptainwutax.playback.capture.action.PacketAction;
+import kaptainwutax.playback.capture.action.*;
 import net.minecraft.network.Packet;
 
 public class CommonTickCapture extends TickCapture {
@@ -16,15 +13,7 @@ public class CommonTickCapture extends TickCapture {
 		this.addAction(new PacketAction(packet));
 	}
 
-	public void addDebugPositionAction(DebugPositionAction action){
-		this.addAction(action);
-	}
-
-	public void addDebugVelocityAction(DebugVelocityAction action){
-		this.addAction(action);
-	}
-
-	public void addDebugRotationAction(DebugRotationAction action){
+	public void addDebugAction(IAction action){
 		this.addAction(action);
 	}
 

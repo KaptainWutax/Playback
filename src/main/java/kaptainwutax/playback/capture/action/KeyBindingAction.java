@@ -3,11 +3,14 @@ package kaptainwutax.playback.capture.action;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class KeyBindingAction implements IAction {
+
+	public static final KeyInfo NO_KEY = new KeyInfo();
 
 	private static final Set<String> BLACKLIST = ImmutableSet.of(
 			MinecraftClient.getInstance().options.keyInventory.getId(),
@@ -22,42 +25,104 @@ public class KeyBindingAction implements IAction {
 			MinecraftClient.getInstance().options.keyAdvancements.getId()
 	);
 
-	public static final int ON_KEY_PRESSED = 0;
-	public static final int SET_KEY_PRESSED = 1;
-	public static final int UNPRESS_ALL = 2;
+	private Map<String, KeyInfo> recordedKeys = new HashMap<>();
+	private Map<String, KeyInfo> playKeys = new HashMap<>();
 
-	private int action;
-	private String keyId;
-	private boolean state;
+	public KeyBindingAction() {
 
-	public KeyBindingAction(int action, KeyBinding key, boolean state) {
-		this.action = action;
-		this.keyId = key == null ? null : key.getId();
-		this.state = state;
 	}
 
-	public boolean isValid() {
-		return (this.keyId != null || this.action == UNPRESS_ALL) && !BLACKLIST.contains(this.keyId);
+	private KeyInfo getAndSetKeyInfo(KeyBinding key) {
+		if(key == null || BLACKLIST.contains(key.getId()))return NO_KEY;
+
+		if(!this.recordedKeys.containsKey(key.getId())) {
+			this.recordedKeys.put(key.getId(), new KeyInfo());
+		}
+
+		return this.recordedKeys.get(key.getId());
+	}
+
+	public void setKeyPressed(KeyBinding key, boolean pressed) {
+		if(key == null)return;
+		this.getAndSetKeyInfo(key).setKeyPressed(pressed);
+	}
+
+	public void onKeyPressed(KeyBinding key) {
+		if(key == null)return;
+		this.getAndSetKeyInfo(key).onKeyPressed();
+	}
+
+	public void reset(KeyBinding key) {
+		this.getAndSetKeyInfo(key).reset();
+	}
+
+	public void consumeWasPressed(KeyBinding key) {
+		this.getAndSetKeyInfo(key).consumeWasPressed();
+	}
+
+	public KeyBindingAction copy() {
+		KeyBindingAction action = new KeyBindingAction();
+
+		for(Map.Entry<String, KeyInfo> e: this.recordedKeys.entrySet()) {
+			action.recordedKeys.put(e.getKey(), e.getValue().copy());
+		}
+
+		return action;
 	}
 
 	@Override
 	public void play() {
-		KeyBinding someRandomKey = MinecraftClient.getInstance().options.keySneak;
+		this.playKeys.clear();
 
-		if(this.action == SET_KEY_PRESSED) {
-			KeyBinding.setKeyPressed(((IPublicKeys)someRandomKey).getKeyCode(this.keyId), this.state);
-		} else if(this.action == ON_KEY_PRESSED) {
-			KeyBinding.onKeyPressed(((IPublicKeys)someRandomKey).getKeyCode(this.keyId));
-		} else if(this.action == UNPRESS_ALL) {
-			KeyBinding.unpressAll();
+		for(Map.Entry<String, KeyInfo> e: this.recordedKeys.entrySet()) {
+			this.playKeys.put(e.getKey(), e.getValue().copy());
 		}
 	}
 
-	public interface IPublicKeys {
+	public KeyInfo getPlayKey(KeyBinding key) {
+		return this.playKeys.getOrDefault(key.getId(), NO_KEY);
+	}
 
-		InputUtil.KeyCode getKeyCode(String keyId);
+	public static class KeyInfo {
+		public boolean pressed;
+		public int timesPressed;
 
-		InputUtil.KeyCode getKeyCode();
+		public void setKeyPressed(boolean pressed) {
+			this.pressed = pressed;
+		}
+
+		public void onKeyPressed() {
+			++this.timesPressed;
+		}
+
+		public void reset() {
+			this.setKeyPressed(false);
+			this.timesPressed = 0;
+		}
+
+		public void consumeWasPressed() {
+			this.wasPressed();
+		}
+
+		public boolean isPressed() {
+			return this.pressed;
+		}
+
+		public boolean wasPressed() {
+			if(this.timesPressed == 0) {
+				return false;
+			} else {
+				--this.timesPressed;
+				return true;
+			}
+		}
+
+		public KeyInfo copy() {
+			KeyInfo keyInfo = new KeyInfo();
+			keyInfo.pressed = this.pressed;
+			keyInfo.timesPressed = this.timesPressed;
+			return keyInfo;
+		}
 
 	}
 

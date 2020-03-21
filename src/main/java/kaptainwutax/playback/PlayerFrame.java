@@ -38,4 +38,9 @@ public class PlayerFrame {
 		return this;
 	}
 
+	public boolean isActive() {
+		if(this.cameraOnly)return MinecraftClient.getInstance().cameraEntity == this.player;
+		return MinecraftClient.getInstance().player == this.player;
+	}
+
 }

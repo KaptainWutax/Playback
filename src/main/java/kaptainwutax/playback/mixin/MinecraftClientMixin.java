@@ -22,7 +22,7 @@ public class MinecraftClientMixin  {
 	@Shadow private boolean paused;
 
 	@Inject(method = "tick", at = @At("HEAD"))
-	private void tick(CallbackInfo ci) {
+	private void tickStart(CallbackInfo ci) {
 		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
 			Playback.manager.replayPlayer.apply();
 		}
@@ -30,11 +30,58 @@ public class MinecraftClientMixin  {
 		if(this.world != null) {
 			Playback.update(this.paused);
 		}
+	}
 
+	@Inject(method = "tick", at = @At("TAIL"))
+	private void tickEnd(CallbackInfo ci) {
 		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
 			Playback.manager.updateView(Playback.manager.getView());
 		}
 	}
+
+
+	/*
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.BEFORE))
+	private void renderRunTasksBefore(boolean tick, CallbackInfo ci) {
+		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
+			Playback.manager.updateView(Playback.manager.getView());
+		}
+	}
+
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.AFTER))
+	private void renderRunTasksAfter(boolean tick, CallbackInfo ci) {
+		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
+			Playback.manager.replayPlayer.apply();
+		}
+	}
+
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;render(FJZ)V", shift = At.Shift.BEFORE))
+	private void renderGameRenderBefore(boolean tick, CallbackInfo ci) {
+		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
+			Playback.manager.updateView(Playback.manager.getView());
+		}
+	}
+
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;render(FJZ)V", shift = At.Shift.AFTER))
+	private void renderGameRenderAfter(boolean tick, CallbackInfo ci) {
+		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
+			Playback.manager.replayPlayer.apply();
+		}
+	}
+
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Mouse;updateMouse()V", shift = At.Shift.BEFORE))
+	private void renderUpdateMouseBefore(boolean tick, CallbackInfo ci) {
+		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
+			Playback.manager.updateView(Playback.manager.getView());
+		}
+	}
+
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Mouse;updateMouse()V", shift = At.Shift.AFTER))
+	private void renderUpdateMouseAfter(boolean tick, CallbackInfo ci) {
+		if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
+			Playback.manager.replayPlayer.apply();
+		}
+	}*/
 
 	//Intended to fix inconsistency due to differing fps during replay and recording
 	//@Redirect(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I"))
