@@ -1,11 +1,10 @@
 package kaptainwutax.playback.capture;
 
-import kaptainwutax.playback.capture.action.DebugPositionAction;
-import kaptainwutax.playback.capture.action.DebugRotationAction;
-import kaptainwutax.playback.capture.action.DebugSneakingAction;
-import kaptainwutax.playback.capture.action.DebugVelocityAction;
+import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.capture.action.*;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.network.Packet;
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 
 public class TickCaptures {
 
@@ -20,6 +19,11 @@ public class TickCaptures {
 	}
 
 	public void recordPacket(Packet<?> packet) {
+		if(packet instanceof GameJoinS2CPacket) {
+			Playback.recording.joinPacket = new PacketAction(packet);
+			return;
+		}
+
 		this.first.addPacketAction(packet);
 		this.third.addPacketAction(packet);
 	}

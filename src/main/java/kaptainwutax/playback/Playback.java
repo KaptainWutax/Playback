@@ -23,6 +23,7 @@ public class Playback implements ModInitializer {
 	public static final ReplayManager manager = new ReplayManager();
 
 	public static PlayerFrame dummy;
+	public static boolean joined;
 
 	@Override
 	public void onInitialize() {
@@ -64,7 +65,7 @@ public class Playback implements ModInitializer {
 		Playback.tickCounter = 0;
 		Playback.manager.cameraPlayer = null;
 		Playback.manager.replayPlayer = null;
-
+		Playback.joined = false;
 		DebugHelper.restartReplaying();
 	}
 

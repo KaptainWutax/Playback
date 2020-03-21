@@ -1,6 +1,5 @@
 package kaptainwutax.playback;
 
-import kaptainwutax.playback.capture.TickCapture;
 import kaptainwutax.playback.capture.TickCaptures;
 import kaptainwutax.playback.capture.action.PacketAction;
 
@@ -16,6 +15,8 @@ public class Recording {
 	transient private TickCaptures previousTickCapture = new TickCaptures();
 	transient private TickCaptures currentTickCapture = new TickCaptures();
 	transient private TickCaptures nextTickCapture = new TickCaptures();
+
+	public PacketAction joinPacket;
 
 	public boolean isRecording(){
 		return !Playback.isReplaying;
