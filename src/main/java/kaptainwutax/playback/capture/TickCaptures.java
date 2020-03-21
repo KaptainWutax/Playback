@@ -36,8 +36,24 @@ public class TickCaptures {
 		this.first.addMouseAction(action, window, d1, d2, i1);
 	}
 
+	public void recordKeyState(long handle, int i) {
+		this.first.addKeyState(handle, i);
+	}
+
+	public boolean getKeyState(long handle, int i) {
+		return this.first.getKeyState(handle, i);
+	}
+
 	public void recordChangeLook(double cursorDeltaX, double cursorDeltaY) {
 		this.third.addChangeLookAction(cursorDeltaX, cursorDeltaY);
+	}
+
+	public void recordScrollInHotbar(double scrollAmount) {
+		this.third.addScrollInHotbarAction(scrollAmount);
+	}
+
+	public void recordSetFlySpeed(float flySpeed) {
+		this.third.addSetFlySpeedAction(flySpeed);
 	}
 
 	public void recordDebugPosition(double x, double y, double z) {
@@ -62,14 +78,6 @@ public class TickCaptures {
 		DebugSneakingAction debSneakAction = new DebugSneakingAction(state, pose);
 		this.first.addDebugAction(debSneakAction);
 		this.third.addDebugAction(debSneakAction);
-	}
-
-	public void recordKeyState(long handle, int i) {
-		this.first.addKeyState(handle, i);
-	}
-
-	public boolean getKeyState(long handle, int i) {
-		return this.first.getKeyState(handle, i);
 	}
 
 	public boolean isEmpty() {

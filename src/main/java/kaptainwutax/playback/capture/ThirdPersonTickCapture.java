@@ -3,6 +3,8 @@ package kaptainwutax.playback.capture;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.capture.action.ChangeLookAction;
 import kaptainwutax.playback.capture.action.KeyBindingAction;
+import kaptainwutax.playback.capture.action.ScrollInHotbarAction;
+import kaptainwutax.playback.capture.action.SetFlySpeedAction;
 
 public class ThirdPersonTickCapture extends CommonTickCapture {
 
@@ -26,6 +28,14 @@ public class ThirdPersonTickCapture extends CommonTickCapture {
 
 	public void addChangeLookAction(double cursorDeltaX, double cursorDeltaY) {
 		this.addAction(new ChangeLookAction(cursorDeltaX, cursorDeltaY));
+	}
+
+	public void addScrollInHotbarAction(double scrollAmount) {
+		this.addAction(new ScrollInHotbarAction(scrollAmount));
+	}
+
+	public void addSetFlySpeedAction(float flySpeed) {
+		this.addAction(new SetFlySpeedAction(flySpeed));
 	}
 
 	@Override

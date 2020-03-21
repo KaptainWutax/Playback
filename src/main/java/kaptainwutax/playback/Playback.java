@@ -51,11 +51,6 @@ public class Playback implements ModInitializer {
 				allowInputs = true;
 			}
 
-			if(manager.replayPlayer == null) {
-				manager.updateView(mode);
-				DebugHelper.trackEntity(Playback.manager.replayPlayer.getPlayer());
-			}
-
 			recording.play(tickCounter++);
 		}
 	}
