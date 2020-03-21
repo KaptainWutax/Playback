@@ -2,24 +2,28 @@ package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.capture.ReplayView;
+import kaptainwutax.playback.capture.action.PacketAction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.network.ClientConnection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-public class MinecraftClientMixin  {
+public class MinecraftClientMixin implements PacketAction.IConnectionGetter {
 
 	@Shadow public ClientWorld world;
 	@Shadow public ClientPlayerEntity player;
 
 	@Shadow private boolean windowFocused;
 	@Shadow private boolean paused;
+
+	@Shadow
+	private ClientConnection connection;
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void tickStart(CallbackInfo ci) {
@@ -95,6 +99,11 @@ public class MinecraftClientMixin  {
 	private void setWindowFocussedDuringReplay(boolean focused, CallbackInfo ci) {
 		if (Playback.isReplaying && Playback.mode == ReplayView.FIRST_PERSON)
 			this.windowFocused = true;
+	}
+
+	@Override
+	public ClientConnection getConnection() {
+		return this.connection;
 	}
 
 }

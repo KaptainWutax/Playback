@@ -4,8 +4,6 @@ import kaptainwutax.playback.capture.action.DebugPositionAction;
 import kaptainwutax.playback.capture.action.DebugRotationAction;
 import kaptainwutax.playback.capture.action.DebugSneakingAction;
 import kaptainwutax.playback.capture.action.DebugVelocityAction;
-import net.minecraft.client.input.Input;
-import net.minecraft.client.options.KeyBinding;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.network.Packet;
 
@@ -17,10 +15,8 @@ public class TickCaptures {
 	public ThirdPersonTickCapture third = new ThirdPersonTickCapture();
 
 	public void play(ReplayView view) {
-		//Playback.manager.replayPlayer.apply();
 		if(view == ReplayView.FIRST_PERSON) this.first.play();
 		else if(view == ReplayView.THIRD_PERSON) this.third.play();
-		//Playback.manager.updateView(Playback.manager.getView());
 	}
 
 	public void recordPacket(Packet<?> packet) {

@@ -2,6 +2,7 @@ package kaptainwutax.playback;
 
 import kaptainwutax.playback.capture.TickCapture;
 import kaptainwutax.playback.capture.TickCaptures;
+import kaptainwutax.playback.capture.action.PacketAction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,14 +11,11 @@ public class Recording {
 
 	protected Map<Long, TickCaptures> recording = new HashMap<>();
 	protected long endTick = Long.MAX_VALUE;
-	protected int playerEntityId;
-
 
 	transient public long currentTick = 0;
 	transient private TickCaptures previousTickCapture = new TickCaptures();
 	transient private TickCaptures currentTickCapture = new TickCaptures();
 	transient private TickCaptures nextTickCapture = new TickCaptures();
-
 
 	public boolean isRecording(){
 		return !Playback.isReplaying;
@@ -67,8 +65,4 @@ public class Recording {
 		return endTick;
 	}
 
-
-	public int getPlayerEntityId() { return playerEntityId; }
-
-	public void setPlayerEntityId(int playerEntityId) { this.playerEntityId = playerEntityId; }
 }
