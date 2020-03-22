@@ -36,13 +36,8 @@ public class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "onPlayerPositionLook", at = @At(value="INVOKE", target="Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V",shift = At.Shift.AFTER))
 	public void onPlayerPositionLook(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
 		if(!Playback.isReplaying || Playback.manager.getView() != ReplayView.THIRD_PERSON || Playback.manager.cameraPlayer == null)return;
-
 		FakePlayer cameraPlayer = (FakePlayer)Playback.manager.cameraPlayer.getPlayer();
-
-		if(cameraPlayer.dimension != Playback.manager.replayPlayer.getPlayer().dimension) {
-			Playback.manager.replayPlayer.getPlayer().updatePositionAndAngles(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch());
-			cameraPlayer.dimension = Playback.manager.replayPlayer.getPlayer().dimension;
-		}
+		cameraPlayer.updatePositionAndAngles(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch());
 	}
 
 }
