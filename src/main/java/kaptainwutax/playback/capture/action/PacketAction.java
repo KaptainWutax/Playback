@@ -2,7 +2,6 @@ package kaptainwutax.playback.capture.action;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
@@ -12,7 +11,7 @@ import net.minecraft.util.PacketByteBuf;
 
 import java.io.IOException;
 
-public class PacketAction implements IAction {
+public class PacketAction extends AbstractAction {
 
 	private int packetId;
 	private byte[] packet;
@@ -50,13 +49,13 @@ public class PacketAction implements IAction {
 			Packet<ClientPlayPacketListener> packet = (Packet<ClientPlayPacketListener>) NetworkState.PLAY.getPacketHandler(NetworkSide.CLIENTBOUND, this.packetId);
 			packet.read(packetByteBuf);
 
-			ClientPlayPacketListener listener = MinecraftClient.getInstance().getNetworkHandler();
+			ClientPlayPacketListener listener = client.getNetworkHandler();
 
 			if(listener != null) {
 				packet.apply(listener);
 			} else {
 				//This mess just safely gets ClientPlayPacketListener since we don't have a player instance to go about.
-				packet.apply((ClientPlayPacketListener) ((IConnectionGetter) MinecraftClient.getInstance()).getConnection().getPacketListener());
+				packet.apply((ClientPlayPacketListener) ((IConnectionGetter) client).getConnection().getPacketListener());
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

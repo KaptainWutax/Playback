@@ -1,23 +1,23 @@
 package kaptainwutax.playback.capture;
 
-import kaptainwutax.playback.capture.action.IAction;
+import kaptainwutax.playback.capture.action.AbstractAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class TickCapture {
 
-	private List<IAction> actions = new ArrayList<>();
+	private List<AbstractAction> actions = new ArrayList<>();
 
 	public TickCapture() {
 
 	}
 
 	public void play() {
-		this.actions.forEach(IAction::play);
+		this.actions.forEach(AbstractAction::play);
 	}
 
-	protected void addAction(IAction action) {
+	protected void addAction(AbstractAction action) {
 		this.actions.add(action);
 	}
 

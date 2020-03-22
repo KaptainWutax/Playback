@@ -1,8 +1,6 @@
 package kaptainwutax.playback.capture.action;
 
-import net.minecraft.client.MinecraftClient;
-
-public class ScrollInHotbarAction implements IAction {
+public class ScrollInHotbarAction extends AbstractAction {
 
 	private double scrollAmount;
 
@@ -12,7 +10,7 @@ public class ScrollInHotbarAction implements IAction {
 
 	@Override
 	public void play() {
-		MinecraftClient.getInstance().player.inventory.scrollInHotbar(this.scrollAmount);
+		client.player.inventory.scrollInHotbar(this.scrollAmount);
 	}
 
 }

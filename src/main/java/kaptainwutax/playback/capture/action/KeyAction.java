@@ -1,8 +1,6 @@
 package kaptainwutax.playback.capture.action;
 
-import net.minecraft.client.MinecraftClient;
-
-public class KeyAction implements IAction {
+public class KeyAction extends AbstractAction {
 
 	private int action;
 	private long window;
@@ -22,7 +20,7 @@ public class KeyAction implements IAction {
 
 	@Override
 	public void play() {
-		((IKeyboard) MinecraftClient.getInstance().keyboard).execute(this.action, this.window, this.key, this.scancode, this.i, this.j);
+		((IKeyboard) client.keyboard).execute(this.action, this.window, this.key, this.scancode, this.i, this.j);
 	}
 
 }

@@ -1,8 +1,6 @@
 package kaptainwutax.playback.capture.action;
 
-import net.minecraft.client.MinecraftClient;
-
-public class SetFlySpeedAction implements IAction {
+public class SetFlySpeedAction extends AbstractAction {
 
 	private float flySpeed;
 
@@ -12,7 +10,7 @@ public class SetFlySpeedAction implements IAction {
 
 	@Override
 	public void play() {
-		MinecraftClient.getInstance().player.abilities.setFlySpeed(this.flySpeed);
+		client.player.abilities.setFlySpeed(this.flySpeed);
 	}
 
 }

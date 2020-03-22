@@ -1,28 +1,27 @@
 package kaptainwutax.playback.capture.action;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class KeyBindingAction implements IAction {
+public class KeyBindingAction extends AbstractAction {
 
 	public static final KeyInfo NO_KEY = new KeyInfo();
 
 	private static final Set<String> BLACKLIST = ImmutableSet.of(
-			MinecraftClient.getInstance().options.keyInventory.getId(),
-			MinecraftClient.getInstance().options.keyChat.getId(),
-			MinecraftClient.getInstance().options.keyPlayerList.getId(),
-			MinecraftClient.getInstance().options.keyCommand.getId(),
-			MinecraftClient.getInstance().options.keyScreenshot.getId(),
-			MinecraftClient.getInstance().options.keyTogglePerspective.getId(),
-			MinecraftClient.getInstance().options.keySmoothCamera.getId(),
-			MinecraftClient.getInstance().options.keyFullscreen.getId(),
-			MinecraftClient.getInstance().options.keySpectatorOutlines.getId(),
-			MinecraftClient.getInstance().options.keyAdvancements.getId()
+			client.options.keyInventory.getId(),
+			client.options.keyChat.getId(),
+			client.options.keyPlayerList.getId(),
+			client.options.keyCommand.getId(),
+			client.options.keyScreenshot.getId(),
+			client.options.keyTogglePerspective.getId(),
+			client.options.keySmoothCamera.getId(),
+			client.options.keyFullscreen.getId(),
+			client.options.keySpectatorOutlines.getId(),
+			client.options.keyAdvancements.getId()
 	);
 
 	private Map<String, KeyInfo> recordedKeys = new HashMap<>();

@@ -1,7 +1,6 @@
 package kaptainwutax.playback.capture.action;
 
 import kaptainwutax.playback.Playback;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 
@@ -11,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class DebugAction implements IAction {
+public class DebugAction extends AbstractAction {
 
 	public static final Map<String, Function<ClientPlayerEntity, ?>> DEBUGS = new LinkedHashMap<>();
 
@@ -28,7 +27,7 @@ public class DebugAction implements IAction {
 	protected Map<String, Object> values = new HashMap<>();
 
 	public DebugAction() {
-		DEBUGS.forEach((name, debug) -> this.values.put(name, debug.apply(MinecraftClient.getInstance().player)));
+		DEBUGS.forEach((name, debug) -> this.values.put(name, debug.apply(client.player)));
 	}
 
 	@Override
@@ -44,7 +43,7 @@ public class DebugAction implements IAction {
 			Function<ClientPlayerEntity, ?> debug = e.getValue();
 
 			//replayPlayer could be more future proof? Doesn't matter for now since it's the same player instance.
-			Object actualValue = debug.apply(MinecraftClient.getInstance().player);
+			Object actualValue = debug.apply(client.player);
 			Object expectedValue = this.values.get(name);
 
 			if(actualValue.equals(expectedValue)) {
