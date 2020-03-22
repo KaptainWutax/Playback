@@ -25,7 +25,9 @@ import java.util.Set;
 @Mixin(ClientConnection.class)
 public abstract class ClientConnectionMixin {
 
-	@Shadow @Final private NetworkSide side;
+	@Shadow
+	@Final
+	private NetworkSide side;
 
 	private static Set<Class<? extends Packet<?>>> SEND_WHITELIST = ImmutableSet.of(
 			DisconnectS2CPacket.class, HandshakeC2SPacket.class, LoginHelloC2SPacket.class,

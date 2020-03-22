@@ -17,12 +17,14 @@ import java.util.Map;
 @Mixin(KeyBinding.class)
 public class KeyBindingMixin {
 
-	@Shadow @Final private static Map<InputUtil.KeyCode, KeyBinding> keysByCode;
+	@Shadow
+	@Final
+	private static Map<InputUtil.KeyCode, KeyBinding> keysByCode;
 
 	@Inject(method = "setPressed", at = @At("HEAD"))
 	private void setPressed(boolean pressed, CallbackInfo ci) {
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().third.getKeyAction().setKeyPressed((KeyBinding)(Object)this, pressed);
+			Playback.recording.getCurrentTickCapture().third.getKeyAction().setKeyPressed((KeyBinding) (Object) this, pressed);
 		}
 	}
 
@@ -36,14 +38,14 @@ public class KeyBindingMixin {
 	@Inject(method = "reset", at = @At("HEAD"))
 	private void reset(CallbackInfo ci) {
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().third.getKeyAction().reset((KeyBinding)(Object)this);
+			Playback.recording.getCurrentTickCapture().third.getKeyAction().reset((KeyBinding) (Object) this);
 		}
 	}
 
 	@Inject(method = "isPressed", at = @At("HEAD"), cancellable = true)
 	private void isPressed(CallbackInfoReturnable<Boolean> ci) {
 		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.replayPlayer != null && Playback.manager.replayPlayer.isActive()) {
-			ci.setReturnValue(Playback.recording.getCurrentTickCapture().third.getKeyAction().getPlayKey((KeyBinding)(Object)this).isPressed());
+			ci.setReturnValue(Playback.recording.getCurrentTickCapture().third.getKeyAction().getPlayKey((KeyBinding) (Object) this).isPressed());
 			return;
 		}
 	}
@@ -51,10 +53,10 @@ public class KeyBindingMixin {
 	@Inject(method = "wasPressed", at = @At("HEAD"), cancellable = true)
 	private void wasPressed(CallbackInfoReturnable<Boolean> ci) {
 		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.replayPlayer != null && Playback.manager.replayPlayer.isActive()) {
-			ci.setReturnValue(Playback.recording.getCurrentTickCapture().third.getKeyAction().getPlayKey((KeyBinding)(Object)this).wasPressed());
+			ci.setReturnValue(Playback.recording.getCurrentTickCapture().third.getKeyAction().getPlayKey((KeyBinding) (Object) this).wasPressed());
 			return;
 		} else if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().third.getKeyAction().consumeWasPressed((KeyBinding)(Object)this);
+			Playback.recording.getCurrentTickCapture().third.getKeyAction().consumeWasPressed((KeyBinding) (Object) this);
 		}
 	}
 

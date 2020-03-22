@@ -1,6 +1,5 @@
 package kaptainwutax.playback.capture;
 
-import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.capture.action.IAction;
 
 import java.util.ArrayList;

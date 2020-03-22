@@ -1,7 +1,5 @@
 package kaptainwutax.playback.entity;
 
-import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.capture.ReplayView;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -22,7 +20,7 @@ public class FakePlayer extends ClientPlayerEntity {
 		GameMode gameMode = GameMode.CREATIVE;
 
 		gameMode.setAbilitites(this.abilities);
-		((IInteractionCaller)interactionManager).setGameModeNoUpdates(gameMode);
+		((IInteractionCaller) interactionManager).setGameModeNoUpdates(gameMode);
 		this.setGameMode(gameMode);
 
 		this.input = new KeyboardInput(client.options);
@@ -32,7 +30,7 @@ public class FakePlayer extends ClientPlayerEntity {
 	@Override
 	public void tick() {
 		MinecraftClient.getInstance().gameRenderer.updateTargetedEntity(1.0F);
-		((IClientCaller)MinecraftClient.getInstance()).fakeHandleInputEvents();
+		((IClientCaller) MinecraftClient.getInstance()).fakeHandleInputEvents();
 		MinecraftClient.getInstance().gameRenderer.firstPersonRenderer.updateHeldItems();
 		super.tick();
 	}

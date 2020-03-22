@@ -1,6 +1,5 @@
 package kaptainwutax.playback.capture.action;
 
-import kaptainwutax.playback.Playback;
 import net.minecraft.client.MinecraftClient;
 
 public class MouseAction implements IAction {
@@ -21,7 +20,7 @@ public class MouseAction implements IAction {
 
 	@Override
 	public void play() {
-		((IMouse)MinecraftClient.getInstance().mouse).execute(this.action, this.window, this.d1, this.d2, this.i1);
+		((IMouse) MinecraftClient.getInstance().mouse).execute(this.action, this.window, this.d1, this.d2, this.i1);
 	}
 
 }

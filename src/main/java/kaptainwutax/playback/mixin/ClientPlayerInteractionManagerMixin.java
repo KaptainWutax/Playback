@@ -9,7 +9,8 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(ClientPlayerInteractionManager.class)
 public class ClientPlayerInteractionManagerMixin implements FakePlayer.IInteractionCaller {
 
-	@Shadow private GameMode gameMode;
+	@Shadow
+	private GameMode gameMode;
 
 	@Override
 	public void setGameModeNoUpdates(GameMode gameMode) {

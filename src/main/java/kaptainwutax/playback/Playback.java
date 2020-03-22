@@ -23,14 +23,14 @@ public class Playback implements ModInitializer {
 	}
 
 	public static void update(boolean paused) {
-		if (paused) return; //todo what happens on multiplayer when the menu is opened, would the replay pause?
+		if(paused) return; //todo what happens on multiplayer when the menu is opened, would the replay pause?
 
 		allowInputDefault = mode == ReplayView.THIRD_PERSON || tickCounter > recording.getEnd();
 		if(Playback.recording.isRecording()) {
 			Playback.recording.getCurrentTickCapture().recordDebug();
 			recording.tickRecord(++tickCounter);
 		} else {
-			if (tickCounter > recording.getEnd()) {
+			if(tickCounter > recording.getEnd()) {
 				allowInput = true;
 			}
 
@@ -52,7 +52,7 @@ public class Playback implements ModInitializer {
 	}
 
 	public static void toggleView() { //only for between two replays for now
-		if (mode == ReplayView.THIRD_PERSON)
+		if(mode == ReplayView.THIRD_PERSON)
 			mode = ReplayView.FIRST_PERSON;
 		else
 			mode = ReplayView.THIRD_PERSON;

@@ -15,7 +15,7 @@ public class WorldRendererMixin {
 	@Redirect(method = "render", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/render/Camera;getFocusedEntity()Lnet/minecraft/entity/Entity;", ordinal = 3))
 	private Entity allowRenderingClientPlayerInFreeCameraMode(Camera camera) {
-		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.replayPlayer != null)  {
+		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.replayPlayer != null) {
 			return Playback.manager.replayPlayer.getPlayer();
 		}
 

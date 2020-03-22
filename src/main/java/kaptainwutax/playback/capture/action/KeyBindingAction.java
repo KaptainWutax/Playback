@@ -33,7 +33,7 @@ public class KeyBindingAction implements IAction {
 	}
 
 	private KeyInfo getAndSetKeyInfo(KeyBinding key) {
-		if(key == null || BLACKLIST.contains(key.getId()))return NO_KEY;
+		if(key == null || BLACKLIST.contains(key.getId())) return NO_KEY;
 
 		if(!this.recordedKeys.containsKey(key.getId())) {
 			this.recordedKeys.put(key.getId(), new KeyInfo());
@@ -43,12 +43,12 @@ public class KeyBindingAction implements IAction {
 	}
 
 	public void setKeyPressed(KeyBinding key, boolean pressed) {
-		if(key == null)return;
+		if(key == null) return;
 		this.getAndSetKeyInfo(key).setKeyPressed(pressed);
 	}
 
 	public void onKeyPressed(KeyBinding key) {
-		if(key == null)return;
+		if(key == null) return;
 		this.getAndSetKeyInfo(key).onKeyPressed();
 	}
 
@@ -63,7 +63,7 @@ public class KeyBindingAction implements IAction {
 	public KeyBindingAction copy() {
 		KeyBindingAction action = new KeyBindingAction();
 
-		for(Map.Entry<String, KeyInfo> e: this.recordedKeys.entrySet()) {
+		for(Map.Entry<String, KeyInfo> e : this.recordedKeys.entrySet()) {
 			action.recordedKeys.put(e.getKey(), e.getValue().copy());
 		}
 
@@ -74,7 +74,7 @@ public class KeyBindingAction implements IAction {
 	public void play() {
 		this.playKeys.clear();
 
-		for(Map.Entry<String, KeyInfo> e: this.recordedKeys.entrySet()) {
+		for(Map.Entry<String, KeyInfo> e : this.recordedKeys.entrySet()) {
 			this.playKeys.put(e.getKey(), e.getValue().copy());
 		}
 	}

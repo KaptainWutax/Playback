@@ -1,8 +1,8 @@
 package kaptainwutax.playback.capture;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.capture.action.*;
-import net.minecraft.entity.EntityPose;
+import kaptainwutax.playback.capture.action.DebugAction;
+import kaptainwutax.playback.capture.action.PacketAction;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 

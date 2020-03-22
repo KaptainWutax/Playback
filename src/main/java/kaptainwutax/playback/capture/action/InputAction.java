@@ -2,7 +2,6 @@ package kaptainwutax.playback.capture.action;
 
 import kaptainwutax.playback.Playback;
 import net.minecraft.client.input.Input;
-import net.minecraft.client.input.KeyboardInput;
 
 public class InputAction implements IAction {
 

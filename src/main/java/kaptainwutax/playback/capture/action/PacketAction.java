@@ -39,7 +39,7 @@ public class PacketAction implements IAction {
 
 	@Override
 	public void play() {
-		if(this.packet == null)return;
+		if(this.packet == null) return;
 
 		ByteBuf byteBuf = Unpooled.buffer();
 		byteBuf.writeBytes(this.packet);
@@ -47,7 +47,7 @@ public class PacketAction implements IAction {
 		packetByteBuf.readerIndex(0);
 
 		try {
-			Packet<ClientPlayPacketListener> packet = (Packet<ClientPlayPacketListener>)NetworkState.PLAY.getPacketHandler(NetworkSide.CLIENTBOUND, this.packetId);
+			Packet<ClientPlayPacketListener> packet = (Packet<ClientPlayPacketListener>) NetworkState.PLAY.getPacketHandler(NetworkSide.CLIENTBOUND, this.packetId);
 			packet.read(packetByteBuf);
 
 			ClientPlayPacketListener listener = MinecraftClient.getInstance().getNetworkHandler();
@@ -56,7 +56,7 @@ public class PacketAction implements IAction {
 				packet.apply(listener);
 			} else {
 				//This mess just safely gets ClientPlayPacketListener since we don't have a player instance to go about.
-				packet.apply((ClientPlayPacketListener)((IConnectionGetter)MinecraftClient.getInstance()).getConnection().getPacketListener());
+				packet.apply((ClientPlayPacketListener) ((IConnectionGetter) MinecraftClient.getInstance()).getConnection().getPacketListener());
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

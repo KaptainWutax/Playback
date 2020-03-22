@@ -1,7 +1,5 @@
 package kaptainwutax.playback.mixin;
 
-import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.capture.ReplayView;
 import net.minecraft.client.input.KeyboardInput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,6 +26,7 @@ public abstract class KeyboardInputMixin {
 		} */
 
 	}
+
 	@Inject(method = "tick", at = @At("TAIL"))
 	//take info at TAIL, so we are not outdated
 	//taking info at HEAD is bad, because the info is changed right after, and we probably want the new one

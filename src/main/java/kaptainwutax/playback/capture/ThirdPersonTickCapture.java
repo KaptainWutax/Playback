@@ -1,6 +1,5 @@
 package kaptainwutax.playback.capture;
 
-import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.capture.action.ChangeLookAction;
 import kaptainwutax.playback.capture.action.KeyBindingAction;
 import kaptainwutax.playback.capture.action.ScrollInHotbarAction;

@@ -4,7 +4,6 @@ import kaptainwutax.playback.Playback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 
 import java.util.Formatter;
 import java.util.HashMap;
@@ -26,8 +25,8 @@ public class DebugAction implements IAction {
 		DEBUGS.put("Player list size", player -> player.clientWorld.getPlayers().size());
 	}
 
-	protected  Map<String, Object> values = new HashMap<>();
-	
+	protected Map<String, Object> values = new HashMap<>();
+
 	public DebugAction() {
 		DEBUGS.forEach((name, debug) -> this.values.put(name, debug.apply(MinecraftClient.getInstance().player)));
 	}
@@ -40,7 +39,7 @@ public class DebugAction implements IAction {
 		String header = "==============================[Tick " + Playback.tickCounter + "]==============================\n";
 		formatter.format(header);
 
-		for(Map.Entry<String, Function<ClientPlayerEntity, ?>> e: DEBUGS.entrySet()) {
+		for(Map.Entry<String, Function<ClientPlayerEntity, ?>> e : DEBUGS.entrySet()) {
 			String name = e.getKey();
 			Function<ClientPlayerEntity, ?> debug = e.getValue();
 
@@ -65,5 +64,5 @@ public class DebugAction implements IAction {
 			System.out.format(formatter.toString());
 		}
 	}
-	
+
 }

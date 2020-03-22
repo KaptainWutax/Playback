@@ -15,7 +15,7 @@ public class ServerChunkManagerMixin {
 	 **/
 	@Inject(method = "getTotalChunksLoadedCount", at = @At("HEAD"), cancellable = true)
 	private void getTotalChunksLoadedCount(CallbackInfoReturnable<Integer> ci) {
-		if(Playback.isReplaying)ci.setReturnValue(441);
+		if(Playback.isReplaying) ci.setReturnValue(441);
 	}
 
 }

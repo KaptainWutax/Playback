@@ -1,7 +1,6 @@
 package kaptainwutax.playback.capture;
 
 import kaptainwutax.playback.capture.action.DebugAction;
-import kaptainwutax.playback.capture.action.IAction;
 import kaptainwutax.playback.capture.action.PacketAction;
 import net.minecraft.network.Packet;
 

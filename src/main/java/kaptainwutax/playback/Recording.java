@@ -18,12 +18,12 @@ public class Recording {
 
 	public PacketAction joinPacket;
 
-	public boolean isRecording(){
+	public boolean isRecording() {
 		return !Playback.isReplaying;
 	}
 
 	public void tickRecord(long tick) {
-		if(tick == this.currentTick)return;
+		if(tick == this.currentTick) return;
 
 		if(!this.currentTickCapture.isEmpty()) {
 			this.recording.put(this.currentTick, this.currentTickCapture);
@@ -58,11 +58,11 @@ public class Recording {
 	}
 
 
-	public void setEnd(){
+	public void setEnd() {
 		endTick = currentTick;
 	}
 
-	public long getEnd(){
+	public long getEnd() {
 		return endTick;
 	}
 

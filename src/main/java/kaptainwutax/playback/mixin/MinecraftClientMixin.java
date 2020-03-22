@@ -18,16 +18,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller {
 
-	@Shadow public ClientWorld world;
-	@Shadow public ClientPlayerEntity player;
+	@Shadow
+	public ClientWorld world;
+	@Shadow
+	public ClientPlayerEntity player;
 
-	@Shadow private boolean windowFocused;
-	@Shadow private boolean paused;
+	@Shadow
+	private boolean windowFocused;
+	@Shadow
+	private boolean paused;
 
 	@Shadow
 	private ClientConnection connection;
 
-	@Shadow protected abstract void handleInputEvents();
+	@Shadow
+	protected abstract void handleInputEvents();
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void tickStart(CallbackInfo ci) {
@@ -60,8 +65,9 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	//During first person replay pretend window has focus so recorded mouse actions always get processed
 	@Inject(method = "onWindowFocusChanged", at = @At("RETURN"))
 	private void setWindowFocusedDuringReplay(boolean focused, CallbackInfo ci) {
-		if (Playback.isReplaying && Playback.mode == ReplayView.FIRST_PERSON)
+		if(Playback.isReplaying && Playback.mode == ReplayView.FIRST_PERSON) {
 			this.windowFocused = true;
+		}
 	}
 
 	@Inject(method = "openScreen", at = @At("HEAD"), cancellable = true)
