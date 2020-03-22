@@ -34,8 +34,15 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Shadow
 	protected abstract void handleInputEvents();
 
-	@Inject(method = "tick", at = @At("HEAD"))
-	private void tickStart(CallbackInfo ci) {
+	private void applyCameraPlayerIfNeccessary() {
+		if(this.world != null) {
+			if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
+				Playback.manager.updateView(Playback.manager.getView());
+			}
+		}
+	}
+
+	private void applyReplayPlayerIfNeccessary() {
 		if(this.world != null) {
 			if(Playback.isReplaying && Playback.manager.replayPlayer == null) {
 				Playback.manager.updateView(Playback.mode);
@@ -44,18 +51,39 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
 				Playback.manager.replayPlayer.apply();
 			}
+		}
+	}
+
+	@Inject(method = "tick", at = @At("HEAD"))
+	private void tickStart(CallbackInfo ci) {
+		if(this.world != null) {
+			applyReplayPlayerIfNeccessary();
 
 			Playback.update(this.paused);
 		}
 	}
 
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;tick()V", shift = At.Shift.BEFORE))
+	private void tickHudStart(CallbackInfo ci) {
+		applyCameraPlayerIfNeccessary();
+	}
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;tick()V", shift = At.Shift.AFTER))
+	private void tickHudEnd(CallbackInfo ci) {
+		applyReplayPlayerIfNeccessary();
+	}
+
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;tick()V", shift = At.Shift.BEFORE))
+	private void tickRendererStart(CallbackInfo ci) {
+		applyCameraPlayerIfNeccessary();
+	}
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;tick()V", shift = At.Shift.AFTER))
+	private void tickRendererEnd(CallbackInfo ci) {
+		applyReplayPlayerIfNeccessary();
+	}
+
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void tickEnd(CallbackInfo ci) {
-		if(this.world != null) {
-			if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
-				Playback.manager.updateView(Playback.manager.getView());
-			}
-		}
+		applyCameraPlayerIfNeccessary();
 
 		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
 			this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
