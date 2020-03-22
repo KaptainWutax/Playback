@@ -1,14 +1,9 @@
 package kaptainwutax.playback;
 
-import kaptainwutax.playback.capture.DebugHelper;
 import kaptainwutax.playback.capture.ReplayView;
-import kaptainwutax.playback.capture.action.DebugPositionAction;
-import kaptainwutax.playback.capture.action.DebugRotationAction;
-import kaptainwutax.playback.entity.FakePlayer;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import sun.security.ssl.Debug;
 
 public class Playback implements ModInitializer {
 
@@ -32,15 +27,7 @@ public class Playback implements ModInitializer {
 
 		allowInputDefault = mode == ReplayView.THIRD_PERSON || tickCounter > recording.getEnd();
 		if(Playback.recording.isRecording()) {
-			//Player position debug
-			PlayerEntity p = MinecraftClient.getInstance().player;
-			if (p != null && p.getEntityWorld() != null) {
-				DebugHelper.trackEntity(MinecraftClient.getInstance().player);
-				Playback.recording.getCurrentTickCapture().recordDebugVelocity(p.getVelocity().x, p.getVelocity().y, p.getVelocity().z);
-				Playback.recording.getCurrentTickCapture().recordDebugPosition(p.getX(), p.getY(), p.getZ());
-				Playback.recording.getCurrentTickCapture().recordDebugRotation(p.getPitch(1F), p.getYaw(1F));
-				Playback.recording.getCurrentTickCapture().recordDebugSneaking(p.isSneaking(), p.getPose());
-			}
+			Playback.recording.getCurrentTickCapture().recordDebug();
 			recording.tickRecord(++tickCounter);
 		} else {
 			if (tickCounter > recording.getEnd()) {
@@ -56,12 +43,10 @@ public class Playback implements ModInitializer {
 		Playback.manager.cameraPlayer = null;
 		Playback.manager.replayPlayer = null;
 		Playback.joined = false;
-		DebugHelper.restartReplaying();
 	}
 
 	public static void resetRecording() { //untested, idk when to invoke either
 		restart();
-		DebugHelper.maxIndex = -1;
 		recording = new Recording();
 		isReplaying = false;
 	}

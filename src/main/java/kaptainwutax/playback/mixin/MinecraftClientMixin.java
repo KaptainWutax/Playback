@@ -1,7 +1,6 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.capture.DebugHelper;
 import kaptainwutax.playback.capture.ReplayView;
 import kaptainwutax.playback.capture.action.PacketAction;
 import kaptainwutax.playback.entity.FakePlayer;
@@ -34,7 +33,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		if(this.world != null) {
 			if(Playback.isReplaying && Playback.manager.replayPlayer == null) {
 				Playback.manager.updateView(Playback.mode);
-				DebugHelper.trackEntity(Playback.manager.replayPlayer.getPlayer());
 			}
 
 			if(Playback.isReplaying && Playback.manager.replayPlayer != null) {

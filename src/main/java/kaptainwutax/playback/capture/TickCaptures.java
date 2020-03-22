@@ -56,28 +56,9 @@ public class TickCaptures {
 		this.third.addSetFlySpeedAction(flySpeed);
 	}
 
-	public void recordDebugPosition(double x, double y, double z) {
-		DebugPositionAction debPosAction = new DebugPositionAction(x,y,z);
-		this.first.addDebugAction(debPosAction);
-		this.third.addDebugAction(debPosAction);
-	}
-
-	public void recordDebugVelocity(double x, double y, double z) {
-		DebugVelocityAction debVelAction = new DebugVelocityAction(x,y,z);
-		this.first.addDebugAction(debVelAction);
-		this.third.addDebugAction(debVelAction);
-	}
-
-	public void recordDebugRotation(float pitch, float yaw){
-		DebugRotationAction debRotAction = new DebugRotationAction(pitch, yaw);
-		this.first.addDebugAction(debRotAction);
-		this.third.addDebugAction(debRotAction);
-	}
-
-	public void recordDebugSneaking(boolean state, EntityPose pose) {
-		DebugSneakingAction debSneakAction = new DebugSneakingAction(state, pose);
-		this.first.addDebugAction(debSneakAction);
-		this.third.addDebugAction(debSneakAction);
+	public void recordDebug() {
+		this.first.addDebugAction(new DebugAction());
+		this.third.addDebugAction(new DebugAction());
 	}
 
 	public boolean isEmpty() {
