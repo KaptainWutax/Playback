@@ -11,6 +11,8 @@ public class Playback implements ModInitializer {
 	public static ReplayView mode = ReplayView.FIRST_PERSON;
 
 	public static boolean isProcessingReplay = false;
+
+	public static boolean allowInput = false;
 	public static boolean allowInputDefault = mode == ReplayView.THIRD_PERSON;
 
 	public static final ReplayManager manager = new ReplayManager();
@@ -29,7 +31,7 @@ public class Playback implements ModInitializer {
 			recording.tickRecord(++tickCounter);
 		} else {
 			if (tickCounter > recording.getEnd()) {
-				isProcessingReplay = true;
+				allowInput = true;
 			}
 
 			recording.play(tickCounter++);

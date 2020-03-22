@@ -5,6 +5,7 @@ import kaptainwutax.playback.capture.ReplayView;
 import kaptainwutax.playback.capture.action.PacketAction;
 import kaptainwutax.playback.entity.FakePlayer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
@@ -61,6 +62,13 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	private void setWindowFocusedDuringReplay(boolean focused, CallbackInfo ci) {
 		if (Playback.isReplaying && Playback.mode == ReplayView.FIRST_PERSON)
 			this.windowFocused = true;
+	}
+
+	@Inject(method = "openScreen", at = @At("HEAD"), cancellable = true)
+	private void openScreen(Screen screen, CallbackInfo ci) {
+		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.isProcessingReplay) {
+			ci.cancel();
+		}
 	}
 
 	@Override
