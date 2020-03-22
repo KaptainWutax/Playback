@@ -1,6 +1,6 @@
 package kaptainwutax.playback.capture.action;
 
-public class ScrollInHotbarAction extends AbstractAction {
+public class ScrollInHotbarAction extends Action {
 
 	private double scrollAmount;
 

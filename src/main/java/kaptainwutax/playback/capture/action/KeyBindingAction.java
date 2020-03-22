@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class KeyBindingAction extends AbstractAction {
+public class KeyBindingAction extends Action {
 
 	public static final KeyInfo NO_KEY = new KeyInfo();
 

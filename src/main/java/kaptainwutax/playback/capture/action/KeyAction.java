@@ -1,6 +1,6 @@
 package kaptainwutax.playback.capture.action;
 
-public class KeyAction extends AbstractAction {
+public class KeyAction extends Action {
 
 	private int action;
 	private long window;

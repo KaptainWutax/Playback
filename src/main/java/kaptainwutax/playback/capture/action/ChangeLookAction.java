@@ -1,6 +1,6 @@
 package kaptainwutax.playback.capture.action;
 
-public class ChangeLookAction extends AbstractAction {
+public class ChangeLookAction extends Action {
 
 	private double cursorDeltaX;
 	private double cursorDeltaY;

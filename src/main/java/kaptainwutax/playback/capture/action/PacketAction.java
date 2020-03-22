@@ -11,7 +11,7 @@ import net.minecraft.util.PacketByteBuf;
 
 import java.io.IOException;
 
-public class PacketAction extends AbstractAction {
+public class PacketAction extends Action {
 
 	private int packetId;
 	private byte[] packet;

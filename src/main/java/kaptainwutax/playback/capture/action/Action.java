@@ -2,7 +2,7 @@ package kaptainwutax.playback.capture.action;
 
 import net.minecraft.client.MinecraftClient;
 
-public abstract class AbstractAction {
+public abstract class Action {
 
 	protected static MinecraftClient client = MinecraftClient.getInstance();
 

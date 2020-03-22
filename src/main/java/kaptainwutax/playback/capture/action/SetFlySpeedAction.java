@@ -1,6 +1,6 @@
 package kaptainwutax.playback.capture.action;
 
-public class SetFlySpeedAction extends AbstractAction {
+public class SetFlySpeedAction extends Action {
 
 	private float flySpeed;
 
