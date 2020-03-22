@@ -21,8 +21,6 @@ public class Playback implements ModInitializer {
 	public static boolean allowInputDefault = mode == ReplayView.THIRD_PERSON;
 
 	public static final ReplayManager manager = new ReplayManager();
-
-	public static PlayerFrame dummy;
 	public static boolean joined;
 
 	@Override
@@ -34,8 +32,6 @@ public class Playback implements ModInitializer {
 
 		allowInputDefault = mode == ReplayView.THIRD_PERSON || tickCounter > recording.getEnd();
 		if(Playback.recording.isRecording()) {
-			if(dummy == null)dummy = PlayerFrame.createNew();
-
 			//Player position debug
 			PlayerEntity p = MinecraftClient.getInstance().player;
 			if (p != null && p.getEntityWorld() != null) {
@@ -56,7 +52,6 @@ public class Playback implements ModInitializer {
 	}
 
 	public static void restart() { //restart the replay (intended to have to reload the world right now as well)
-		Playback.dummy = null;
 		Playback.tickCounter = 0;
 		Playback.manager.cameraPlayer = null;
 		Playback.manager.replayPlayer = null;

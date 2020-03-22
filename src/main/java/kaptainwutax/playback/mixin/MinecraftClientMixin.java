@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IFakePlayerCaller {
+public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller {
 
 	@Shadow public ClientWorld world;
 	@Shadow public ClientPlayerEntity player;
@@ -51,6 +51,10 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
 				Playback.manager.updateView(Playback.manager.getView());
 			}
+		}
+
+		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
+			this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
 		}
 	}
 

@@ -21,7 +21,10 @@
     "ClientPlayerEntityMixin",
     "KeyboardInputMixin",
     "EntityMixin",
-    "KeyBindingMixin"
+    "KeyBindingMixin",
+    "ClientPlayerInteractionManagerMixin",
+    "PlayerAbilitiesMixin",
+    "PlayerInventoryMixin"
   ],
   "injectors": {
     "defaultRequire": 1
