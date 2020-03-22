@@ -2,8 +2,6 @@ package kaptainwutax.playback;
 
 import kaptainwutax.playback.capture.ReplayView;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
 
 public class Playback implements ModInitializer {
 
@@ -12,7 +10,7 @@ public class Playback implements ModInitializer {
 	public static long tickCounter;
 	public static ReplayView mode = ReplayView.FIRST_PERSON;
 
-	public static boolean allowInputs = false;
+	public static boolean isProcessingReplay = false;
 	public static boolean allowInputDefault = mode == ReplayView.THIRD_PERSON;
 
 	public static final ReplayManager manager = new ReplayManager();
@@ -31,7 +29,7 @@ public class Playback implements ModInitializer {
 			recording.tickRecord(++tickCounter);
 		} else {
 			if (tickCounter > recording.getEnd()) {
-				allowInputs = true;
+				isProcessingReplay = true;
 			}
 
 			recording.play(tickCounter++);

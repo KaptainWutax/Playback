@@ -1,6 +1,6 @@
 package kaptainwutax.playback.capture.action;
 
-import kaptainwutax.playback.Playback;
+import net.minecraft.client.MinecraftClient;
 
 public class ChangeLookAction implements IAction {
 
@@ -14,7 +14,7 @@ public class ChangeLookAction implements IAction {
 
 	@Override
 	public void play() {
-		Playback.manager.replayPlayer.getPlayer().changeLookDirection(this.cursorDeltaX, this.cursorDeltaY);
+		MinecraftClient.getInstance().player.changeLookDirection(this.cursorDeltaX, this.cursorDeltaY);
 	}
 
 }

@@ -34,8 +34,11 @@ public class DebugAction implements IAction {
 
 	@Override
 	public void play() {
-		Formatter formatter = new Formatter();
 		boolean everythingMatches = true;
+
+		Formatter formatter = new Formatter();
+		String header = "==============================[Tick " + Playback.tickCounter + "]==============================\n";
+		formatter.format(header);
 
 		for(Map.Entry<String, Function<ClientPlayerEntity, ?>> e: DEBUGS.entrySet()) {
 			String name = e.getKey();
@@ -54,7 +57,11 @@ public class DebugAction implements IAction {
 		}
 
 		if(!everythingMatches) {
-			formatter.format("================================================================================\n");
+			for(int i = 0; i < header.length(); i++) {
+				formatter.format("=");
+			}
+
+			formatter.format("\n");
 			System.out.format(formatter.toString());
 		}
 	}

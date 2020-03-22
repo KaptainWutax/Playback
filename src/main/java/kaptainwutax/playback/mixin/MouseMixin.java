@@ -27,7 +27,7 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(0, window, x, y, 0);
-		} else if(!Playback.allowInputs) {
+		} else if(!Playback.isProcessingReplay) {
 			ci.cancel();
 		}
 	}
@@ -38,7 +38,7 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(1, window, (double)button, (double)action, mods);
-		} else if(!Playback.allowInputs) {
+		} else if(!Playback.isProcessingReplay) {
 			ci.cancel();
 		}
 	}
@@ -49,7 +49,7 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(2, window, d, e, 0);
-		} else if(!Playback.allowInputs) {
+		} else if(!Playback.isProcessingReplay) {
 			ci.cancel();
 		}
 	}
@@ -60,7 +60,7 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordMouse(3, 0, 0,0, 0);
-		}  else if(!Playback.allowInputs) {
+		}  else if(!Playback.isProcessingReplay) {
             ci.cancel();
         }
 	}

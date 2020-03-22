@@ -30,6 +30,11 @@ public class ClientPlayNetworkHandlerMixin {
 		if(Playback.isReplaying) {
 			Playback.manager.cameraPlayer = null;
 			Playback.manager.replayPlayer = null;
+			Playback.manager.updateView(Playback.mode);
+
+			if(Playback.isProcessingReplay) {
+				Playback.manager.replayPlayer.apply();
+			}
 		}
 	}
 

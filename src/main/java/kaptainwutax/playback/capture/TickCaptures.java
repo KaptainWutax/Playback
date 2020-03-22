@@ -14,8 +14,10 @@ public class TickCaptures {
 	public ThirdPersonTickCapture third = new ThirdPersonTickCapture();
 
 	public void play(ReplayView view) {
+		Playback.isProcessingReplay = true;
 		if(view == ReplayView.FIRST_PERSON) this.first.play();
 		else if(view == ReplayView.THIRD_PERSON) this.third.play();
+		Playback.isProcessingReplay = Playback.allowInputDefault;
 	}
 
 	public void recordPacket(Packet<?> packet) {

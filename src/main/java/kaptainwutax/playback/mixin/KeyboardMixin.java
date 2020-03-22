@@ -23,7 +23,7 @@ public abstract class KeyboardMixin implements IKeyboard {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordKey(0, window, key, scancode, i, j);
-		} else if(!Playback.allowInputs) {
+		} else if(!Playback.isProcessingReplay) {
 			ci.cancel();
 		}
 	}
@@ -34,7 +34,7 @@ public abstract class KeyboardMixin implements IKeyboard {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickCapture().recordKey(1, window, 0, 0, i, j);
-		} else if(!Playback.allowInputs) {
+		} else if(!Playback.isProcessingReplay) {
 			ci.cancel();
 		}
 	}
