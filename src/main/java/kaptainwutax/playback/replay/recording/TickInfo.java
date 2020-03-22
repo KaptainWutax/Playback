@@ -1,14 +1,17 @@
-package kaptainwutax.playback.capture;
+package kaptainwutax.playback.replay.recording;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.capture.action.DebugAction;
-import kaptainwutax.playback.capture.action.PacketAction;
+import kaptainwutax.playback.replay.ReplayView;
+import kaptainwutax.playback.replay.action.DebugAction;
+import kaptainwutax.playback.replay.action.PacketAction;
+import kaptainwutax.playback.replay.capture.FirstPersonTickCapture;
+import kaptainwutax.playback.replay.capture.ThirdPersonTickCapture;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 
-public class TickCaptures {
+public class TickInfo {
 
-	public static final TickCaptures EMPTY = new TickCaptures();
+	public static final TickInfo EMPTY = new TickInfo();
 
 	public FirstPersonTickCapture first = new FirstPersonTickCapture();
 	public ThirdPersonTickCapture third = new ThirdPersonTickCapture();
@@ -32,12 +35,12 @@ public class TickCaptures {
 		this.third.addPacketAction(packet);
 	}
 
-	public void recordKey(int action, long window, int key, int scanCode, int i, int j) {
-		this.first.addKeyAction(action, window, key, scanCode, i, j);
+	public void recordKey(int action, int key, int scanCode, int i, int j) {
+		this.first.addKeyAction(action, key, scanCode, i, j);
 	}
 
-	public void recordMouse(int action, long window, double d1, double d2, int i1) {
-		this.first.addMouseAction(action, window, d1, d2, i1);
+	public void recordMouse(int action, double d1, double d2, int i1) {
+		this.first.addMouseAction(action, d1, d2, i1);
 	}
 
 	public void recordKeyState(long handle, int i) {

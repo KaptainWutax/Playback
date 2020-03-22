@@ -1,4 +1,4 @@
-package kaptainwutax.playback;
+package kaptainwutax.playback.replay;
 
 import kaptainwutax.playback.entity.FakePlayer;
 import net.minecraft.client.MinecraftClient;

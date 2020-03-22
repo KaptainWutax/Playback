@@ -1,7 +1,7 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.capture.action.IKeyboard;
+import kaptainwutax.playback.replay.action.first.IKeyboard;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +24,7 @@ public abstract class KeyboardMixin implements IKeyboard {
 		if(MinecraftClient.getInstance().player == null) return;
 
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().recordKey(0, window, key, scancode, i, j);
+			Playback.recording.getCurrentTickInfo().recordKey(0, key, scancode, i, j);
 		} else if(!Playback.allowInput) {
 			ci.cancel();
 		}
@@ -35,18 +35,18 @@ public abstract class KeyboardMixin implements IKeyboard {
 		if(MinecraftClient.getInstance().player == null) return;
 
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().recordKey(1, window, 0, 0, i, j);
+			Playback.recording.getCurrentTickInfo().recordKey(1, 0, 0, i, j);
 		} else if(!Playback.allowInput) {
 			ci.cancel();
 		}
 	}
 
 	@Override
-	public void execute(int action, long window, int key, int scancode, int i, int j) {
+	public void execute(int action, int key, int scanCode, int i, int j) {
 		if(action == 0) {
-			this.onKey(window, key, scancode, i, j);
+			this.onKey(MinecraftClient.getInstance().getWindow().getHandle(), key, scanCode, i, j);
 		} else if(action == 1) {
-			this.onChar(window, i, j);
+			this.onChar(MinecraftClient.getInstance().getWindow().getHandle(), i, j);
 		}
 	}
 

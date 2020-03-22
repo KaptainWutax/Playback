@@ -1,7 +1,7 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.capture.ReplayView;
+import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.entity.FakePlayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

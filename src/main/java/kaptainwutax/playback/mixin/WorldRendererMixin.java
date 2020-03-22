@@ -1,7 +1,7 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.capture.ReplayView;
+import kaptainwutax.playback.replay.ReplayView;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.entity.Entity;

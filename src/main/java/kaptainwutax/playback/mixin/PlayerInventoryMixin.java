@@ -13,7 +13,7 @@ public class PlayerInventoryMixin {
 	@Inject(method = "scrollInHotbar", at = @At("HEAD"))
 	public void scrollInHotbar(double scrollAmount, CallbackInfo ci) {
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().recordScrollInHotbar(scrollAmount);
+			Playback.recording.getCurrentTickInfo().recordScrollInHotbar(scrollAmount);
 		}
 	}
 

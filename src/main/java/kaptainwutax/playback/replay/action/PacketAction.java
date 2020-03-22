@@ -1,4 +1,4 @@
-package kaptainwutax.playback.capture.action;
+package kaptainwutax.playback.replay.action;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

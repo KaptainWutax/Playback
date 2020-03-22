@@ -1,7 +1,7 @@
-package kaptainwutax.playback.capture;
+package kaptainwutax.playback.replay.capture;
 
-import kaptainwutax.playback.capture.action.KeyAction;
-import kaptainwutax.playback.capture.action.MouseAction;
+import kaptainwutax.playback.replay.action.first.KeyAction;
+import kaptainwutax.playback.replay.action.first.MouseAction;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,12 +16,12 @@ public class FirstPersonTickCapture extends CommonTickCapture {
 
 	}
 
-	public void addKeyAction(int action, long window, int key, int scanCode, int i, int j) {
-		this.addAction(new KeyAction(action, window, key, scanCode, i, j));
+	public void addKeyAction(int action, int key, int scanCode, int i, int j) {
+		this.addAction(new KeyAction(action, key, scanCode, i, j));
 	}
 
-	public void addMouseAction(int action, long window, double d1, double d2, int i1) {
-		this.addAction(new MouseAction(action, window, d1, d2, i1));
+	public void addMouseAction(int action, double d1, double d2, int i1) {
+		this.addAction(new MouseAction(action, d1, d2, i1));
 	}
 
 	public void addKeyState(long handle, int i) {

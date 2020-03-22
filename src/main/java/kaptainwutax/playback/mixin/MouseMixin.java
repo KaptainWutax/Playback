@@ -1,7 +1,7 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.capture.action.IMouse;
+import kaptainwutax.playback.replay.action.first.IMouse;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +30,7 @@ public abstract class MouseMixin implements IMouse {
 		if(MinecraftClient.getInstance().player == null) return;
 
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().recordMouse(0, window, x, y, 0);
+			Playback.recording.getCurrentTickInfo().recordMouse(0, x, y, 0);
 		} else if(!Playback.allowInput) {
 			ci.cancel();
 		}
@@ -41,7 +41,7 @@ public abstract class MouseMixin implements IMouse {
 		if(MinecraftClient.getInstance().player == null) return;
 
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().recordMouse(1, window, (double) button, (double) action, mods);
+			Playback.recording.getCurrentTickInfo().recordMouse(1, button, action, mods);
 		} else if(!Playback.allowInput) {
 			ci.cancel();
 		}
@@ -52,7 +52,7 @@ public abstract class MouseMixin implements IMouse {
 		if(MinecraftClient.getInstance().player == null) return;
 
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().recordMouse(2, window, d, e, 0);
+			Playback.recording.getCurrentTickInfo().recordMouse(2, d, e, 0);
 		} else if(!Playback.allowInput) {
 			ci.cancel();
 		}
@@ -63,20 +63,20 @@ public abstract class MouseMixin implements IMouse {
 		if(MinecraftClient.getInstance().player == null) return;
 
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().recordMouse(3, 0, 0, 0, 0);
+			Playback.recording.getCurrentTickInfo().recordMouse(3, 0, 0, 0);
 		} else if(!Playback.allowInput) {
 			ci.cancel();
 		}
 	}
 
 	@Override
-	public void execute(int action, long window, double d1, double d2, int i1) {
+	public void execute(int action, double d1, double d2, int i1) {
 		if(action == 0) {
-			this.onCursorPos(window, d1, d2);
+			this.onCursorPos(MinecraftClient.getInstance().getWindow().getHandle(), d1, d2);
 		} else if(action == 1) {
-			this.onMouseButton(window, (int) d1, (int) d2, i1);
+			this.onMouseButton(MinecraftClient.getInstance().getWindow().getHandle(), (int) d1, (int) d2, i1);
 		} else if(action == 2) {
-			this.onMouseScroll(window, d1, d2);
+			this.onMouseScroll(MinecraftClient.getInstance().getWindow().getHandle(), d1, d2);
 		} else if(action == 3) {
 			this.updateMouse();
 		}

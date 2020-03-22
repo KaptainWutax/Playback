@@ -1,6 +1,4 @@
-package kaptainwutax.playback;
-
-import kaptainwutax.playback.capture.ReplayView;
+package kaptainwutax.playback.replay;
 
 public class ReplayManager {
 

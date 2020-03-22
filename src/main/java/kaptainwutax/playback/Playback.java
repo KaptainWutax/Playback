@@ -1,6 +1,8 @@
 package kaptainwutax.playback;
 
-import kaptainwutax.playback.capture.ReplayView;
+import kaptainwutax.playback.replay.ReplayManager;
+import kaptainwutax.playback.replay.ReplayView;
+import kaptainwutax.playback.replay.recording.Recording;
 import net.fabricmc.api.ModInitializer;
 
 public class Playback implements ModInitializer {
@@ -27,7 +29,7 @@ public class Playback implements ModInitializer {
 
 		allowInputDefault = mode == ReplayView.THIRD_PERSON || tickCounter > recording.getEnd();
 		if(Playback.recording.isRecording()) {
-			Playback.recording.getCurrentTickCapture().recordDebug();
+			Playback.recording.getCurrentTickInfo().recordDebug();
 			recording.tickRecord(++tickCounter);
 		} else {
 			if(tickCounter > recording.getEnd()) {

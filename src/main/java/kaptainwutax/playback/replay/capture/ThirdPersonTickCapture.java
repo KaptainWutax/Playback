@@ -1,9 +1,9 @@
-package kaptainwutax.playback.capture;
+package kaptainwutax.playback.replay.capture;
 
-import kaptainwutax.playback.capture.action.ChangeLookAction;
-import kaptainwutax.playback.capture.action.KeyBindingAction;
-import kaptainwutax.playback.capture.action.ScrollInHotbarAction;
-import kaptainwutax.playback.capture.action.SetFlySpeedAction;
+import kaptainwutax.playback.replay.action.third.ChangeLookAction;
+import kaptainwutax.playback.replay.action.third.KeyBindingAction;
+import kaptainwutax.playback.replay.action.third.ScrollInHotbarAction;
+import kaptainwutax.playback.replay.action.third.SetFlySpeedAction;
 
 public class ThirdPersonTickCapture extends CommonTickCapture {
 

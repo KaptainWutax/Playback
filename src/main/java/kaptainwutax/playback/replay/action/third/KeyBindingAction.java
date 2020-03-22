@@ -1,6 +1,7 @@
-package kaptainwutax.playback.capture.action;
+package kaptainwutax.playback.replay.action.third;
 
 import com.google.common.collect.ImmutableSet;
+import kaptainwutax.playback.replay.action.Action;
 import net.minecraft.client.options.KeyBinding;
 
 import java.util.HashMap;

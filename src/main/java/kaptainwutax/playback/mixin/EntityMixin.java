@@ -13,7 +13,7 @@ public class EntityMixin {
 	@Inject(method = "changeLookDirection", at = @At("HEAD"), cancellable = true)
 	public void changeLookDirection(double cursorDeltaX, double cursorDeltaY, CallbackInfo ci) {
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().recordChangeLook(cursorDeltaX, cursorDeltaY);
+			Playback.recording.getCurrentTickInfo().recordChangeLook(cursorDeltaX, cursorDeltaY);
 		}
 	}
 

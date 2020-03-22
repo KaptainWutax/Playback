@@ -13,7 +13,7 @@ public class PlayerAbilitiesMixin {
 	@Inject(method = "setFlySpeed", at = @At("HEAD"))
 	private void setFlySpeed(float flySpeed, CallbackInfo ci) {
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickCapture().recordSetFlySpeed(flySpeed);
+			Playback.recording.getCurrentTickInfo().recordSetFlySpeed(flySpeed);
 		}
 	}
 

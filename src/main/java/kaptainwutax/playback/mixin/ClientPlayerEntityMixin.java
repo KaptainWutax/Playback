@@ -2,7 +2,7 @@ package kaptainwutax.playback.mixin;
 
 import com.mojang.authlib.GameProfile;
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.capture.ReplayView;
+import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.entity.FakePlayer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;

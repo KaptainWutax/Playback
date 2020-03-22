@@ -1,4 +1,6 @@
-package kaptainwutax.playback.capture.action;
+package kaptainwutax.playback.replay.action.third;
+
+import kaptainwutax.playback.replay.action.Action;
 
 public class ScrollInHotbarAction extends Action {
 
