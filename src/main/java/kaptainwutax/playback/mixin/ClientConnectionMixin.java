@@ -30,9 +30,8 @@ public abstract class ClientConnectionMixin {
 	private NetworkSide side;
 
 	private static Set<Class<? extends Packet<?>>> SEND_WHITELIST = ImmutableSet.of(
-			DisconnectS2CPacket.class, HandshakeC2SPacket.class, LoginHelloC2SPacket.class,
+			HandshakeC2SPacket.class, LoginHelloC2SPacket.class,
 			RequestCommandCompletionsC2SPacket.class, ClientStatusC2SPacket.class
-			//, ChatMessageC2SPacket.class
 	);
 
 	private static Set<Class<? extends Packet<?>>> RECEIVE_BLACKLIST = ImmutableSet.of(
