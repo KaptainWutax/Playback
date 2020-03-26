@@ -91,15 +91,18 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void tickEnd(CallbackInfo ci) {
-		applyCameraPlayerIfNecessary();
+		if(this.world != null) {
+			applyCameraPlayerIfNecessary();
 
-		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
-			this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
-		}
+			if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
+				this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
+			}
 
-		if(Playback.isReplaying && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), KeyBindings.TOGGLE_VIEW.getBoundKey().getKeyCode())) {
-			while(KeyBindings.TOGGLE_VIEW.wasPressed()) {}
-			if(!Playback.isCatchingUp)Playback.toggleView();
+			if(Playback.isReplaying && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), KeyBindings.TOGGLE_VIEW.getBoundKey().getKeyCode())) {
+				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {
+				}
+				if(!Playback.isCatchingUp) Playback.toggleView();
+			}
 		}
 	}
 
