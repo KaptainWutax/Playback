@@ -28,18 +28,4 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 			ci.setReturnValue(true);
 		}
 	}
-
-	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;isFlyingLocked()Z"))
-	private boolean isFlyingLocked(ClientPlayerInteractionManager clientPlayerInteractionManager) {
-
-		//Attempt to make the cameraPlayer not fall into the void due to gravity
-		AbstractClientPlayerEntity entity = this;
-
-		if(entity instanceof FakePlayer) {
-			return true;
-		} else {
-			return clientPlayerInteractionManager.isFlyingLocked();
-		}
-	}
-
 }
