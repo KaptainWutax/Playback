@@ -3,8 +3,6 @@
   "package": "kaptainwutax.playback.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-  ],
-  "client": [
     "ChunkTicketManagerMixin",
     "ClientConnectionMixin",
     "ClientPlayerEntityMixin",
@@ -24,6 +22,8 @@
     "ServerChunkManagerMixin",
     "ServerPlayNetworkHandlerMixin",
     "WorldRendererMixin"
+  ],
+  "client": [
   ],
   "injectors": {
     "defaultRequire": 1

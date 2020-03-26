@@ -1,10 +1,10 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.entity.FakePlayer;
 import kaptainwutax.playback.init.KeyBindings;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.PacketAction;
-import kaptainwutax.playback.entity.FakePlayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -36,12 +36,16 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Shadow
 	protected abstract void handleInputEvents();
 
-	private void applyCameraPlayerIfNeccessary() {
+	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null) {
-			if(Playback.isCatchingUp) {
-				this.paused = false;
+			if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
+				Playback.manager.updateView(Playback.manager.getView());
 			}
+		}
+	}
 
+	private void applyReplayPlayerIfNecessary() {
+		if(this.world != null) {
 			if(Playback.isReplaying && Playback.manager.replayPlayer == null) {
 				Playback.manager.updateView(Playback.mode);
 			}
@@ -55,41 +59,44 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void tickStart(CallbackInfo ci) {
 		if(this.world != null) {
-			applyReplayPlayerIfNeccessary();
+			if(Playback.isCatchingUp) {
+				this.paused = false;
+			}
 
+			applyReplayPlayerIfNecessary();
 			Playback.update(this.paused);
 		}
 	}
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;tick()V", shift = At.Shift.BEFORE))
 	private void tickHudStart(CallbackInfo ci) {
-		applyCameraPlayerIfNeccessary();
+		applyCameraPlayerIfNecessary();
 	}
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;tick()V", shift = At.Shift.AFTER))
 	private void tickHudEnd(CallbackInfo ci) {
-		applyReplayPlayerIfNeccessary();
+		applyReplayPlayerIfNecessary();
 	}
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;tick()V", shift = At.Shift.BEFORE))
 	private void tickRendererStart(CallbackInfo ci) {
-		applyCameraPlayerIfNeccessary();
+		applyCameraPlayerIfNecessary();
 	}
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;tick()V", shift = At.Shift.AFTER))
 	private void tickRendererEnd(CallbackInfo ci) {
-		applyReplayPlayerIfNeccessary();
+		applyReplayPlayerIfNecessary();
 	}
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void tickEnd(CallbackInfo ci) {
-		applyCameraPlayerIfNeccessary();
-			if(InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), KeyBindings.TOGGLE_VIEW.getBoundKey().getKeyCode())) {
-				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {}
-				if(!Playback.isCatchingUp)Playback.toggleView();
-			}
+		applyCameraPlayerIfNecessary();
 
-			if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
-				this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
-			}
+		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
+			this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
+		}
+
+		if(Playback.isReplaying && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), KeyBindings.TOGGLE_VIEW.getBoundKey().getKeyCode())) {
+			while(KeyBindings.TOGGLE_VIEW.wasPressed()) {}
+			if(!Playback.isCatchingUp)Playback.toggleView();
 		}
 	}
 
