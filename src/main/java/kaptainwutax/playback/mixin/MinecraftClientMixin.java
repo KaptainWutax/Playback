@@ -8,13 +8,16 @@ import kaptainwutax.playback.replay.action.PacketAction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
@@ -129,6 +132,13 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	public void openPauseMenu(CallbackInfo ci) {
 		if(Playback.isReplaying && Playback.isProcessingReplay) {
 			ci.cancel();
+		}
+	}
+
+	@Redirect(method = "doItemUse", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;resetEquipProgress(Lnet/minecraft/util/Hand;)V"))
+	private void resetEquipProgressIfPlayerIsCamera(HeldItemRenderer heldItemRenderer, Hand hand) {
+		if (!Playback.isReplaying || (Playback.mode == ReplayView.FIRST_PERSON) || ((Playback.manager.cameraPlayer != null) && (this.player == Playback.manager.cameraPlayer.getPlayer()))) {
+			heldItemRenderer.resetEquipProgress(hand);
 		}
 	}
 
