@@ -6,6 +6,7 @@ import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.recording.Recording;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.util.Identifier;
 
@@ -73,6 +74,8 @@ public class Playback implements ModInitializer {
 			mode = ReplayView.THIRD_PERSON;
 		}
 
+		MinecraftClient.getInstance().world = null;
+		MinecraftClient.getInstance().openScreen(null);
 		recording.joinPacket.play();
 		MinecraftClient.getInstance().openScreen(null);
 
