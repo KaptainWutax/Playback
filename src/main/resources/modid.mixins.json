@@ -14,7 +14,6 @@
     "EntityMixin",
     "InputUtilMixin",
     "KeyBindingMixin",
-    "KeyboardInputMixin",
     "KeyboardMixin",
     "MinecraftClientMixin",
     "MinecraftServerMixin",

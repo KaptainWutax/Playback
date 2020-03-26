@@ -1,7 +1,9 @@
 package kaptainwutax.playback.replay.recording;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.entity.FakePlayer;
 import kaptainwutax.playback.replay.action.PacketAction;
+import net.minecraft.client.MinecraftClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +45,13 @@ public class Recording {
 		this.currentTickInfo = this.recording.getOrDefault(tick, TickInfo.EMPTY);
 		this.nextTickInfo = this.recording.getOrDefault(tick + 1, TickInfo.EMPTY);
 		this.currentTickInfo.play(Playback.manager.getView());
+	}
+
+	public void playUpTo(long tick) {
+		for(long i = 0; i < tick; i++) {
+			this.play(i);
+			MinecraftClient.getInstance().tick();
+		}
 	}
 
 	public TickInfo getPreviousTickInfo() {

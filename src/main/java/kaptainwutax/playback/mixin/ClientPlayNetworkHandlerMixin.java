@@ -23,6 +23,10 @@ public class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onGameJoin", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
+		if(Playback.isCatchingUp) {
+			MinecraftClient.getInstance().player = null;
+		}
+
 		if(Playback.isReplaying && !Playback.joined) {
 			Playback.joined = true;
 			Playback.recording.joinPacket.play();

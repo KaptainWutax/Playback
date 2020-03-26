@@ -1,6 +1,7 @@
 package kaptainwutax.playback.replay.action.third;
 
 import com.google.common.collect.ImmutableSet;
+import kaptainwutax.playback.init.KeyBindings;
 import kaptainwutax.playback.replay.action.Action;
 import net.minecraft.client.options.KeyBinding;
 
@@ -22,7 +23,8 @@ public class KeyBindingAction extends Action {
 			client.options.keySmoothCamera.getId(),
 			client.options.keyFullscreen.getId(),
 			client.options.keySpectatorOutlines.getId(),
-			client.options.keyAdvancements.getId()
+			client.options.keyAdvancements.getId(),
+			KeyBindings.TOGGLE_VIEW.getId()
 	);
 
 	private Map<String, KeyInfo> recordedKeys = new HashMap<>();

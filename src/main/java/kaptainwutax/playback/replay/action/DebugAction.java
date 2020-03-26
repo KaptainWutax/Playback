@@ -32,11 +32,13 @@ public class DebugAction extends Action {
 
 	@Override
 	public void play() {
+		if(Playback.isCatchingUp)return;
+
 		boolean everythingMatches = true;
 
 		Formatter formatter = new Formatter();
-		String header = "==============================[Tick " + Playback.tickCounter + "]==============================\n";
-		formatter.format(header);
+		String header = "==============================[Tick " + Playback.tickCounter + "]==============================";
+		formatter.format(header + "\n");
 
 		for(Map.Entry<String, Function<ClientPlayerEntity, ?>> e : DEBUGS.entrySet()) {
 			String name = e.getKey();

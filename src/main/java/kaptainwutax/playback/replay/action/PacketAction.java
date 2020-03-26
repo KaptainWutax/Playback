@@ -55,7 +55,7 @@ public class PacketAction extends Action {
 				packet.apply(listener);
 			} else {
 				//This mess just safely gets ClientPlayPacketListener since we don't have a player instance to go about.
-				packet.apply((ClientPlayPacketListener) ((IConnectionGetter) client).getConnection().getPacketListener());
+				packet.apply((ClientPlayPacketListener)((IConnectionGetter) client).getConnection().getPacketListener());
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

@@ -21,7 +21,7 @@ public abstract class ClientWorldMixin {
 			Playback.recording = new Recording(); //experimental, didn't test yet. allows viewing a recording only once, but allows recording again without restart
 		}
 		//reopening the world will show the replay from the other perspective
-		Playback.toggleView();
+		//Playback.toggleView();
 		Playback.restart();
 
 	}

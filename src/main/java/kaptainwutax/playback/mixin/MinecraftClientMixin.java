@@ -1,12 +1,14 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.init.KeyBindings;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.PacketAction;
 import kaptainwutax.playback.entity.FakePlayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,6 +39,10 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void tickStart(CallbackInfo ci) {
 		if(this.world != null) {
+			if(Playback.isCatchingUp) {
+				this.paused = false;
+			}
+
 			if(Playback.isReplaying && Playback.manager.replayPlayer == null) {
 				Playback.manager.updateView(Playback.mode);
 			}
@@ -52,13 +58,18 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void tickEnd(CallbackInfo ci) {
 		if(this.world != null) {
+			if(InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), KeyBindings.TOGGLE_VIEW.getBoundKey().getKeyCode())) {
+				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {}
+				if(!Playback.isCatchingUp)Playback.toggleView();
+			}
+
 			if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
 				Playback.manager.updateView(Playback.manager.getView());
 			}
-		}
 
-		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
-			this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
+			if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
+				this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
+			}
 		}
 	}
 
@@ -85,6 +96,13 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Override
 	public void fakeHandleInputEvents() {
 		this.handleInputEvents();
+	}
+
+	@Inject(method = "openPauseMenu", at = @At("HEAD"), cancellable = true)
+	public void openPauseMenu(CallbackInfo ci) {
+		if(Playback.isReplaying && Playback.isProcessingReplay) {
+			ci.cancel();
+		}
 	}
 
 }

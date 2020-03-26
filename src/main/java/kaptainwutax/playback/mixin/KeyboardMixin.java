@@ -14,17 +14,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class KeyboardMixin implements IKeyboard {
 
 	@Shadow
-	public abstract void onKey(long window, int key, int scancode, int i, int j);
+	public abstract void onKey(long window, int key, int scanCode, int i, int j);
 
 	@Shadow
 	protected abstract void onChar(long window, int i, int j);
 
 	@Inject(method = "onKey", at = @At("HEAD"), cancellable = true)
-	public void onKey(long window, int key, int scancode, int i, int j, CallbackInfo ci) {
+	public void onKey(long window, int key, int scanCode, int i, int j, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null) return;
 
 		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickInfo().recordKey(0, key, scancode, i, j);
+			Playback.recording.getCurrentTickInfo().recordKey(0, key, scanCode, i, j);
 		} else if(!Playback.allowInput) {
 			ci.cancel();
 		}

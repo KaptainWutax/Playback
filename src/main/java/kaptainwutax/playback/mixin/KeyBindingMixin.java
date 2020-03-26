@@ -46,7 +46,6 @@ public class KeyBindingMixin {
 	private void isPressed(CallbackInfoReturnable<Boolean> ci) {
 		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.replayPlayer != null && Playback.manager.replayPlayer.isActive()) {
 			ci.setReturnValue(Playback.recording.getCurrentTickInfo().third.getKeyAction().getPlayKey((KeyBinding) (Object) this).isPressed());
-			return;
 		}
 	}
 
@@ -54,7 +53,6 @@ public class KeyBindingMixin {
 	private void wasPressed(CallbackInfoReturnable<Boolean> ci) {
 		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.replayPlayer != null && Playback.manager.replayPlayer.isActive()) {
 			ci.setReturnValue(Playback.recording.getCurrentTickInfo().third.getKeyAction().getPlayKey((KeyBinding) (Object) this).wasPressed());
-			return;
 		} else if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickInfo().third.getKeyAction().consumeWasPressed((KeyBinding) (Object) this);
 		}
