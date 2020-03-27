@@ -50,6 +50,7 @@ public class Recording {
 	public void playUpTo(long tick) {
 		while(Playback.isReplaying && this.currentTick < tick) {
 			MinecraftClient.getInstance().tick();
+
 		}
 	}
 
