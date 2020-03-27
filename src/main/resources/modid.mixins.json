@@ -4,27 +4,27 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "ChunkTicketManagerMixin",
+    "EntityMixin",
+    "MinecraftServerMixin",
+    "NetworkThreadUtilsMixin",
+    "PlayerAbilitiesMixin",
+    "PlayerInventoryMixin",
+    "ServerChunkManagerMixin",
+    "ServerPlayNetworkHandlerMixin"
+  ],
+  "client": [
     "ClientConnectionMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientWorldMixin",
-    "EntityMixin",
     "InputUtilMixin",
     "KeyBindingMixin",
     "KeyboardMixin",
     "MinecraftClientMixin",
-    "MinecraftServerMixin",
     "MouseMixin",
-    "NetworkThreadUtilsMixin",
-    "PlayerAbilitiesMixin",
-    "PlayerInventoryMixin",
-    "ServerChunkManagerMixin",
-    "ServerPlayNetworkHandlerMixin",
-    "WorldRendererMixin",
-  ],
-  "client": [
-    "SoundSystemMixin"
+    "SoundSystemMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
