@@ -45,8 +45,6 @@ public class DebugAction extends Action {
 
 	@Override
 	public void play() {
-		if(Playback.isCatchingUp)return;
-
 		boolean everythingMatches = true;
 
 		Formatter formatter = new Formatter();
