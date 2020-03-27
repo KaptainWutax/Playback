@@ -1,8 +1,10 @@
 package kaptainwutax.playback.replay.action;
 
+import com.sun.javafx.geom.Vec2f;
 import kaptainwutax.playback.Playback;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.Formatter;
 import java.util.HashMap;
@@ -17,11 +19,22 @@ public class DebugAction extends Action {
 	static {
 		DEBUGS.put("Player Id", Entity::getEntityId);
 		DEBUGS.put("Position", Entity::getPos);
-		DEBUGS.put("Rotation", Entity::getRotationVector);
+		DEBUGS.put("Rotation", DebugAction::getRotation);
 		DEBUGS.put("Velocity", Entity::getVelocity);
 		DEBUGS.put("Pose", Entity::getPose);
 		DEBUGS.put("Entity list size", player -> player.clientWorld.getRegularEntityCount());
 		DEBUGS.put("Player list size", player -> player.clientWorld.getPlayers().size());
+		DEBUGS.put("Vehicle Rotation", DebugAction::getVehicleRotation);
+	}
+
+	//NOT USING MOJANGS Vec2f THAT DOESN'T EVEN OVERRIDE equals
+	private static Vec2f getRotation(Entity entity) {
+		return new Vec2f(entity.yaw, entity.pitch);
+	}
+
+	private static final Vec2f NAN_VECTOR = new Vec2f(Float.NaN,Float.NaN);
+	private static Vec2f getVehicleRotation(PlayerEntity entity) {
+		return entity.getVehicle() == null ? NAN_VECTOR : getRotation(entity.getVehicle());
 	}
 
 	protected Map<String, Object> values = new HashMap<>();
