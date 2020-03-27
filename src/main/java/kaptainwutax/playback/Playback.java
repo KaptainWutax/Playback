@@ -6,7 +6,6 @@ import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.recording.Recording;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.util.Identifier;
 
@@ -39,6 +38,9 @@ public class Playback implements ModInitializer {
 
 		allowInputDefault = mode == ReplayView.THIRD_PERSON || tickCounter > recording.getEnd();
 		if(Playback.recording.isRecording()) {
+			if (Playback.tickCounter == 0) {
+				Playback.recording.getCurrentTickInfo().recordFirstTickFixes();
+			}
 			Playback.recording.getCurrentTickInfo().recordDebug();
 			recording.tickRecord(++tickCounter);
 		} else {
@@ -46,7 +48,7 @@ public class Playback implements ModInitializer {
 				allowInput = true;
 			}
 
-			recording.play(tickCounter++);
+			recording.playTick(tickCounter++);
 		}
 	}
 

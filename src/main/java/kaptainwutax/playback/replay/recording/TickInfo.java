@@ -6,6 +6,7 @@ import kaptainwutax.playback.replay.action.DebugAction;
 import kaptainwutax.playback.replay.action.PacketAction;
 import kaptainwutax.playback.replay.capture.FirstPersonTickCapture;
 import kaptainwutax.playback.replay.capture.ThirdPersonTickCapture;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 
@@ -61,6 +62,10 @@ public class TickInfo {
 
 	public void recordSetFlySpeed(float flySpeed) {
 		this.third.addSetFlySpeedAction(flySpeed);
+	}
+
+	public void recordFirstTickFixes() {
+		this.first.addF5ModeFixAction(MinecraftClient.getInstance().options.perspective);
 	}
 
 	public void recordDebug() {

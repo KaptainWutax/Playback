@@ -1,5 +1,6 @@
 package kaptainwutax.playback.replay.capture;
 
+import kaptainwutax.playback.replay.action.first.F5ModeFixAction;
 import kaptainwutax.playback.replay.action.first.KeyAction;
 import kaptainwutax.playback.replay.action.first.MouseAction;
 
@@ -22,6 +23,10 @@ public class FirstPersonTickCapture extends CommonTickCapture {
 
 	public void addMouseAction(int action, double d1, double d2, int i1, boolean isCursorLocked) {
 		this.addAction(new MouseAction(action, d1, d2, i1, isCursorLocked));
+	}
+
+	public void addF5ModeFixAction(int perspectiveF5mode) {
+		this.addAction(new F5ModeFixAction(perspectiveF5mode));
 	}
 
 	public void addKeyState(long handle, int i) {
