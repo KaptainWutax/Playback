@@ -48,7 +48,6 @@ public class Recording {
 
 	public void playUpTo(long tick) {
 		for(long i = 0; i < tick; i++) {
-			this.playTick(i);
 			MinecraftClient.getInstance().tick();
 		}
 	}
