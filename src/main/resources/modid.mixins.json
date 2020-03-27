@@ -21,9 +21,10 @@
     "PlayerInventoryMixin",
     "ServerChunkManagerMixin",
     "ServerPlayNetworkHandlerMixin",
-    "WorldRendererMixin"
+    "WorldRendererMixin",
   ],
   "client": [
+    "SoundSystemMixin"
   ],
   "injectors": {
     "defaultRequire": 1
