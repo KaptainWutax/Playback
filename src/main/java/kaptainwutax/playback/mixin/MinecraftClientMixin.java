@@ -71,6 +71,16 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;updateTargetedEntity(F)V", shift = At.Shift.BEFORE))
+	private void tickTargetedEntityStart(CallbackInfo ci) {
+		applyCameraPlayerIfNecessary();
+	}
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;updateTargetedEntity(F)V", shift = At.Shift.AFTER))
+	private void tickTargetedEntityEnd(CallbackInfo ci) {
+		applyReplayPlayerIfNecessary();
+	}
+
+
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;tick()V", shift = At.Shift.BEFORE))
 	private void tickHudStart(CallbackInfo ci) {
 		applyCameraPlayerIfNecessary();

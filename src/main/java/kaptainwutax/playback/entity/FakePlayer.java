@@ -29,9 +29,9 @@ public class FakePlayer extends ClientPlayerEntity {
 
 	@Override
 	public void tick() {
-		MinecraftClient.getInstance().gameRenderer.updateTargetedEntity(1.0F);
+		//MinecraftClient.getInstance().gameRenderer.updateTargetedEntity(1.0F);
 		((IClientCaller) MinecraftClient.getInstance()).fakeHandleInputEvents();
-		MinecraftClient.getInstance().gameRenderer.firstPersonRenderer.updateHeldItems();
+		//MinecraftClient.getInstance().gameRenderer.firstPersonRenderer.updateHeldItems();
 		super.tick();
 	}
 
