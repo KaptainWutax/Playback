@@ -65,7 +65,7 @@ public class Playback implements ModInitializer {
 		isReplaying = false;
 	}
 
-	public static void toggleView() { //only for between two replays for now
+	public static void toggleView() {
 		Playback.isCatchingUp = true;
 
 		KeyBinding.unpressAll();
@@ -94,6 +94,9 @@ public class Playback implements ModInitializer {
 		Playback.tickCounter = 0;
 		Playback.recording.playUpTo(currentTick);
 		Playback.isCatchingUp = false;
+
+		//clear the advancement/achievement popups
+		MinecraftClient.getInstance().getToastManager().clear();
 
 		if(mode == ReplayView.THIRD_PERSON) {
 			Playback.manager.cameraPlayer.getPlayer().updatePositionAndAngles(
