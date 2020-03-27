@@ -40,6 +40,7 @@ public class Recording {
 	}
 
 	public void playTick(long tick) {
+		this.currentTick = tick;
 		this.previousTickInfo = this.recording.getOrDefault(tick - 1, TickInfo.EMPTY);
 		this.currentTickInfo = this.recording.getOrDefault(tick, TickInfo.EMPTY);
 		this.nextTickInfo = this.recording.getOrDefault(tick + 1, TickInfo.EMPTY);
@@ -47,8 +48,7 @@ public class Recording {
 	}
 
 	public void playUpTo(long tick) {
-		for(long i = 0; i < tick; i++) {
-			this.playTick(i);
+		while(Playback.isReplaying && this.currentTick < tick) {
 			MinecraftClient.getInstance().tick();
 		}
 	}
