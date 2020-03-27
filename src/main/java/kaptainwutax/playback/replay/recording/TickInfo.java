@@ -39,8 +39,8 @@ public class TickInfo {
 		this.first.addKeyAction(action, key, scanCode, i, j);
 	}
 
-	public void recordMouse(int action, double d1, double d2, int i1) {
-		this.first.addMouseAction(action, d1, d2, i1);
+	public void recordMouse(int action, double d1, double d2, int i1, boolean isCursorLocked) {
+		this.first.addMouseAction(action, d1, d2, i1, isCursorLocked);
 	}
 
 	public void recordKeyState(long handle, int i) {
