@@ -2,8 +2,8 @@ package kaptainwutax.playback.replay.action;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import kaptainwutax.playback.PacketByteBuf_NotifyPacketActionOnDataloss;
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.fixes.PacketByteBuf_NotifyPacketActionOnDataloss;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.NetworkState;
@@ -16,6 +16,8 @@ import java.io.IOException;
 public class PacketAction extends Action {
 
 	public static boolean dataLost = false;
+	public static Class currentPacketClass;
+	public static final boolean debug = true;
 
 	private int packetId;
 	private byte[] packet;
@@ -28,11 +30,13 @@ public class PacketAction extends Action {
 		}
 
 		this.packetId = i;
-		PacketByteBuf packetByteBuf = Playback.recording.isSingleplayerRecording() ?
+		PacketByteBuf packetByteBuf = debug && Playback.recording.isSingleplayerRecording() ?
 				new PacketByteBuf_NotifyPacketActionOnDataloss(Unpooled.buffer()) :
 				new PacketByteBuf(Unpooled.buffer());
 
 		try {
+			if (debug)
+				currentPacketClass = packet.getClass();
 			packet.write(packetByteBuf);
 			if (dataLost) {
 				System.err.println("Packet with type " + packet.getClass().toString() + " was serialized with dataloss!");
