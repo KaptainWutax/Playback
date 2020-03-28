@@ -75,4 +75,9 @@ public class Recording {
 		return endTick;
 	}
 
+	public boolean isSingleplayerRecording() {
+		return true; //TODO record whether this is a singleplayer (integrated server non serializing communication) recording
+	}
+
+
 }
