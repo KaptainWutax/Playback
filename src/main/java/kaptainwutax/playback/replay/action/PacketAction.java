@@ -16,7 +16,6 @@ import java.io.IOException;
 public class PacketAction extends Action {
 
 	public static boolean dataLost = false;
-	public static Class currentPacketClass;
 	public static final boolean debug = true;
 
 	private int packetId;
@@ -35,8 +34,6 @@ public class PacketAction extends Action {
 				new PacketByteBuf(Unpooled.buffer());
 
 		try {
-			if (debug)
-				currentPacketClass = packet.getClass();
 			packet.write(packetByteBuf);
 			if (dataLost) {
 				System.err.println("Packet with type " + packet.getClass().toString() + " was serialized with dataloss!");

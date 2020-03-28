@@ -4,13 +4,7 @@ import io.netty.buffer.ByteBuf;
 import kaptainwutax.playback.replay.action.PacketAction;
 import net.minecraft.util.PacketByteBuf;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class PacketByteBuf_NotifyPacketActionOnDataloss extends PacketByteBuf {
-    public static final Map<Class, Boolean> packetHasUnsignedBytes = new HashMap<>();
-
-
     private final ByteBuf parent;
 
     public PacketByteBuf_NotifyPacketActionOnDataloss(ByteBuf byteBuf) {
@@ -20,24 +14,10 @@ public class PacketByteBuf_NotifyPacketActionOnDataloss extends PacketByteBuf {
 
     @Override
     public ByteBuf writeByte(int i) {
-        if (i > 127) {
-            if (!packetHasUnsignedBytes.containsKey(PacketAction.currentPacketClass)) {
-                packetHasUnsignedBytes.put(PacketAction.currentPacketClass, true);
-            } else if (!packetHasUnsignedBytes.get(PacketAction.currentPacketClass)){
-                PacketAction.dataLost = true;
-                System.out.println("Saving int " + i + " as byte. Expected int in range of signed byte");
-            }
+        if (i != (byte)i && (i != (i & 0x000000FF))) {
+            PacketAction.dataLost = true;
+            System.out.println("Saving int " + i + " as byte.");
         }
-        if (i < 0) {
-            if (!packetHasUnsignedBytes.containsKey(PacketAction.currentPacketClass)) {
-                packetHasUnsignedBytes.put(PacketAction.currentPacketClass, false);
-            } else if (packetHasUnsignedBytes.get(PacketAction.currentPacketClass)){
-                PacketAction.dataLost = true;
-                System.out.println("Saving int " + i + " as byte. Expected int in range of unsigned byte");
-            }
-        }
-
-
         return this.parent.writeByte(i);
     }
     @Override
