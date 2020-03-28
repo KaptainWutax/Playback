@@ -3,6 +3,7 @@
   "package": "kaptainwutax.playback.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "ClientConnectionMixin",
     "ChunkTicketManagerMixin",
     "EntityMixin",
     "MinecraftServerMixin",
@@ -13,7 +14,6 @@
     "ServerPlayNetworkHandlerMixin"
   ],
   "client": [
-    "ClientConnectionMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
