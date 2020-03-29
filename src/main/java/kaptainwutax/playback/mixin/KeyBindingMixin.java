@@ -1,61 +1,71 @@
 package kaptainwutax.playback.mixin;
 
-import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.ReplayView;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
+import java.util.Set;
 
 @Mixin(KeyBinding.class)
-public class KeyBindingMixin {
+public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCaller {
 
-	@Shadow
-	@Final
-	private static Map<InputUtil.KeyCode, KeyBinding> keysByCode;
+	@Mutable @Shadow @Final private static Map<String, KeyBinding> keysById;
+	@Mutable @Shadow @Final private static Map<InputUtil.KeyCode, KeyBinding> keysByCode;
+	@Mutable @Shadow @Final private static Set<String> keyCategories;
+	@Mutable @Shadow @Final private static Map<String, Integer> categoryOrderMap;
 
-	@Inject(method = "setPressed", at = @At("HEAD"))
-	private void setPressed(boolean pressed, CallbackInfo ci) {
-		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickInfo().third.getKeyAction().setKeyPressed((KeyBinding) (Object) this, pressed);
-		}
+	@Override
+	public void resetStaticCollections() {
+		keysById = Maps.newHashMap();
+		keysByCode = Maps.newHashMap();
+		keyCategories = Sets.newHashSet();
+
+		categoryOrderMap = Util.make(Maps.newHashMap(), (hashMap) -> {
+			hashMap.put("key.categories.movement", 1);
+			hashMap.put("key.categories.gameplay", 2);
+			hashMap.put("key.categories.inventory", 3);
+			hashMap.put("key.categories.creative", 4);
+			hashMap.put("key.categories.multiplayer", 5);
+			hashMap.put("key.categories.ui", 6);
+			hashMap.put("key.categories.misc", 7);
+		});
 	}
 
-	@Inject(method = "onKeyPressed", at = @At("HEAD"))
-	private static void onKeyPressed(InputUtil.KeyCode keyCode, CallbackInfo ci) {
-		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickInfo().third.getKeyAction().onKeyPressed(keysByCode.get(keyCode));
-		}
+	@Override
+	public void setStaticCollections(Map<String, KeyBinding> keysById, Map<InputUtil.KeyCode, KeyBinding> keysByCode,
+	                                 Set<String> keyCategories, Map<String, Integer> categoryOrderMap) {
+		KeyBindingMixin.keysById = keysById;
+		KeyBindingMixin.keysByCode = keysByCode;
+		KeyBindingMixin.keyCategories = keyCategories;
+		KeyBindingMixin.categoryOrderMap = categoryOrderMap;
 	}
 
-	@Inject(method = "reset", at = @At("HEAD"))
-	private void reset(CallbackInfo ci) {
-		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickInfo().third.getKeyAction().reset((KeyBinding) (Object) this);
-		}
+	@Override
+	public Map<String, KeyBinding> getKeysById() {
+		return keysById;
 	}
 
-	@Inject(method = "isPressed", at = @At("HEAD"), cancellable = true)
-	private void isPressed(CallbackInfoReturnable<Boolean> ci) {
-		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.replayPlayer != null && Playback.manager.replayPlayer.isActive()) {
-			ci.setReturnValue(Playback.recording.getCurrentTickInfo().third.getKeyAction().getPlayKey((KeyBinding) (Object) this).isPressed());
-		}
+	@Override
+	public Map<InputUtil.KeyCode, KeyBinding> getKeysByCode() {
+		return keysByCode;
 	}
 
-	@Inject(method = "wasPressed", at = @At("HEAD"), cancellable = true)
-	private void wasPressed(CallbackInfoReturnable<Boolean> ci) {
-		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.replayPlayer != null && Playback.manager.replayPlayer.isActive()) {
-			ci.setReturnValue(Playback.recording.getCurrentTickInfo().third.getKeyAction().getPlayKey((KeyBinding) (Object) this).wasPressed());
-		} else if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickInfo().third.getKeyAction().consumeWasPressed((KeyBinding) (Object) this);
-		}
+	@Override
+	public Set<String> getKeyCategories() {
+		return keyCategories;
+	}
+
+	@Override
+	public Map<String, Integer> getCategoryOrderMap() {
+		return categoryOrderMap;
 	}
 
 }

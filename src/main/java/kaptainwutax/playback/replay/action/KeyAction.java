@@ -1,6 +1,4 @@
-package kaptainwutax.playback.replay.action.first;
-
-import kaptainwutax.playback.replay.action.Action;
+package kaptainwutax.playback.replay.action;
 
 public class KeyAction extends Action {
 

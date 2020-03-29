@@ -1,4 +1,4 @@
-package kaptainwutax.playback.replay.action.first;
+package kaptainwutax.playback.replay.action;
 
 public interface IKeyboard {
 

@@ -1,4 +1,4 @@
-package kaptainwutax.playback.replay.action.first;
+package kaptainwutax.playback.replay.action;
 
 import kaptainwutax.playback.replay.action.Action;
 import net.minecraft.client.MinecraftClient;

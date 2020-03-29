@@ -2,6 +2,7 @@ package kaptainwutax.playback.replay.recording;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.action.PacketAction;
+import kaptainwutax.playback.replay.capture.TickInfo;
 import net.minecraft.client.MinecraftClient;
 
 import java.util.HashMap;
@@ -33,9 +34,6 @@ public class Recording {
 		this.previousTickInfo = this.currentTickInfo;
 		this.currentTickInfo = this.nextTickInfo;
 		this.nextTickInfo = new TickInfo();
-
-		this.currentTickInfo.third.setKeyAction(this.previousTickInfo.third.getKeyAction().copy());
-
 		this.currentTick = tick;
 	}
 
@@ -78,6 +76,5 @@ public class Recording {
 	public boolean isSingleplayerRecording() {
 		return true; //TODO record whether this is a singleplayer (integrated server non serializing communication) recording
 	}
-
 
 }

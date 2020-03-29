@@ -8,15 +8,12 @@ public class ReplayManager {
 
 	public void updateView(ReplayView view) {
 		this.view = view;
+		if(this.replayPlayer == null)this.replayPlayer = PlayerFrame.createFromExisting();
+		if(this.cameraPlayer == null)this.cameraPlayer = PlayerFrame.createNew();
 
 		if(view == ReplayView.FIRST_PERSON) {
-			if(this.replayPlayer == null) this.replayPlayer = PlayerFrame.createFromExisting();
 			this.replayPlayer.apply();
-		}
-
-		if(view == ReplayView.THIRD_PERSON) {
-			if(this.replayPlayer == null) this.replayPlayer = PlayerFrame.createFromExisting();
-			if(this.cameraPlayer == null) this.cameraPlayer = PlayerFrame.createNew();
+		} else if(view == ReplayView.THIRD_PERSON) {
 			this.cameraPlayer.apply();
 		}
 	}
