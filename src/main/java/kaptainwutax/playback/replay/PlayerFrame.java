@@ -12,7 +12,10 @@ public class PlayerFrame {
 	private static MinecraftClient client = MinecraftClient.getInstance();
 	private ClientPlayerEntity player;
 	private ClientPlayerInteractionManager interactionManager;
+
 	private Screen currentScreen;
+	private int attackCooldown;
+
 
 
 
@@ -31,10 +34,12 @@ public class PlayerFrame {
 
 	public void copyState() {
 		this.currentScreen = client.currentScreen;
+		this.attackCooldown = ((IClientCaller)client).getAttackCooldown();
 	}
 
 	public void applyState() {
 		client.currentScreen = this.currentScreen;
+		((IClientCaller)client).setAttackCooldown(this.attackCooldown);
 	}
 
 	public PlayerFrame getAppliedPlayerFrame() {
@@ -87,6 +92,11 @@ public class PlayerFrame {
 	public boolean isActive() {
 		if(this.cameraOnly) return MinecraftClient.getInstance().cameraEntity == this.player;
 		return MinecraftClient.getInstance().player == this.player;
+	}
+
+	public interface IClientCaller {
+		int getAttackCooldown();
+		void setAttackCooldown(int i);
 	}
 
 }

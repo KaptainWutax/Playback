@@ -3,6 +3,7 @@ package kaptainwutax.playback.mixin;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
 import kaptainwutax.playback.init.KeyBindings;
+import kaptainwutax.playback.replay.PlayerFrame;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.PacketAction;
 import net.minecraft.client.MinecraftClient;
@@ -21,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller {
+public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller, PlayerFrame.IClientCaller {
 
 	@Shadow
 	public ClientWorld world;
@@ -38,6 +39,8 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Shadow
 	protected abstract void handleInputEvents();
+
+	@Shadow protected int attackCooldown;
 
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null) {
@@ -128,6 +131,18 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	private void openScreen(Screen screen, CallbackInfo ci) {
 	}
 
+
+//	@Redirect(method = "openScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Mouse;unlockCursor()V"))
+//	private void unlockCursorOnScreenOpen(Mouse mouse) {
+//
+//	}
+//
+//	@Redirect(method = "openScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Mouse;lockCursor()V"))
+//	private void lockCursonOnScreenClose(Mouse mouse) {
+//
+//	}
+
+
 	@Override
 	public ClientConnection getConnection() {
 		return this.connection;
@@ -152,4 +167,10 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
+	public int getAttackCooldown() {
+		return attackCooldown;
+	}
+	public void setAttackCooldown(int i) {
+		this.attackCooldown = i;
+	}
 }
