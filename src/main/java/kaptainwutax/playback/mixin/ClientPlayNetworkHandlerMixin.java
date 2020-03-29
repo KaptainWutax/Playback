@@ -1,8 +1,9 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.entity.FakePlayer;
+import kaptainwutax.playback.replay.ReplayView;
+import kaptainwutax.playback.replay.recording.Recording;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,6 +15,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.io.IOException;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
@@ -27,7 +30,14 @@ public class ClientPlayNetworkHandlerMixin {
 			MinecraftClient.getInstance().player = null;
 		}
 
-		if(Playback.isReplaying && !Playback.joined) {
+		if (!Playback.isReplaying) {
+			try {
+				Playback.recording = new Recording(Playback.getNewRecordingFile(), "rw");
+				Playback.recording.getCurrentTickInfo().recordPacket(packet);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else if(!Playback.joined) {
 			Playback.joined = true;
 			Playback.recording.joinPacket.play();
 			this.client.openScreen(null);

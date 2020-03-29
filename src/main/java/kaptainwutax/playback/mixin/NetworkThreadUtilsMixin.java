@@ -4,6 +4,7 @@ import kaptainwutax.playback.Playback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.NetworkThreadUtils;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.util.thread.ThreadExecutor;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,7 +18,7 @@ public class NetworkThreadUtilsMixin {
 	@Inject(method = "forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", at = @At("HEAD"))
 	private static <T extends PacketListener> void forceMainThread(Packet<T> packet, T listener, ThreadExecutor<?> engine, CallbackInfo ci) {
 		if(!Playback.isReplaying && engine.isOnThread() && engine == MinecraftClient.getInstance()) {
-			Playback.recording.getCurrentTickInfo().recordPacket(packet);
+			Playback.recording.getCurrentTickInfo().recordPacket((Packet<ClientPlayPacketListener>) packet);
 		}
 	}
 

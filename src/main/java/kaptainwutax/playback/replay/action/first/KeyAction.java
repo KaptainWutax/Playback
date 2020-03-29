@@ -1,6 +1,7 @@
 package kaptainwutax.playback.replay.action.first;
 
 import kaptainwutax.playback.replay.action.Action;
+import net.minecraft.util.PacketByteBuf;
 
 public class KeyAction extends Action {
 
@@ -9,6 +10,8 @@ public class KeyAction extends Action {
 	private int scanCode;
 	private int i;
 	private int j;
+
+	public KeyAction() {}
 
 	public KeyAction(int action, int key, int scanCode, int i, int j) {
 		this.action = action;
@@ -21,6 +24,29 @@ public class KeyAction extends Action {
 	@Override
 	public void play() {
 		((IKeyboard) client.keyboard).execute(this.action, this.key, this.scanCode, this.i, this.j);
+	}
+
+	@Override
+	public Type getType() {
+		return Type.KEY;
+	}
+
+	@Override
+	public void read(PacketByteBuf buf) {
+		action = buf.readVarInt();
+		key = buf.readVarInt();
+		scanCode = buf.readVarInt();
+		i = buf.readVarInt();
+		j = buf.readVarInt();
+	}
+
+	@Override
+	public void write(PacketByteBuf buf) {
+		buf.writeVarInt(action);
+		buf.writeVarInt(key);
+		buf.writeVarInt(scanCode);
+		buf.writeVarInt(i);
+		buf.writeVarInt(j);
 	}
 
 }

@@ -3,7 +3,9 @@ package kaptainwutax.playback.replay.action.third;
 import com.google.common.collect.ImmutableSet;
 import kaptainwutax.playback.init.KeyBindings;
 import kaptainwutax.playback.replay.action.Action;
+import kaptainwutax.playback.util.SerializationUtil;
 import net.minecraft.client.options.KeyBinding;
+import net.minecraft.util.PacketByteBuf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -85,6 +87,22 @@ public class KeyBindingAction extends Action {
 		return this.playKeys.getOrDefault(key.getId(), NO_KEY);
 	}
 
+	@Override
+	public Type getType() {
+		return Type.KEY_BINDING;
+	}
+
+	@Override
+	public void read(PacketByteBuf buf) {
+		recordedKeys.clear();
+		recordedKeys.putAll(SerializationUtil.readMap(buf, PacketByteBuf::readString, KeyInfo::read));
+	}
+
+	@Override
+	public void write(PacketByteBuf buf) {
+		SerializationUtil.writeMap(buf, recordedKeys, PacketByteBuf::writeString, KeyInfo::write);
+	}
+
 	public static class KeyInfo {
 		public boolean pressed;
 		public int timesPressed;
@@ -126,6 +144,17 @@ public class KeyBindingAction extends Action {
 			return keyInfo;
 		}
 
+		public static KeyInfo read(PacketByteBuf buf) {
+			KeyInfo k = new KeyInfo();
+			k.pressed = buf.readBoolean();
+			k.timesPressed = buf.readVarInt();
+			return k;
+		}
+
+		public static void write(PacketByteBuf buf, KeyInfo key) {
+			buf.writeBoolean(key.pressed);
+			buf.writeVarInt(key.timesPressed);
+		}
 	}
 
 }
