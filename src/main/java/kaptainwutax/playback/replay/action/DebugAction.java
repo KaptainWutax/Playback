@@ -1,10 +1,10 @@
 package kaptainwutax.playback.replay.action;
 
-import com.sun.javafx.geom.Vec2f;
 import kaptainwutax.playback.Playback;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Formatter;
 import java.util.HashMap;
@@ -28,12 +28,12 @@ public class DebugAction extends Action {
 	}
 
 	//NOT USING MOJANGS Vec2f THAT DOESN'T EVEN OVERRIDE equals
-	private static Vec2f getRotation(Entity entity) {
-		return new Vec2f(entity.yaw, entity.pitch);
+	private static Vec3d getRotation(Entity entity) {
+		return new Vec3d(entity.yaw, entity.pitch, 0);
 	}
 
-	private static final Vec2f NAN_VECTOR = new Vec2f(Float.NaN,Float.NaN);
-	private static Vec2f getVehicleRotation(PlayerEntity entity) {
+	private static final Vec3d NAN_VECTOR = new Vec3d(Float.NaN,Float.NaN, 0);
+	private static Vec3d getVehicleRotation(PlayerEntity entity) {
 		return entity.getVehicle() == null ? NAN_VECTOR : getRotation(entity.getVehicle());
 	}
 
