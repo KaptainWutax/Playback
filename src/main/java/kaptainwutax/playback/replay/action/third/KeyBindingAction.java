@@ -81,6 +81,10 @@ public class KeyBindingAction extends Action {
 		}
 	}
 
+	public void playUnpressAll() {
+		//this.playKeys.values().forEach(KeyInfo::reset);
+	}
+
 	public KeyInfo getPlayKey(KeyBinding key) {
 		return this.playKeys.getOrDefault(key.getId(), NO_KEY);
 	}
