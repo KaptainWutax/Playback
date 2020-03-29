@@ -14,8 +14,8 @@ public class KeyBindingAction extends Action {
 	public static final KeyInfo NO_KEY = new KeyInfo();
 
 	private static final Set<String> BLACKLIST = ImmutableSet.of(
-			client.options.keyInventory.getId(),
-			client.options.keyChat.getId(),
+			//client.options.keyInventory.getId(),
+			//client.options.keyChat.getId(),
 			client.options.keyPlayerList.getId(),
 			client.options.keyCommand.getId(),
 			client.options.keyScreenshot.getId(),
@@ -23,7 +23,7 @@ public class KeyBindingAction extends Action {
 			client.options.keySmoothCamera.getId(),
 			client.options.keyFullscreen.getId(),
 			client.options.keySpectatorOutlines.getId(),
-			client.options.keyAdvancements.getId(),
+			//client.options.keyAdvancements.getId(),
 			KeyBindings.TOGGLE_VIEW.getId()
 	);
 
@@ -79,10 +79,6 @@ public class KeyBindingAction extends Action {
 		for(Map.Entry<String, KeyInfo> e : this.recordedKeys.entrySet()) {
 			this.playKeys.put(e.getKey(), e.getValue().copy());
 		}
-	}
-
-	public void playUnpressAll() {
-		//this.playKeys.values().forEach(KeyInfo::reset);
 	}
 
 	public KeyInfo getPlayKey(KeyBinding key) {
