@@ -152,6 +152,11 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	}
 
 	@Override
+	public int getAttackCooldown() {
+		return this.attackCooldown;
+	}
+
+	@Override
 	public void setOptions(GameOptions options) {
 		this.options = options;
 	}
@@ -166,4 +171,8 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		this.keyboard = keyboard;
 	}
 
+	@Override
+	public void setAttackCooldown(int attackCooldown) {
+		this.attackCooldown = attackCooldown;
+	}
 }
