@@ -85,7 +85,7 @@ public class PlayerFrame {
 		((PlayGameOptions.IKeyBindingCaller)client.options.keysAll[0]).resetStaticCollections();
 		PlayGameOptions options = new PlayGameOptions();
 		((IKeyboardInputCaller)client.player.input).setOptions(options);
-		return new PlayerFrame(client.player, client.interactionManager, options, client.mouse, client.keyboard);
+		return new PlayerFrame(client.player, client.interactionManager, options, new Mouse(client), new Keyboard(client));
 	}
 
 	public static PlayerFrame createNew() {
