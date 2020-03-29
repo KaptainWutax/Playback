@@ -37,16 +37,27 @@ public class PlayerFrame {
 		client.currentScreen = this.currentScreen;
 	}
 
-	public static PlayerFrame getAppliedPlayerFrame() {
-		if (Playback.manager.cameraPlayer != null && MinecraftClient.getInstance().player == Playback.manager.cameraPlayer.getPlayer()) {
-			return Playback.manager.cameraPlayer;
+	public PlayerFrame getAppliedPlayerFrame() {
+		if (this.isActive()) {
+			return this;
 		} else {
-			return Playback.manager.replayPlayer;
+			if (this == Playback.manager.cameraPlayer) {
+				return Playback.manager.replayPlayer;
+			} else {
+				return Playback.manager.cameraPlayer;
+			}
 		}
+
 	}
 
 	public void apply() {
-		getAppliedPlayerFrame().copyState();
+		PlayerFrame prevFrame = this.getAppliedPlayerFrame();
+		if (this == prevFrame) {
+			return;
+		}
+		if (prevFrame != null) {
+			prevFrame.copyState();
+		}
 
 		if(!this.cameraOnly) {
 			client.player = this.player;
