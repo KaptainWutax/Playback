@@ -1,7 +1,7 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.action.first.IMouse;
+import kaptainwutax.playback.replay.action.IMouse;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import org.spongepowered.asm.mixin.Mixin;

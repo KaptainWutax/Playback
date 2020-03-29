@@ -1,7 +1,7 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.action.first.IKeyboard;
+import kaptainwutax.playback.replay.action.IKeyboard;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;

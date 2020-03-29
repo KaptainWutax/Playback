@@ -5,12 +5,9 @@
   "mixins": [
     "ClientConnectionMixin",
     "ChunkTicketManagerMixin",
-    "EntityMixin",
     "packets.EntitySpawnS2CPacketMixin",
     "MinecraftServerMixin",
     "NetworkThreadUtilsMixin",
-    "PlayerAbilitiesMixin",
-    "PlayerInventoryMixin",
     "ServerChunkManagerMixin",
     "ServerPlayNetworkHandlerMixin"
   ],
