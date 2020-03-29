@@ -126,13 +126,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Inject(method = "openScreen", at = @At("HEAD"), cancellable = true)
 	private void openScreen(Screen screen, CallbackInfo ci) {
-		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.isProcessingReplay) {
-			if(screen != null) {
-				Playback.recording.getCurrentTickInfo().third.getKeyAction().playUnpressAll();
-			}
-
-			ci.cancel();
-		}
 	}
 
 	@Override
