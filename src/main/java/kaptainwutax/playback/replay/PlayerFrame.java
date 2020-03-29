@@ -1,87 +1,50 @@
 package kaptainwutax.playback.replay;
 
-import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
+import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.options.GameOptions;
+import net.minecraft.entity.Entity;
 
 public class PlayerFrame {
 
 	private static MinecraftClient client = MinecraftClient.getInstance();
+
 	private ClientPlayerEntity player;
 	private ClientPlayerInteractionManager interactionManager;
-
-	private Screen currentScreen;
-	private int attackCooldown;
-
-
-
+	private PlayGameOptions options;
 
 	private boolean cameraOnly;
 
-	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager) {
+	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager, PlayGameOptions options) {
 		this.player = player;
 		this.interactionManager = interactionManager;
-
-		this.copyState();
-	}
-
-	public ClientPlayerEntity getPlayer() {
-		return this.player;
-	}
-
-	public void copyState() {
-		this.currentScreen = client.currentScreen;
-		this.attackCooldown = ((IClientCaller)client).getAttackCooldown();
-	}
-
-	public void applyState() {
-		client.currentScreen = this.currentScreen;
-		((IClientCaller)client).setAttackCooldown(this.attackCooldown);
-	}
-
-	public PlayerFrame getAppliedPlayerFrame() {
-		if (this.isActive()) {
-			return this;
-		} else {
-			if (this == Playback.manager.cameraPlayer) {
-				return Playback.manager.replayPlayer;
-			} else {
-				return Playback.manager.cameraPlayer;
-			}
-		}
-
+		this.options = options;
 	}
 
 	public void apply() {
-		PlayerFrame prevFrame = this.getAppliedPlayerFrame();
-		if (this == prevFrame) {
-			return;
-		}
-		if (prevFrame != null) {
-			prevFrame.copyState();
-		}
-
 		if(!this.cameraOnly) {
 			client.player = this.player;
 			client.interactionManager = this.interactionManager;
-			//load state that was copied earlier
-			this.applyState();
+			((IClientCaller)client).setOptions(this.options);
+			this.options.apply();
 		}
 
 		client.setCameraEntity(this.player);
 	}
 
 	public static PlayerFrame createFromExisting() {
-		return new PlayerFrame(client.player, client.interactionManager);
+		((PlayGameOptions.IKeyBindingCaller)client.options.keysAll[0]).resetStaticCollections();
+		return new PlayerFrame(client.player, client.interactionManager, new PlayGameOptions());
 	}
 
 	public static PlayerFrame createNew() {
 		ClientPlayerInteractionManager interactionManager = new ClientPlayerInteractionManager(client, client.getNetworkHandler());
 		FakePlayer player = new FakePlayer(client, client.world, client.getNetworkHandler(), interactionManager);
-		return new PlayerFrame(player, interactionManager);
+		((PlayGameOptions.IKeyBindingCaller)client.options.keysAll[0]).resetStaticCollections();
+		return new PlayerFrame(player, interactionManager, new PlayGameOptions());
 	}
 
 	public PlayerFrame cameraOnly() {
@@ -90,13 +53,16 @@ public class PlayerFrame {
 	}
 
 	public boolean isActive() {
-		if(this.cameraOnly) return MinecraftClient.getInstance().cameraEntity == this.player;
+		if(this.cameraOnly)return MinecraftClient.getInstance().cameraEntity == this.player;
 		return MinecraftClient.getInstance().player == this.player;
 	}
 
+	public ClientPlayerEntity getPlayer() {
+		return player;
+	}
+
 	public interface IClientCaller {
-		int getAttackCooldown();
-		void setAttackCooldown(int i);
+		void setOptions(GameOptions options);
 	}
 
 }

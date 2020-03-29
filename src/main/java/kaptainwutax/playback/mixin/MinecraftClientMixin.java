@@ -9,12 +9,15 @@ import kaptainwutax.playback.replay.action.PacketAction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.util.Hand;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,6 +44,9 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	protected abstract void handleInputEvents();
 
 	@Shadow protected int attackCooldown;
+
+	@Mutable
+	@Shadow @Final public GameOptions options;
 
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null) {
@@ -73,16 +79,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			Playback.update(this.paused);
 		}
 	}
-
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;updateTargetedEntity(F)V", shift = At.Shift.BEFORE))
-	private void tickTargetedEntityStart(CallbackInfo ci) {
-		//applyCameraPlayerIfNecessary();
-	}
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;updateTargetedEntity(F)V", shift = At.Shift.AFTER))
-	private void tickTargetedEntityEnd(CallbackInfo ci) {
-		//applyReplayPlayerIfNecessary();
-	}
-
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;tick()V", shift = At.Shift.BEFORE))
 	private void tickHudStart(CallbackInfo ci) {
@@ -127,21 +123,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
-	@Inject(method = "openScreen", at = @At("HEAD"), cancellable = true)
-	private void openScreen(Screen screen, CallbackInfo ci) {
-	}
-
-
-//	@Redirect(method = "openScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Mouse;unlockCursor()V"))
-//	private void unlockCursorOnScreenOpen(Mouse mouse) {
-//
-//	}
-//
-//	@Redirect(method = "openScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Mouse;lockCursor()V"))
-//	private void lockCursonOnScreenClose(Mouse mouse) {
-//
-//	}
-
 
 	@Override
 	public ClientConnection getConnection() {
@@ -167,10 +148,9 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
-	public int getAttackCooldown() {
-		return attackCooldown;
+	@Override
+	public void setOptions(GameOptions options) {
+		this.options = options;
 	}
-	public void setAttackCooldown(int i) {
-		this.attackCooldown = i;
-	}
+
 }
