@@ -50,9 +50,9 @@ public class PlayerFrame {
 
 	public void apply() {
 		PlayerFrame prevFrame = this.getAppliedPlayerFrame();
-		if(this == prevFrame) {
-			return;
-		}
+//		if(this == prevFrame) {
+//			return;
+//		}
 
 		if(prevFrame != null) {
 			prevFrame.copyState();
