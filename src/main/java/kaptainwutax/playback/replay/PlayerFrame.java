@@ -2,7 +2,9 @@ package kaptainwutax.playback.replay;
 
 import kaptainwutax.playback.entity.FakePlayer;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
+import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Mouse;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.options.GameOptions;
@@ -14,13 +16,17 @@ public class PlayerFrame {
 	private ClientPlayerEntity player;
 	private ClientPlayerInteractionManager interactionManager;
 	private PlayGameOptions options;
+	private Mouse mouse;
+	private Keyboard keyboard;
 
 	private boolean cameraOnly;
 
-	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager, PlayGameOptions options) {
+	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager, PlayGameOptions options, Mouse mouse, Keyboard keyboard) {
 		this.player = player;
 		this.interactionManager = interactionManager;
 		this.options = options;
+		this.mouse = mouse;
+		this.keyboard = keyboard;
 	}
 
 	public void apply() {
@@ -29,6 +35,8 @@ public class PlayerFrame {
 			client.interactionManager = this.interactionManager;
 			((IClientCaller)client).setOptions(this.options);
 			this.options.apply();
+			((IClientCaller)client).setMouse(this.mouse);
+			((IClientCaller)client).setKeyboard(this.keyboard);
 		}
 
 		client.setCameraEntity(this.player);
@@ -38,7 +46,7 @@ public class PlayerFrame {
 		((PlayGameOptions.IKeyBindingCaller)client.options.keysAll[0]).resetStaticCollections();
 		PlayGameOptions options = new PlayGameOptions();
 		((IKeyboardInputCaller)client.player.input).setOptions(options);
-		return new PlayerFrame(client.player, client.interactionManager, options);
+		return new PlayerFrame(client.player, client.interactionManager, options, client.mouse, client.keyboard);
 	}
 
 	public static PlayerFrame createNew() {
@@ -47,7 +55,7 @@ public class PlayerFrame {
 		PlayGameOptions options = new PlayGameOptions();
 		//options.load(); //We'll have to do this at some point.
 		FakePlayer player = new FakePlayer(client, client.world, client.getNetworkHandler(), interactionManager, options);
-		return new PlayerFrame(player, interactionManager, options);
+		return new PlayerFrame(player, interactionManager, options, new Mouse(client), new Keyboard(client));
 	}
 
 	public PlayerFrame cameraOnly() {
@@ -66,6 +74,8 @@ public class PlayerFrame {
 
 	public interface IClientCaller {
 		void setOptions(GameOptions options);
+		void setMouse(Mouse mouse);
+		void setKeyboard(Keyboard keyboard);
 	}
 
 	public interface IKeyboardInputCaller {

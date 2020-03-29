@@ -6,7 +6,9 @@ import kaptainwutax.playback.init.KeyBindings;
 import kaptainwutax.playback.replay.PlayerFrame;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.PacketAction;
+import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Mouse;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.render.item.HeldItemRenderer;
@@ -46,6 +48,12 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Mutable
 	@Shadow @Final public GameOptions options;
+
+	@Mutable
+	@Shadow @Final public Mouse mouse;
+
+	@Mutable
+	@Shadow @Final public Keyboard keyboard;
 
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.isReplaying) {
@@ -146,6 +154,16 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Override
 	public void setOptions(GameOptions options) {
 		this.options = options;
+	}
+
+	@Override
+	public void setMouse(Mouse mouse) {
+		this.mouse = mouse;
+	}
+
+	@Override
+	public void setKeyboard(Keyboard keyboard) {
+		this.keyboard = keyboard;
 	}
 
 }
