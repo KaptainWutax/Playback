@@ -3,17 +3,22 @@ package kaptainwutax.playback.mixin;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
 import kaptainwutax.playback.init.KeyBindings;
+import kaptainwutax.playback.replay.PlayerFrame;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.PacketAction;
+import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.Mouse;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.util.Hand;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller {
+public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller, PlayerFrame.IClientCaller {
 
 	@Shadow
 	public ClientWorld world;
@@ -39,23 +44,30 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Shadow
 	protected abstract void handleInputEvents();
 
+	@Shadow protected int attackCooldown;
+
+	@Mutable
+	@Shadow @Final public GameOptions options;
+
+	@Mutable
+	@Shadow @Final public Mouse mouse;
+
+	@Mutable
+	@Shadow @Final public Keyboard keyboard;
+
 	private void applyCameraPlayerIfNecessary() {
-		if(this.world != null) {
-			if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
-				Playback.manager.updateView(Playback.manager.getView());
-			}
+		if(this.world != null && Playback.isReplaying) {
+			Playback.manager.updateView(Playback.manager.getView());
 		}
 	}
 
 	private void applyReplayPlayerIfNecessary() {
-		if(this.world != null) {
-			if(Playback.isReplaying && Playback.manager.replayPlayer == null) {
+		if(this.world != null && Playback.isReplaying) {
+			if(Playback.manager.replayPlayer == null) {
 				Playback.manager.updateView(Playback.mode);
 			}
 
-			if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
-				Playback.manager.replayPlayer.apply();
-			}
+			Playback.manager.replayPlayer.apply();
 		}
 	}
 
@@ -70,16 +82,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			Playback.update(this.paused);
 		}
 	}
-
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;updateTargetedEntity(F)V", shift = At.Shift.BEFORE))
-	private void tickTargetedEntityStart(CallbackInfo ci) {
-		applyCameraPlayerIfNecessary();
-	}
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;updateTargetedEntity(F)V", shift = At.Shift.AFTER))
-	private void tickTargetedEntityEnd(CallbackInfo ci) {
-		applyReplayPlayerIfNecessary();
-	}
-
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;tick()V", shift = At.Shift.BEFORE))
 	private void tickHudStart(CallbackInfo ci) {
@@ -104,7 +106,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		if(this.world != null) {
 			applyCameraPlayerIfNecessary();
 
-			if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
+			if(Playback.isReplaying && Playback.manager.cameraPlayer != null) {
 				this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
 			}
 
@@ -124,12 +126,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
-	@Inject(method = "openScreen", at = @At("HEAD"), cancellable = true)
-	private void openScreen(Screen screen, CallbackInfo ci) {
-		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.isProcessingReplay) {
-			ci.cancel();
-		}
-	}
 
 	@Override
 	public ClientConnection getConnection() {
@@ -155,4 +151,28 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
+	@Override
+	public int getAttackCooldown() {
+		return this.attackCooldown;
+	}
+
+	@Override
+	public void setOptions(GameOptions options) {
+		this.options = options;
+	}
+
+	@Override
+	public void setMouse(Mouse mouse) {
+		this.mouse = mouse;
+	}
+
+	@Override
+	public void setKeyboard(Keyboard keyboard) {
+		this.keyboard = keyboard;
+	}
+
+	@Override
+	public void setAttackCooldown(int attackCooldown) {
+		this.attackCooldown = attackCooldown;
+	}
 }

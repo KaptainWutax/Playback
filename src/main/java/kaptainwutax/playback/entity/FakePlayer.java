@@ -1,5 +1,6 @@
 package kaptainwutax.playback.entity;
 
+import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -14,7 +15,7 @@ public class FakePlayer extends ClientPlayerEntity {
 	private boolean spawned;
 
 	//This is the player that carries the camera in THIRD PERSON replay. This should act like a freecam, without influencing the replay
-	public FakePlayer(MinecraftClient client, ClientWorld clientWorld, ClientPlayNetworkHandler clientPlayNetworkHandler, ClientPlayerInteractionManager interactionManager) {
+	public FakePlayer(MinecraftClient client, ClientWorld clientWorld, ClientPlayNetworkHandler clientPlayNetworkHandler, ClientPlayerInteractionManager interactionManager, PlayGameOptions options) {
 		super(client, clientWorld, clientPlayNetworkHandler, null, new ClientRecipeBook(clientWorld.getRecipeManager()));
 
 		GameMode gameMode = GameMode.CREATIVE;
@@ -23,15 +24,14 @@ public class FakePlayer extends ClientPlayerEntity {
 		((IInteractionCaller) interactionManager).setGameModeNoUpdates(gameMode);
 		this.setGameMode(gameMode);
 
-		this.input = new KeyboardInput(client.options);
+		this.input = new KeyboardInput(options);
 		this.dimension = null;
 	}
 
 	@Override
 	public void tick() {
-		//MinecraftClient.getInstance().gameRenderer.updateTargetedEntity(1.0F);
+		MinecraftClient.getInstance().gameRenderer.updateTargetedEntity(1.0F);
 		((IClientCaller) MinecraftClient.getInstance()).fakeHandleInputEvents();
-		//MinecraftClient.getInstance().gameRenderer.firstPersonRenderer.updateHeldItems();
 		super.tick();
 	}
 

@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.action.PacketAction;
+import kaptainwutax.playback.replay.capture.TickInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.PacketByteBuf;
 
@@ -69,9 +70,6 @@ public class Recording implements AutoCloseable {
 		this.previousTickInfo = this.currentTickInfo;
 		this.currentTickInfo = this.nextTickInfo;
 		this.nextTickInfo = new TickInfo();
-
-		this.currentTickInfo.third.setKeyAction(this.previousTickInfo.third.getKeyAction().copy());
-
 		this.currentTick = tick;
 		lastTick = tick;
 	}

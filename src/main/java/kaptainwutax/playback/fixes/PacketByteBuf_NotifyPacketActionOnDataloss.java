@@ -15,6 +15,8 @@ public class PacketByteBuf_NotifyPacketActionOnDataloss extends PacketByteBuf {
     @Override
     public ByteBuf writeByte(int i) {
         if (i != (byte)i && (i != (i & 0x000000FF))) {
+            //allow range -128 to 255. Cannot really check whether -128 and >127 are used together.
+            //Some packets use the byte unsigned, others don't, so we only alarm on exceeding -128 or 255
             PacketAction.dataLost = true;
             System.out.println("Saving int " + i + " as byte.");
         }

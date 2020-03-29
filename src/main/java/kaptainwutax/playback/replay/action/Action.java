@@ -1,13 +1,6 @@
 package kaptainwutax.playback.replay.action;
 
 import io.netty.buffer.Unpooled;
-import kaptainwutax.playback.replay.action.first.F5ModeFixAction;
-import kaptainwutax.playback.replay.action.first.KeyAction;
-import kaptainwutax.playback.replay.action.first.MouseAction;
-import kaptainwutax.playback.replay.action.third.ChangeLookAction;
-import kaptainwutax.playback.replay.action.third.KeyBindingAction;
-import kaptainwutax.playback.replay.action.third.ScrollInHotbarAction;
-import kaptainwutax.playback.replay.action.third.SetFlySpeedAction;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.PacketByteBuf;
@@ -45,26 +38,18 @@ public abstract class Action implements PlaybackSerializable {
 	}
 
 	public enum Type {
-		DEBUG(DebugAction.class, true, true),
-		PACKET(PacketAction.class, true, true),
-		F5_FIX(F5ModeFixAction.class, true, false),
-		KEY(KeyAction.class, true, false),
-		MOUSE(MouseAction.class, true, false),
-		CHANGE_LOOK(ChangeLookAction.class, false, true),
-		KEY_BINDING(KeyBindingAction.class, false, true),
-		SCROLL_IN_HOTBAR(ScrollInHotbarAction.class, false, true),
-		SET_FLY_SPEED(SetFlySpeedAction.class, false, true);
+		DEBUG(DebugAction.class),
+		PACKET(PacketAction.class),
+		F5_FIX(F5ModeFixAction.class),
+		KEY(KeyAction.class),
+		MOUSE(MouseAction.class);
 
 		static final Type[] values = values();
 
 		public final Class<? extends Action> cls;
-		public final boolean firstPerson;
-		public final boolean thirdPerson;
 		private final MethodHandle constr;
-		Type(Class<? extends Action> cls, boolean firstPerson, boolean thirdPerson) {
+		Type(Class<? extends Action> cls) {
 			this.cls = cls;
-			this.firstPerson = firstPerson;
-			this.thirdPerson = thirdPerson;
 			try {
 				this.constr = LOOKUP.findConstructor(cls, MethodType.methodType(void.class));
 			} catch (NoSuchMethodException e) {

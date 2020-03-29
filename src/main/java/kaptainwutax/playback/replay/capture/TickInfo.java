@@ -1,15 +1,13 @@
-package kaptainwutax.playback.replay.recording;
+package kaptainwutax.playback.replay.capture;
 
 import io.netty.buffer.Unpooled;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.DebugAction;
 import kaptainwutax.playback.replay.action.PacketAction;
-import kaptainwutax.playback.replay.capture.FirstPersonTickCapture;
-import kaptainwutax.playback.replay.capture.ThirdPersonTickCapture;
+import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
@@ -22,84 +20,64 @@ public class TickInfo implements PlaybackSerializable {
 
 	public static final TickInfo EMPTY = new TickInfo();
 
-	public FirstPersonTickCapture first = new FirstPersonTickCapture();
-	public ThirdPersonTickCapture third = new ThirdPersonTickCapture();
-
+	public TickCapture tickCapture = new TickCapture();
 	@Nullable
 	private PacketAction joinPacket;
 
 	public void play(ReplayView view) {
 		Playback.isProcessingReplay = true;
 		Playback.allowInput = true;
-		if(view == ReplayView.FIRST_PERSON) this.first.play();
-		else if(view == ReplayView.THIRD_PERSON) this.third.play();
+		//if(view == ReplayView.FIRST_PERSON)
+		this.tickCapture.play();
+		//else if(view == ReplayView.THIRD_PERSON) this.third.play();
 		Playback.isProcessingReplay = false;
 		Playback.allowInput = Playback.allowInputDefault;
 	}
 
 	public void recordPacket(Packet<ClientPlayPacketListener> packet) {
 		if(packet instanceof GameJoinS2CPacket) {
-			this.joinPacket = new PacketAction(packet);
+			joinPacket = new PacketAction(packet);
 			Playback.recording.joinPacket = joinPacket;
 			return;
 		}
 
-		this.first.addPacketAction(packet);
-		this.third.addPacketAction(packet);
+		this.tickCapture.addPacketAction(packet);
 	}
 
 	public void recordKey(int action, int key, int scanCode, int i, int j) {
-		this.first.addKeyAction(action, key, scanCode, i, j);
+		this.tickCapture.addKeyAction(action, key, scanCode, i, j);
 	}
 
 	public void recordMouse(int action, double d1, double d2, int i1, boolean isCursorLocked) {
-		this.first.addMouseAction(action, d1, d2, i1, isCursorLocked);
+		this.tickCapture.addMouseAction(action, d1, d2, i1, isCursorLocked);
 	}
 
 	public void recordKeyState(long handle, int i) {
-		this.first.addKeyState(handle, i);
+		this.tickCapture.addKeyState(handle, i);
 	}
 
 	public boolean getKeyState(long handle, int i) {
-		return this.first.getKeyState(handle, i);
-	}
-
-	public void recordChangeLook(double cursorDeltaX, double cursorDeltaY) {
-		this.third.addChangeLookAction(cursorDeltaX, cursorDeltaY);
-	}
-
-	public void recordScrollInHotbar(double scrollAmount) {
-		this.third.addScrollInHotbarAction(scrollAmount);
-	}
-
-	public void recordSetFlySpeed(float flySpeed) {
-		this.third.addSetFlySpeedAction(flySpeed);
+		return this.tickCapture.getKeyState(handle, i);
 	}
 
 	public void recordFirstTickFixes() {
-		this.first.addF5ModeFixAction(MinecraftClient.getInstance().options.perspective);
+		this.tickCapture.addF5ModeFixAction(MinecraftClient.getInstance().options.perspective);
 	}
 
 	public void recordDebug() {
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-		this.first.addDebugAction(new DebugAction(player));
-		this.third.addDebugAction(new DebugAction(player));
+		this.tickCapture.addDebugAction(new DebugAction());
 	}
 
 	public boolean isEmpty() {
-		return this.first.isEmpty() && this.third.isEmpty();
+		return this.tickCapture.isEmpty();
 	}
 
 	@Override
 	public void read(PacketByteBuf buf) throws IOException {
-		int firstSize = buf.readVarInt();
-		first.read(new PacketByteBuf(buf.slice(buf.readerIndex(), firstSize)));
-		buf.readerIndex(buf.readerIndex() + firstSize);
-		int thirdSize = buf.readVarInt();
-		third.read(new PacketByteBuf(buf.slice(buf.readerIndex(), thirdSize)));
-		buf.readerIndex(buf.readerIndex() + thirdSize);
-		boolean join = buf.readBoolean();
-		if (join) {
+		int captureSize = buf.readVarInt();
+		tickCapture.read(new PacketByteBuf(buf.slice(buf.readerIndex(), captureSize)));
+		buf.readerIndex(buf.readerIndex() + captureSize);
+		if (buf.readBoolean()) {
 			joinPacket = new PacketAction();
 			joinPacket.read(buf);
 			Recording current = Recording.currentlyReading.get();
@@ -110,12 +88,7 @@ public class TickInfo implements PlaybackSerializable {
 	@Override
 	public void write(PacketByteBuf buf) throws IOException {
 		PacketByteBuf tmp = new PacketByteBuf(Unpooled.buffer());
-		first.write(tmp);
-		buf.writeVarInt(tmp.writerIndex());
-		buf.writeBytes(tmp);
-		tmp.readerIndex(0);
-		tmp.writerIndex(0);
-		third.write(tmp);
+		tickCapture.write(tmp);
 		buf.writeVarInt(tmp.writerIndex());
 		buf.writeBytes(tmp);
 		tmp.release();
