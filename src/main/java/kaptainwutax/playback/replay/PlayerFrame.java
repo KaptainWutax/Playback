@@ -6,7 +6,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.options.GameOptions;
-import net.minecraft.entity.Entity;
 
 public class PlayerFrame {
 
@@ -37,14 +36,18 @@ public class PlayerFrame {
 
 	public static PlayerFrame createFromExisting() {
 		((PlayGameOptions.IKeyBindingCaller)client.options.keysAll[0]).resetStaticCollections();
-		return new PlayerFrame(client.player, client.interactionManager, new PlayGameOptions());
+		PlayGameOptions options = new PlayGameOptions();
+		((IKeyboardInputCaller)client.player.input).setOptions(options);
+		return new PlayerFrame(client.player, client.interactionManager, options);
 	}
 
 	public static PlayerFrame createNew() {
 		ClientPlayerInteractionManager interactionManager = new ClientPlayerInteractionManager(client, client.getNetworkHandler());
-		FakePlayer player = new FakePlayer(client, client.world, client.getNetworkHandler(), interactionManager);
 		((PlayGameOptions.IKeyBindingCaller)client.options.keysAll[0]).resetStaticCollections();
-		return new PlayerFrame(player, interactionManager, new PlayGameOptions());
+		PlayGameOptions options = new PlayGameOptions();
+		//options.load(); //We'll have to do this at some point.
+		FakePlayer player = new FakePlayer(client, client.world, client.getNetworkHandler(), interactionManager, options);
+		return new PlayerFrame(player, interactionManager, options);
 	}
 
 	public PlayerFrame cameraOnly() {
@@ -62,6 +65,10 @@ public class PlayerFrame {
 	}
 
 	public interface IClientCaller {
+		void setOptions(GameOptions options);
+	}
+
+	public interface IKeyboardInputCaller {
 		void setOptions(GameOptions options);
 	}
 

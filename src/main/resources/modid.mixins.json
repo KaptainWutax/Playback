@@ -22,6 +22,7 @@
     "InputUtilMixin",
     "KeyBindingMixin",
     "KeyboardMixin",
+    "KeyboardInputMixin",
     "MinecraftClientMixin",
     "MouseMixin",
     "SoundSystemMixin",

@@ -7,7 +7,6 @@ import kaptainwutax.playback.replay.PlayerFrame;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.PacketAction;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.render.item.HeldItemRenderer;
@@ -49,22 +48,18 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Shadow @Final public GameOptions options;
 
 	private void applyCameraPlayerIfNecessary() {
-		if(this.world != null) {
-			if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
-				Playback.manager.updateView(Playback.manager.getView());
-			}
+		if(this.world != null && Playback.isReplaying) {
+			Playback.manager.updateView(Playback.manager.getView());
 		}
 	}
 
 	private void applyReplayPlayerIfNecessary() {
-		if(this.world != null) {
-			if(Playback.isReplaying && Playback.manager.replayPlayer == null) {
+		if(this.world != null && Playback.isReplaying) {
+			if(Playback.manager.replayPlayer == null) {
 				Playback.manager.updateView(Playback.mode);
 			}
 
-			if(Playback.isReplaying && Playback.manager.replayPlayer != null) {
-				Playback.manager.replayPlayer.apply();
-			}
+			Playback.manager.replayPlayer.apply();
 		}
 	}
 
@@ -103,7 +98,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		if(this.world != null) {
 			applyCameraPlayerIfNecessary();
 
-			if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
+			if(Playback.isReplaying && Playback.manager.cameraPlayer != null) {
 				this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
 			}
 
