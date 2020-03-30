@@ -131,7 +131,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	//Record window focus and prevent offthread calls affecting the replay.
 	//Focus might be wrong when the replay ends
-	@Inject(method = "onWindowFocusChanged", at = @At("RETURN"), cancellable = true)
+	@Inject(method = "onWindowFocusChanged", at = @At("HEAD"), cancellable = true)
 	private void recordOrDelayWindowFocus(boolean focused, CallbackInfo ci) {
 		if (this.windowFocused == focused) {
 			return;
