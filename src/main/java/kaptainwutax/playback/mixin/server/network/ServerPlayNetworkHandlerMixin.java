@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.server.network;
 
 import kaptainwutax.playback.Playback;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayNetworkHandler.class)
-public class ServerPlayNetworkHandlerMixin {
+public abstract class ServerPlayNetworkHandlerMixin {
 
 	/**
 	 * Disables the anti-cheat in replay worlds.

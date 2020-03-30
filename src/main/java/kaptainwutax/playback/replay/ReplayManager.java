@@ -1,6 +1,7 @@
 package kaptainwutax.playback.replay;
 
 import kaptainwutax.playback.Playback;
+import net.minecraft.client.MinecraftClient;
 
 public class ReplayManager {
 
@@ -42,6 +43,22 @@ public class ReplayManager {
 			return replayPlayer;
 		else
 			return cameraPlayer;
+	}
+
+	public void toggleView() {
+		this.updateView(ReplayView.values()[(this.view.ordinal() + 1) % ReplayView.values().length]);
+
+		//TODO: Maybe swapping this is better.
+		MinecraftClient.getInstance().getToastManager().clear();
+
+		//Teleport the camera player to the replay player.
+		Playback.manager.cameraPlayer.getPlayer().updatePositionAndAngles(
+				Playback.manager.replayPlayer.getPlayer().getX(),
+				Playback.manager.replayPlayer.getPlayer().getY(),
+				Playback.manager.replayPlayer.getPlayer().getZ(),
+				Playback.manager.replayPlayer.getPlayer().yaw,
+				Playback.manager.replayPlayer.getPlayer().pitch
+		);
 	}
 
 }

@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.server;
 
 import kaptainwutax.playback.Playback;
 import net.minecraft.server.MinecraftServer;

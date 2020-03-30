@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.network;
 
 import com.google.common.collect.ImmutableSet;
 import io.netty.channel.ChannelHandlerContext;

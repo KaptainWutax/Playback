@@ -70,7 +70,7 @@ public class PlayerFrame {
 			client.interactionManager = this.interactionManager;
 			((IClientCaller)client).setOptions(this.options);
 			this.options.apply();
-			boolean withCallback = this == Playback.manager.cameraPlayer || (Playback.mode == ReplayView.FIRST_PERSON && Playback.manager.isCurrentlyAcceptingInputs());
+			boolean withCallback = this == Playback.manager.cameraPlayer || (Playback.manager.getView() == ReplayView.FIRST_PERSON && Playback.manager.isCurrentlyAcceptingInputs());
 			((IClientCaller)client).setMouse(this.mouse, withCallback);
 			((IClientCaller)client).setKeyboard(this.keyboard, withCallback);
 			this.applyState();

@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin.packets;
+package kaptainwutax.playback.mixin.network.packet.s2c.play;
 
 import io.netty.buffer.ByteBuf;
 import kaptainwutax.playback.Playback;
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * This is necessary only when the values are coming from the internal server without being serialized like from dedicated servers.
  */
 @Mixin(EntitySpawnS2CPacket.class)
-public class EntitySpawnS2CPacketMixin {
+public abstract class EntitySpawnS2CPacketMixin {
     @Shadow private int pitch; //the problem is that the datatype is int not byte
     @Shadow private int yaw; //the problem is that the datatype is int not byte
 

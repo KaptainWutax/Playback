@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client.util;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.init.KeyBindings;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(InputUtil.class)
-public class InputUtilMixin {
+public abstract class InputUtilMixin {
 
 	@Inject(method = "isKeyPressed", at = @At("HEAD"), cancellable = true)
 	private static void isKeyPressed(long handle, int i, CallbackInfoReturnable<Boolean> ci) {

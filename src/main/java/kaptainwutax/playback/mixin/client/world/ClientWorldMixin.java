@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client.world;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.recording.Recording;
@@ -19,10 +19,11 @@ public abstract class ClientWorldMixin {
 			try {
 				Playback.recording.close();
 				Playback.recording = new Recording();
-			} catch (IOException e) {
+			} catch(IOException e) {
 				e.printStackTrace();
 			}
 		}
+
 		Playback.restart();
 	}
 

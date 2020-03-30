@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client.options;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;

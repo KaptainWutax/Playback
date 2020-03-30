@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.action.IKeyboard;

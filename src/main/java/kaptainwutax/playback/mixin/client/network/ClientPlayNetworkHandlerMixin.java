@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client.network;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.io.IOException;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class ClientPlayNetworkHandlerMixin {
+public abstract class ClientPlayNetworkHandlerMixin {
 
 	@Shadow
 	private MinecraftClient client;
@@ -46,7 +46,7 @@ public class ClientPlayNetworkHandlerMixin {
 		if(Playback.isReplaying) {
 			Playback.manager.cameraPlayer = null;
 			Playback.manager.replayPlayer = null;
-			Playback.manager.updateView(Playback.mode);
+			Playback.manager.updateView(Playback.manager.getView());
 
 			if(Playback.isProcessingReplay) {
 				Playback.manager.replayPlayer.apply();

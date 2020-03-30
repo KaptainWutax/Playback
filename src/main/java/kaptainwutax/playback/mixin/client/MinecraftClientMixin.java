@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
@@ -72,7 +72,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	private void applyReplayPlayerIfNecessary() {
 		if(this.world != null && Playback.isReplaying) {
 			if(Playback.manager.replayPlayer == null) {
-				Playback.manager.updateView(Playback.mode);
+				Playback.manager.updateView(Playback.manager.getView());
 			}
 
 			Playback.manager.replayPlayer.apply();
@@ -82,10 +82,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void tickStart(CallbackInfo ci) {
 		if(this.world != null) {
-			if(Playback.isCatchingUp) {
-				this.paused = false;
-			}
-
 			applyReplayPlayerIfNecessary();
 			Playback.update(this.paused);
 		}
@@ -121,7 +117,8 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			if(Playback.isReplaying && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), KeyBindings.TOGGLE_VIEW.getBoundKey().getKeyCode())) {
 				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {
 				}
-				if(!Playback.isCatchingUp) Playback.toggleView();
+
+				Playback.manager.toggleView();
 			}
 		}
 	}
@@ -129,7 +126,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	//During first person replay pretend window has focus so recorded mouse actions always get processed
 	@Inject(method = "onWindowFocusChanged", at = @At("RETURN"))
 	private void setWindowFocusedDuringReplay(boolean focused, CallbackInfo ci) {
-		if(Playback.isReplaying && Playback.mode == ReplayView.FIRST_PERSON) {
+		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.FIRST_PERSON) {
 			this.windowFocused = true;
 		}
 	}
@@ -154,7 +151,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Redirect(method = "doItemUse", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;resetEquipProgress(Lnet/minecraft/util/Hand;)V"))
 	private void resetEquipProgressIfPlayerIsCamera(HeldItemRenderer heldItemRenderer, Hand hand) {
-		if (!Playback.isReplaying || (Playback.mode == ReplayView.FIRST_PERSON) || ((Playback.manager.cameraPlayer != null) && (this.player == Playback.manager.cameraPlayer.getPlayer()))) {
+		if (!Playback.isReplaying || (Playback.manager.getView() == ReplayView.FIRST_PERSON) || ((Playback.manager.cameraPlayer != null) && (this.player == Playback.manager.cameraPlayer.getPlayer()))) {
 			heldItemRenderer.resetEquipProgress(hand);
 		}
 	}

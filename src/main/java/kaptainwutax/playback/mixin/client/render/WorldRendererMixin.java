@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client.render;
 
 import com.google.common.collect.Iterables;
 import kaptainwutax.playback.Playback;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 @Mixin(WorldRenderer.class)
-public class WorldRendererMixin {
+public abstract class WorldRendererMixin {
 
 	private Entity tmpEntity;
 	private ArrayList<Entity> extraEntities = new ArrayList<>(1);
@@ -40,7 +40,7 @@ public class WorldRendererMixin {
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Iterable;iterator()Ljava/util/Iterator;", ordinal = 0))
 	private Iterator<Entity> appendCameraPlayerForRender(Iterable<Entity> iterable) {
-		if (Playback.isReplaying && Playback.mode == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
+		if (Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
 			if (extraEntities.size() < 1) {
 				extraEntities.add(Playback.manager.cameraPlayer.getPlayer());
 			}
