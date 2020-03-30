@@ -1,5 +1,7 @@
 package kaptainwutax.playback.replay;
 
+import kaptainwutax.playback.Playback;
+
 public class ReplayManager {
 
 	public PlayerFrame replayPlayer;
@@ -18,6 +20,15 @@ public class ReplayManager {
 		} else if(view == ReplayView.THIRD_PERSON) {
 			this.cameraPlayer.apply();
 		}
+	}
+
+	public boolean isCurrentlyAcceptingInputs() {
+		if (this.currentAppliedPlayer == null) {
+			System.out.println("Inputs with no player frame! Allowing them...");
+			return true;
+		}
+
+		return this.currentAppliedPlayer == cameraPlayer || Playback.isProcessingReplay || Playback.replayingHasFinished;
 	}
 
 	public ReplayView getView() {
