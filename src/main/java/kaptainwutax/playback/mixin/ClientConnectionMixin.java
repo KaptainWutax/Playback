@@ -39,7 +39,7 @@ public abstract class ClientConnectionMixin {
 			DifficultyS2CPacket.class, CustomPayloadS2CPacket.class, SynchronizeRecipesS2CPacket.class,
 			UnlockRecipesS2CPacket.class, PlayerSpawnPositionS2CPacket.class, InventoryS2CPacket.class,
 			WorldTimeUpdateS2CPacket.class, ChunkRenderDistanceCenterS2CPacket.class, WorldBorderS2CPacket.class,
-			PlayerSpawnPositionS2CPacket.class, PlayerPositionLookS2CPacket.class
+			PlayerSpawnPositionS2CPacket.class, PlayerPositionLookS2CPacket.class, PlayerListS2CPacket.class
 	);
 
 	/**

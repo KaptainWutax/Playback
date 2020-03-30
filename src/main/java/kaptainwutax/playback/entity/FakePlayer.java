@@ -13,6 +13,7 @@ import net.minecraft.world.GameMode;
 
 public class FakePlayer extends ClientPlayerEntity {
 	private boolean spawned;
+	private ClientPlayerInteractionManager interactionManager;
 
 	//This is the player that carries the camera in THIRD PERSON replay. This should act like a freecam, without influencing the replay
 	public FakePlayer(MinecraftClient client, ClientWorld clientWorld, ClientPlayNetworkHandler clientPlayNetworkHandler, ClientPlayerInteractionManager interactionManager, PlayGameOptions options) {
@@ -21,8 +22,9 @@ public class FakePlayer extends ClientPlayerEntity {
 		GameMode gameMode = GameMode.CREATIVE;
 
 		gameMode.setAbilitites(this.abilities);
+		this.interactionManager = interactionManager;
 		((IInteractionCaller) interactionManager).setGameModeNoUpdates(gameMode);
-		this.setGameMode(gameMode);
+//		this.setGameMode(gameMode);
 
 		this.input = new KeyboardInput(options);
 		this.dimension = null;
@@ -44,6 +46,17 @@ public class FakePlayer extends ClientPlayerEntity {
 	public boolean isPushable() {
 		return false;
 	}
+
+	@Override
+	public boolean isCreative() {
+		return this.interactionManager.getCurrentGameMode() == GameMode.CREATIVE;
+	}
+
+	@Override
+	public boolean isSpectator() {
+		return this.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR;
+	}
+
 
 	public interface IClientCaller {
 

@@ -71,9 +71,9 @@ public class Playback implements ModInitializer {
 	}
 
 	public static void toggleView() {
-		Playback.isCatchingUp = true;
+//		Playback.isCatchingUp = true;
 
-		KeyBinding.unpressAll();
+//		KeyBinding.unpressAll();
 
 		if(mode == ReplayView.THIRD_PERSON) {
 			mode = ReplayView.FIRST_PERSON;
@@ -81,23 +81,24 @@ public class Playback implements ModInitializer {
 			mode = ReplayView.THIRD_PERSON;
 		}
 
-		MinecraftClient.getInstance().world = null;
-		MinecraftClient.getInstance().openScreen(null);
-		recording.joinPacket.play();
-		MinecraftClient.getInstance().openScreen(null);
-
-		Playback.manager.replayPlayer = null;
-		Playback.manager.cameraPlayer = null;
+//		MinecraftClient.getInstance().world = null;
+//		MinecraftClient.getInstance().openScreen(null);
+//		recording.joinPacket.play();
+//		MinecraftClient.getInstance().openScreen(null);
+//
+//		Playback.manager.replayPlayer = null;
+//		Playback.manager.cameraPlayer = null;
 
 		manager.updateView(mode);
-		Playback.manager.replayPlayer.apply();
+//		Playback.manager.replayPlayer.apply();
 
-		long currentTick = Playback.tickCounter;
-		Playback.tickCounter = 0;
-		Playback.recording.playUpTo(currentTick);
-		Playback.isCatchingUp = false;
+//		long currentTick = Playback.tickCounter;
+//		Playback.tickCounter = 0;
+//		Playback.recording.playUpTo(currentTick);
+//		Playback.isCatchingUp = false;
 
 		//clear the advancement/achievement popups
+		//swapping toast manager together with the playerframe might be better
 		MinecraftClient.getInstance().getToastManager().clear();
 
 		if(mode == ReplayView.THIRD_PERSON) {
