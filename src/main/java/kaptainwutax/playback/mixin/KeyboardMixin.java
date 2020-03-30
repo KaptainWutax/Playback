@@ -25,7 +25,7 @@ public abstract class KeyboardMixin implements IKeyboard {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickInfo().recordKey(0, key, scanCode, i, j);
-		} else if(!Playback.allowInput) {
+		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}
@@ -36,7 +36,7 @@ public abstract class KeyboardMixin implements IKeyboard {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickInfo().recordKey(1, 0, 0, i, j);
-		} else if(!Playback.allowInput) {
+		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}

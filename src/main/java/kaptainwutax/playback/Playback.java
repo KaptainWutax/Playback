@@ -26,9 +26,7 @@ public class Playback implements ModInitializer {
 	public static ReplayView mode = ReplayView.FIRST_PERSON;
 
 	public static boolean isProcessingReplay = false;
-
-	public static boolean allowInput = false;
-	public static boolean allowInputDefault = mode == ReplayView.THIRD_PERSON;
+	public static boolean replayingHasFinished;
 
 	public static final ReplayManager manager = new ReplayManager();
 	public static boolean joined;
@@ -42,7 +40,6 @@ public class Playback implements ModInitializer {
 	public static void update(boolean paused) {
 		if(paused)return; //todo what happens on multiplayer when the menu is opened, would the replay pause?
 
-		allowInputDefault = mode == ReplayView.THIRD_PERSON || tickCounter > recording.getEnd();
 		if(Playback.recording.isRecording()) {
 			if (Playback.tickCounter == 0) {
 				Playback.recording.getCurrentTickInfo().recordFirstTickFixes();
@@ -51,7 +48,7 @@ public class Playback implements ModInitializer {
 			recording.tickRecord(++tickCounter);
 		} else {
 			if(tickCounter > recording.getEnd()) {
-				allowInput = true;
+				replayingHasFinished = true;
 			}
 
 			recording.playTick(tickCounter++);
@@ -60,6 +57,7 @@ public class Playback implements ModInitializer {
 
 	public static void restart() { //restart the replay (intended to have to reload the world right now as well)
 		Playback.tickCounter = 0;
+		Playback.replayingHasFinished = false;
 		Playback.manager.cameraPlayer = null;
 		Playback.manager.replayPlayer = null;
 		Playback.joined = false;
@@ -92,9 +90,6 @@ public class Playback implements ModInitializer {
 
 		manager.updateView(mode);
 		Playback.manager.replayPlayer.apply();
-
-		allowInput = false;
-		allowInputDefault = mode == ReplayView.THIRD_PERSON;
 
 		long currentTick = Playback.tickCounter;
 		Playback.tickCounter = 0;

@@ -39,7 +39,7 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickInfo().recordMouse(0, x, y, 0, this.isCursorLocked);
-		} else if(!Playback.allowInput) {
+		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}
@@ -50,7 +50,7 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickInfo().recordMouse(1, button, action, mods, this.isCursorLocked);
-		} else if(!Playback.allowInput) {
+		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}
@@ -61,7 +61,7 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickInfo().recordMouse(2, d, e, 0, this.isCursorLocked);
-		} else if(!Playback.allowInput) {
+		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}
@@ -72,7 +72,7 @@ public abstract class MouseMixin implements IMouse {
 
 		if(!Playback.isReplaying) {
 			Playback.recording.getCurrentTickInfo().recordMouse(3, 0, 0, 0, this.isCursorLocked);
-		} else if(!Playback.allowInput) {
+		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}
