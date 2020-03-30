@@ -123,6 +123,26 @@ public class PlayerFrame {
 		return this;
 	}
 
+	public void setWindowFocus(boolean windowFocus) {
+		if (this == Playback.getManager().currentAppliedPlayer) {
+			((IClientCaller)MinecraftClient.getInstance()).setWindowFocusNoInjects(windowFocus);
+		}
+		this.windowFocus = windowFocus;
+	}
+
+	public void onReplayFinished() {
+		if (this == Playback.getManager().replayPlayer) {
+			//copy the window focus over
+			this.setWindowFocus(Playback.getManager().cameraPlayer.windowFocus);
+			if (this == Playback.getManager().currentAppliedPlayer && Playback.getManager().getView() == ReplayView.FIRST_PERSON) {
+				boolean withCallback = Playback.getManager().isCurrentlyAcceptingInputs();
+				//set whether mouse is grabbed etc.
+				((IClientCaller)client).setMouse(this.mouse, withCallback);
+				((IClientCaller)client).setKeyboard(this.keyboard, withCallback);
+			}
+		}
+	}
+
 	public boolean isActive() {
 		if(this.cameraOnly)return MinecraftClient.getInstance().cameraEntity == this.player;
 		return MinecraftClient.getInstance().player == this.player;

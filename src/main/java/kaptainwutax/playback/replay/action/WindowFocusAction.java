@@ -1,5 +1,6 @@
 package kaptainwutax.playback.replay.action;
 
+import kaptainwutax.playback.Playback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.PacketByteBuf;
 
@@ -15,7 +16,7 @@ public class WindowFocusAction extends Action {
 
 	@Override
 	public void play() {
-		MinecraftClient.getInstance().onWindowFocusChanged(windowFocused);
+		Playback.getManager().replayPlayer.setWindowFocus(windowFocused);
 	}
 
 	@Override

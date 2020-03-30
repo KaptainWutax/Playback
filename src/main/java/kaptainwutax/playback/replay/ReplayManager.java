@@ -52,6 +52,7 @@ public class ReplayManager {
 		} else {
 			if(tickCounter > recording.getEnd()) {
 				replayingHasFinished = true;
+				replayPlayer.onReplayFinished();
 			} else {
 				recording.playTick(tickCounter++);
 			}

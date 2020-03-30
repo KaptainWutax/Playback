@@ -129,10 +129,9 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
-	//Record window focus and prevent offthread calls affecting the replay.
-	//Focus might be wrong when the replay ends
+	//Record window focus during recording and prevent calls affecting the replay player during the replay.
 	@Inject(method = "onWindowFocusChanged", at = @At("HEAD"), cancellable = true)
-	private void recordOrDelayWindowFocus(boolean focused, CallbackInfo ci) {
+	private void recordOrRedirectWindowFocus(boolean focused, CallbackInfo ci) {
 		if (this.windowFocused == focused) {
 			return;
 		}
@@ -141,22 +140,13 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			return;
 		}
 
-		if (Playback.getManager().view == ReplayView.FIRST_PERSON) {
-			//could somehow remember the last focused to apply at the end of the replay
+		if (Playback.getManager().cameraPlayer != null && Playback.getManager().isReplaying()) {
 			ci.cancel();
-			return;
-		}
-
-		if (Playback.getManager().currentAppliedPlayer == Playback.getManager().cameraPlayer) {
-			return;
-		}
-
-		MinecraftClient.getInstance().send(() -> {
-			if (Playback.getManager().currentAppliedPlayer == Playback.getManager().cameraPlayer) {
-				this.windowFocused = focused;
+			Playback.getManager().cameraPlayer.setWindowFocus(focused);
+			if (Playback.getManager().replayingHasFinished) {
+				Playback.getManager().replayPlayer.setWindowFocus(focused);
 			}
-		});
-		ci.cancel();
+		}
 	}
 
 

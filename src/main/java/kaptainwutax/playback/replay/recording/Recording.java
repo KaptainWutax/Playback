@@ -61,6 +61,10 @@ public class Recording implements AutoCloseable {
 		this.startStateAction.addPhysicalSide(isSinglePlayer);
 	}
 
+	public void recordInitialWindowFocus(boolean windowFocus) {
+		this.startStateAction.addWindowFocus(windowFocus);
+	}
+
 	public void tickRecord(long tick) {
 		if(tick == this.currentTick) return;
 

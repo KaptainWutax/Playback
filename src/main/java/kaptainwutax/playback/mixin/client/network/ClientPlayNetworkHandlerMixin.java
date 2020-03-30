@@ -32,6 +32,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 				Playback.getManager().recording.recordJoinPacket(packet);
 				Playback.getManager().recording.recordPerspective(MinecraftClient.getInstance().options.perspective);
 				Playback.getManager().recording.recordPhysicalSide(MinecraftClient.getInstance().isInSingleplayer());
+				Playback.getManager().recording.recordInitialWindowFocus(MinecraftClient.getInstance().isWindowFocused());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -14,6 +14,7 @@ public class StartStateAction implements PlaybackSerializable {
 	private PacketAction joinPacket;
 	private int perspective;
 	private boolean isSinglePlayer;
+	private WindowFocusAction windowFocus;
 
 	public StartStateAction() {}
 
@@ -29,6 +30,10 @@ public class StartStateAction implements PlaybackSerializable {
 		this.isSinglePlayer = isSinglePlayer;
 	}
 
+	public void addWindowFocus(boolean windowFocus) {
+		this.windowFocus = new WindowFocusAction(windowFocus);
+	}
+
 	public void play() {
 		MinecraftClient.getInstance().options.perspective = this.perspective;
 		this.joinPacket.play();
@@ -39,12 +44,15 @@ public class StartStateAction implements PlaybackSerializable {
 		this.perspective = buf.readVarInt();
 		this.joinPacket = new PacketAction();
 		this.joinPacket.read(buf);
+		this.windowFocus = new WindowFocusAction(false);
+		this.windowFocus.read(buf);
 	}
 
 	@Override
 	public void write(PacketByteBuf buf) throws IOException {
 		buf.writeVarInt(this.perspective);
 		this.joinPacket.write(buf);
+		this.windowFocus.write(buf);
 	}
 
 	public int getPerspective() {
