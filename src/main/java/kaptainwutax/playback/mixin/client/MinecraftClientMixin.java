@@ -115,11 +115,14 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			}
 
 			//TODO: Add spam protection.
-			if(Playback.getManager().isReplaying() && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), KeyBindings.TOGGLE_VIEW.getBoundKey().getKeyCode())) {
+			if(KeyBindings.TOGGLE_VIEW.isPressed()) {
+				boolean s = false;
+
 				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {
+					s = true;
 				}
 
-				Playback.getManager().toggleView();
+				if(s)Playback.getManager().toggleView();
 			}
 		}
 	}
