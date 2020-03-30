@@ -17,8 +17,8 @@ public abstract class NetworkThreadUtilsMixin {
 
 	@Inject(method = "forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", at = @At("HEAD"))
 	private static <T extends PacketListener> void forceMainThread(Packet<T> packet, T listener, ThreadExecutor<?> engine, CallbackInfo ci) {
-		if(!Playback.isReplaying && engine.isOnThread() && engine == MinecraftClient.getInstance()) {
-			Playback.recording.getCurrentTickInfo().recordPacket((Packet<ClientPlayPacketListener>) packet);
+		if(Playback.getManager().isRecording() && engine.isOnThread() && engine == MinecraftClient.getInstance()) {
+			Playback.getManager().recording.getCurrentTickInfo().recordPacket((Packet<ClientPlayPacketListener>) packet);
 		}
 	}
 

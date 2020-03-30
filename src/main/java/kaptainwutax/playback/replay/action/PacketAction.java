@@ -59,7 +59,7 @@ public class PacketAction extends Action {
 		Integer id = NetworkState.PLAY.getPacketId(NetworkSide.CLIENTBOUND, packet);
 		if (id == null) throw new IOException("Invalid packet " + packet.getClass());
 		buf.writeVarInt(id);
-		packet.write(debug && Playback.recording.isSingleplayerRecording() ? new PacketByteBuf_NotifyPacketActionOnDataloss(buf) : buf);
+		packet.write(debug && Playback.getManager().recording.isSingleplayerRecording() ? new PacketByteBuf_NotifyPacketActionOnDataloss(buf) : buf);
 		if (dataLost) {
 			System.err.println("Packet with type " + packet.getClass().toString() + " was serialized with dataloss!");
 			dataLost = false;

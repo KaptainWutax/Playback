@@ -23,7 +23,7 @@ public abstract class EntitySpawnS2CPacketMixin {
     @Redirect(method = "write", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/PacketByteBuf;writeByte(I)Lio/netty/buffer/ByteBuf;"))
     private ByteBuf saveIntInstead(PacketByteBuf packetByteBuf, int i) {
         ByteBuf retVal;
-        if (Playback.recording != null && Playback.recording.isSingleplayerRecording())
+        if (Playback.getManager().recording != null && Playback.getManager().recording.isSingleplayerRecording())
             retVal = packetByteBuf.writeInt(i);
         else
             retVal = packetByteBuf.writeByte(i);
@@ -32,7 +32,7 @@ public abstract class EntitySpawnS2CPacketMixin {
 
     @Redirect(method = "read", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/PacketByteBuf;readByte()B"))
     private byte readNothing(PacketByteBuf packetByteBuf) {
-        if (Playback.recording != null && Playback.recording.isSingleplayerRecording()) {
+        if (Playback.getManager().recording != null && Playback.getManager().recording.isSingleplayerRecording()) {
             return 0;
         } else {
             return packetByteBuf.readByte();
@@ -41,7 +41,7 @@ public abstract class EntitySpawnS2CPacketMixin {
 
     @Inject(method = "read", require = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/PacketByteBuf;readInt()I", ordinal = 0, shift = At.Shift.BEFORE))
     private void readIntsInstead(PacketByteBuf buf, CallbackInfo ci) {
-        if (Playback.recording != null && Playback.recording.isSingleplayerRecording()) {
+        if (Playback.getManager().recording != null && Playback.getManager().recording.isSingleplayerRecording()) {
             this.pitch = buf.readInt();
             this.yaw = buf.readInt();
         }

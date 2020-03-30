@@ -16,7 +16,7 @@ public abstract class PositionedSoundInstanceMixin {
 
 	@Inject(method = "master(Lnet/minecraft/sound/SoundEvent;FF)Lnet/minecraft/client/sound/PositionedSoundInstance;", at = @At("HEAD"), cancellable = true)
 	private static void master(SoundEvent sound, float volume, float pitch, CallbackInfoReturnable<PositionedSoundInstance> ci) {
-		if(Playback.isProcessingReplay && Playback.manager.getView() == ReplayView.THIRD_PERSON) {
+		if(Playback.getManager().isProcessingReplay && Playback.getManager().getView() == ReplayView.THIRD_PERSON) {
 			float newValues = 0.0F;
 
 			ci.setReturnValue(new PositionedSoundInstance(sound.getId(), SoundCategory.MASTER, newValues, newValues, false,

@@ -29,9 +29,9 @@ public abstract class WorldRendererMixin {
 			target = "Lnet/minecraft/client/render/Camera;getFocusedEntity()Lnet/minecraft/entity/Entity;", ordinal = 3))
 	//return a replayPlayer for the replayPlayer, so it can be rendered
 	private Entity allowRenderingClientPlayerInFreeCameraMode(Camera camera) {
-		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON &&
-				Playback.manager.replayPlayer != null && camera.getFocusedEntity() == Playback.manager.cameraPlayer.getPlayer() &&
-				tmpEntity == Playback.manager.replayPlayer.getPlayer() ) {
+		if(Playback.getManager().isReplaying() && Playback.getManager().getView() == ReplayView.THIRD_PERSON &&
+				Playback.getManager().replayPlayer != null && camera.getFocusedEntity() == Playback.getManager().cameraPlayer.getPlayer() &&
+				tmpEntity == Playback.getManager().replayPlayer.getPlayer() ) {
 			return tmpEntity;
 		}
 
@@ -40,12 +40,12 @@ public abstract class WorldRendererMixin {
 
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Ljava/lang/Iterable;iterator()Ljava/util/Iterator;", ordinal = 0))
 	private Iterator<Entity> appendCameraPlayerForRender(Iterable<Entity> iterable) {
-		if (Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON && Playback.manager.cameraPlayer != null) {
+		if (Playback.getManager().isReplaying() && Playback.getManager().getView() == ReplayView.THIRD_PERSON && Playback.getManager().cameraPlayer != null) {
 			if (extraEntities.size() < 1) {
-				extraEntities.add(Playback.manager.cameraPlayer.getPlayer());
+				extraEntities.add(Playback.getManager().cameraPlayer.getPlayer());
 			}
 
-			extraEntities.set(0, Playback.manager.cameraPlayer.getPlayer());
+			extraEntities.set(0, Playback.getManager().cameraPlayer.getPlayer());
 			return Iterables.concat(iterable, extraEntities).iterator();
 		} else {
 			return iterable.iterator();

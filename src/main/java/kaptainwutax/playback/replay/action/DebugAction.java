@@ -28,7 +28,7 @@ public class DebugAction extends Action {
 		boolean everythingMatches = true;
 
 		Formatter formatter = new Formatter();
-		String header = "==============================[Tick " + Playback.tickCounter + "]==============================";
+		String header = "==============================[Tick " + Playback.getManager().tickCounter + "]==============================";
 		formatter.format(header + "\n");
 
 		Debugs actual = new Debugs(client.player);
@@ -40,9 +40,9 @@ public class DebugAction extends Action {
 				Object expectedValue = field.get(values);
 
 				if(actualValue.equals(expectedValue)) {
-					formatter.format("[Tick %d] %s is matching.\n", Playback.tickCounter, field.getName());
+					formatter.format("[Tick %d] %s is matching.\n", Playback.getManager().tickCounter, field.getName());
 				} else {
-					formatter.format("[Tick %d] %s doesn't match! Is %s but should be %s.\n", Playback.tickCounter, field.getName(), actualValue, expectedValue);
+					formatter.format("[Tick %d] %s doesn't match! Is %s but should be %s.\n", Playback.getManager().tickCounter, field.getName(), actualValue, expectedValue);
 					everythingMatches = false;
 				}
 			} catch (IllegalAccessException e) {

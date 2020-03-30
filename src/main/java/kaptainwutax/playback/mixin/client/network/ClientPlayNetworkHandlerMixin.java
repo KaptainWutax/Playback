@@ -26,16 +26,16 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onGameJoin", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-		if (!Playback.isReplaying) {
+		if (!Playback.getManager().isReplaying()) {
 			try {
-				Playback.recording = new Recording(Playback.getNewRecordingFile(), "rw");
-				Playback.recording.getCurrentTickInfo().recordPacket(packet);
+				Playback.getManager().recording = new Recording(Playback.getNewRecordingFile(), "rw");
+				Playback.getManager().recording.getCurrentTickInfo().recordPacket(packet);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		} else if(!Playback.joined) {
-			Playback.joined = true;
-			Playback.recording.getExtraStateAction().play();
+		} else if(!Playback.getManager().joined) {
+			Playback.getManager().joined = true;
+			Playback.getManager().recording.getExtraStateAction().play();
 			this.client.openScreen(null);
 			ci.cancel();
 		}
@@ -43,24 +43,24 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onPlayerRespawn", at = @At("TAIL"))
 	public void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
-		if(Playback.isReplaying) {
-			Playback.manager.cameraPlayer = null;
-			Playback.manager.replayPlayer = null;
-			Playback.manager.updateView(Playback.manager.getView());
+		if(Playback.getManager().isReplaying()) {
+			Playback.getManager().cameraPlayer = null;
+			Playback.getManager().replayPlayer = null;
+			Playback.getManager().updateView(Playback.getManager().getView());
 
-			if(Playback.isProcessingReplay) {
-				Playback.manager.replayPlayer.apply();
+			if(Playback.getManager().isProcessingReplay) {
+				Playback.getManager().replayPlayer.apply();
 			}
 		}
 	}
 
 	@Inject(method = "onPlayerPositionLook", at = @At("TAIL"))
 	public void onPlayerPositionLook(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
-		if(!Playback.isReplaying || Playback.manager.getView() != ReplayView.THIRD_PERSON
-				|| Playback.manager.cameraPlayer == null || Playback.manager.cameraPlayer.isActive()) return;
+		if(Playback.getManager().isRecording() || Playback.getManager().getView() != ReplayView.THIRD_PERSON
+				|| Playback.getManager().cameraPlayer == null || Playback.getManager().cameraPlayer.isActive()) return;
 
-		FakePlayer cameraPlayer = (FakePlayer) Playback.manager.cameraPlayer.getPlayer();
-		PlayerEntity replayPlayer = Playback.manager.replayPlayer.getPlayer();
+		FakePlayer cameraPlayer = (FakePlayer) Playback.getManager().cameraPlayer.getPlayer();
+		PlayerEntity replayPlayer = Playback.getManager().replayPlayer.getPlayer();
 
 		cameraPlayer.updatePositionAndAngles(replayPlayer.getX(), replayPlayer.getY(), replayPlayer.getZ(), replayPlayer.yaw, replayPlayer.pitch);
 	}

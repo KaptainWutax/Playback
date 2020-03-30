@@ -15,16 +15,16 @@ public abstract class ClientWorldMixin {
 
 	@Inject(method = "disconnect", at = @At("HEAD"))
 	private void disconnect(CallbackInfo ci) {
-		if(!Playback.isReplaying) { //wasRecording
+		if(!Playback.getManager().isReplaying()) { //wasRecording
 			try {
-				Playback.recording.close();
-				Playback.recording = new Recording();
+				Playback.getManager().recording.close();
+				Playback.getManager().recording = new Recording();
 			} catch(IOException e) {
 				e.printStackTrace();
 			}
 		}
 
-		Playback.restart();
+		Playback.getManager().restart();
 	}
 
 }

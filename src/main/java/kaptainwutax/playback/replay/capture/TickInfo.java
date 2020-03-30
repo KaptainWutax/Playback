@@ -26,9 +26,9 @@ public class TickInfo implements PlaybackSerializable {
 	}
 
 	public void play(ReplayView view) {
-		Playback.isProcessingReplay = true;
+		Playback.getManager().isProcessingReplay = true;
 		this.tickCapture.play();
-		Playback.isProcessingReplay = false;
+		Playback.getManager().isProcessingReplay = false;
 	}
 
 	public void recordPacket(Packet<ClientPlayPacketListener> packet) {

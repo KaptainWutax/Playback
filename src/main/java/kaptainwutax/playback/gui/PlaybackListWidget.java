@@ -29,7 +29,7 @@ public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackLi
                 File[] files = recordingsFolder.listFiles((d, f) -> f.endsWith(Playback.FILE_EXTENSION));
                 if (files == null) return;
                 summaries = new ArrayList<>();
-                RecordingSummary current = Playback.recording.readSummary();
+                RecordingSummary current = Playback.getManager().recording.readSummary();
                 if (current.file == null) {
                     summaries.add(current);
                 }

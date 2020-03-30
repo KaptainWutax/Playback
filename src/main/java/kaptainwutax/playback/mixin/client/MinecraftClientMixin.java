@@ -64,18 +64,18 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Shadow @Final private Window window;
 
 	private void applyCameraPlayerIfNecessary() {
-		if(this.world != null && Playback.isReplaying) {
-			Playback.manager.updateView(Playback.manager.getView());
+		if(this.world != null && Playback.getManager().isReplaying()) {
+			Playback.getManager().updateView(Playback.getManager().getView());
 		}
 	}
 
 	private void applyReplayPlayerIfNecessary() {
-		if(this.world != null && Playback.isReplaying) {
-			if(Playback.manager.replayPlayer == null) {
-				Playback.manager.updateView(Playback.manager.getView());
+		if(this.world != null && Playback.getManager().isReplaying()) {
+			if(Playback.getManager().replayPlayer == null) {
+				Playback.getManager().updateView(Playback.getManager().getView());
 			}
 
-			Playback.manager.replayPlayer.apply();
+			Playback.getManager().replayPlayer.apply();
 		}
 	}
 
@@ -83,7 +83,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	private void tickStart(CallbackInfo ci) {
 		if(this.world != null) {
 			applyReplayPlayerIfNecessary();
-			Playback.update(this.paused);
+			Playback.getManager().tick(this.paused);
 		}
 	}
 
@@ -110,15 +110,16 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		if(this.world != null) {
 			applyCameraPlayerIfNecessary();
 
-			if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON) {
-				this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
+			if(Playback.getManager().isReplaying() && Playback.getManager().getView() == ReplayView.THIRD_PERSON) {
+				this.world.tickEntity(Playback.getManager().cameraPlayer.getPlayer());
 			}
 
-			if(Playback.isReplaying && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), KeyBindings.TOGGLE_VIEW.getBoundKey().getKeyCode())) {
+			//TODO: Add spam protection.
+			if(Playback.getManager().isReplaying() && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), KeyBindings.TOGGLE_VIEW.getBoundKey().getKeyCode())) {
 				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {
 				}
 
-				Playback.manager.toggleView();
+				Playback.getManager().toggleView();
 			}
 		}
 	}
@@ -126,7 +127,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	//During first person replay pretend window has focus so recorded mouse actions always get processed
 	@Inject(method = "onWindowFocusChanged", at = @At("RETURN"))
 	private void setWindowFocusedDuringReplay(boolean focused, CallbackInfo ci) {
-		if(Playback.isReplaying && Playback.manager.getView() == ReplayView.FIRST_PERSON) {
+		if(Playback.getManager().isReplaying() && Playback.getManager().getView() == ReplayView.FIRST_PERSON) {
 			this.windowFocused = true;
 		}
 	}
@@ -144,14 +145,15 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Inject(method = "openPauseMenu", at = @At("HEAD"), cancellable = true)
 	public void openPauseMenu(CallbackInfo ci) {
-		if(Playback.isReplaying && Playback.isProcessingReplay) {
+		if(Playback.getManager().isReplaying() && Playback.getManager().isProcessingReplay) {
 			ci.cancel();
 		}
 	}
 
 	@Redirect(method = "doItemUse", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;resetEquipProgress(Lnet/minecraft/util/Hand;)V"))
 	private void resetEquipProgressIfPlayerIsCamera(HeldItemRenderer heldItemRenderer, Hand hand) {
-		if (!Playback.isReplaying || (Playback.manager.getView() == ReplayView.FIRST_PERSON) || ((Playback.manager.cameraPlayer != null) && (this.player == Playback.manager.cameraPlayer.getPlayer()))) {
+		if (!Playback.getManager().isReplaying() || (Playback.getManager().getView() == ReplayView.FIRST_PERSON)
+				|| ((Playback.getManager().cameraPlayer != null) && (this.player == Playback.getManager().cameraPlayer.getPlayer()))) {
 			heldItemRenderer.resetEquipProgress(hand);
 		}
 	}

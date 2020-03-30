@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.action.ExtraStateAction;
 import kaptainwutax.playback.replay.capture.TickInfo;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.PacketByteBuf;
 
 import java.io.*;
@@ -40,10 +39,6 @@ public class Recording implements AutoCloseable {
 	public Recording(File file, String mode) throws FileNotFoundException {
 		this.file = file;
 		this.randomAccessFile = new RandomAccessFile(file, mode);
-	}
-
-	public boolean isRecording() {
-		return !Playback.isReplaying;
 	}
 
 	public ExtraStateAction getExtraStateAction() {
@@ -156,14 +151,7 @@ public class Recording implements AutoCloseable {
 	public void playTick(long tick) {
 		this.currentTick = tick;
 		this.currentTickInfo = this.recording.getOrDefault(tick, TickInfo.EMPTY);
-		this.currentTickInfo.play(Playback.manager.getView());
-	}
-
-	public void playUpTo(long tick) {
-		while(Playback.isReplaying && this.currentTick < tick) {
-			MinecraftClient.getInstance().tick();
-
-		}
+		this.currentTickInfo.play(Playback.getManager().getView());
 	}
 
 	public TickInfo getCurrentTickInfo() {
