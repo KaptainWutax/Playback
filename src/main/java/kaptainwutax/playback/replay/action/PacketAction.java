@@ -66,6 +66,10 @@ public class PacketAction extends Action {
 		}
 	}
 
+	public Packet<ClientPlayPacketListener> getPacket() {
+		return packet;
+	}
+
 	public interface IConnectionGetter {
 
 		ClientConnection getConnection();

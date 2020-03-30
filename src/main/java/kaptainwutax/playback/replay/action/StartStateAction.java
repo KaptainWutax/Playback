@@ -4,6 +4,7 @@ import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.util.PacketByteBuf;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class StartStateAction implements PlaybackSerializable {
 		return this.perspective;
 	}
 
-	public PacketAction getJoinPacket() {
+	public PacketAction getJoinPacketAction() {
 		return this.joinPacket;
 	}
 
@@ -58,4 +59,7 @@ public class StartStateAction implements PlaybackSerializable {
 		return this.isSinglePlayer;
 	}
 
+	public GameJoinS2CPacket getJoinPacket() {
+		return joinPacket == null ? null : (GameJoinS2CPacket) joinPacket.getPacket();
+	}
 }

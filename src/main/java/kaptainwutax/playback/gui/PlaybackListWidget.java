@@ -5,6 +5,8 @@ import kaptainwutax.playback.replay.recording.RecordingSummary;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -74,17 +76,21 @@ public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackLi
             String filename = summary.file == null ? "In-Memory Recording" : summary.file.getName();
             int extIndex = filename.lastIndexOf(".pbk");
             if (extIndex > 0) filename = filename.substring(0, extIndex);
-            this.client.textRenderer.draw(filename, x + 32 + 3, y + 1, 0xffffff);
             DrawableHelper.fill(x, y, x + 32, y + 32, 0xa0909090);
             String fileSize = String.format("%.2fMB", summary.length / (1024.0 * 1024.0));
-            this.client.textRenderer.draw(fileSize, x + 32 + 3, y + 3 + 9, 0x808080);
+            String type = I18n.translate(summary.startState.isSinglePlayer() ? "menu.singleplayer" : "menu.multiplayer");
+            String line1 = fileSize + " " + type;
             long time = summary.duration / 20;
             int seconds = (int) (time % 60);
             time = (time - seconds) / 60;
             int minutes = (int) (time % 60);
             int hours = (int) ((time - minutes) / 60);
             String timeStr = hours > 0 ? String.format("%d:%02d:%02d", hours, minutes, seconds) : String.format("%d:%02d", minutes, seconds);
-            this.client.textRenderer.draw(timeStr, x + 32 + 3, y + 3 + 9 + 9, 0x808080);
+            GameJoinS2CPacket joinPacket = summary.startState.getJoinPacket();
+            String line2 = joinPacket == null ? timeStr : timeStr + " " + joinPacket.getGameMode().getTranslatableName().asFormattedString();
+            this.client.textRenderer.draw(filename, x + 32 + 3, y + 1, 0xffffff);
+            this.client.textRenderer.draw(line1, x + 32 + 3, y + 3 + 9, 0x808080);
+            this.client.textRenderer.draw(line2, x + 32 + 3, y + 3 + 9 + 9, 0x808080);
         }
 
         @Override

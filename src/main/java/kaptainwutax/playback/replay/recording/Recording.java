@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.action.StartStateAction;
 import kaptainwutax.playback.replay.capture.TickInfo;
+import kaptainwutax.playback.util.SerializationUtil;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.PacketByteBuf;
@@ -15,9 +16,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.DoubleConsumer;
 
 public class Recording implements AutoCloseable {
+	private static int HEADER_SIZE = 12;
 
-	//TODO: Save this!
-	protected StartStateAction startStateAction;
+	protected StartStateAction startStateAction = new StartStateAction();
 	protected Long2ObjectMap<TickInfo> recording = new Long2ObjectOpenHashMap<>();
 
 	protected final File file;
@@ -25,8 +26,9 @@ public class Recording implements AutoCloseable {
 	/**
 	 * file offset where the next tick is written
 	 */
-	private long fileOffset;
+	private long fileOffset = HEADER_SIZE;
 	private long lastTick;
+	private boolean startStateWritten;
 
 	public long currentTick = 0;
 	private TickInfo currentTickInfo = new TickInfo(this);
@@ -68,14 +70,11 @@ public class Recording implements AutoCloseable {
 
 		System.out.println("Tick " + tick);
 		if (randomAccessFile != null && !currentTickInfo.isEmpty()) {
-			System.out.println("Writing to " + file);
 			try {
 				recordToFile(tick, currentTickInfo);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		} else if (randomAccessFile == null) {
-			System.out.println("Not writing: no file");
 		}
 
 		this.currentTickInfo = new TickInfo(this);
@@ -84,57 +83,69 @@ public class Recording implements AutoCloseable {
 	}
 
 	private void recordToFile(long tick, TickInfo currentTickInfo) throws IOException {
-		writeHeader(tick);
+		if (!startStateWritten) {
+			writeStartState();
+		} else {
+			writeHeader(tick);
+		}
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeVarLong(tick);
 		currentTickInfo.write(buf);
-		randomAccessFile.writeInt(buf.readableBytes());
-		while (buf.isReadable()) {
-			buf.readBytes(randomAccessFile.getChannel(), buf.readableBytes());
-		}
-		buf.release();
+		SerializationUtil.writeSizedBuffer(buf, randomAccessFile);
 		fileOffset = randomAccessFile.getFilePointer();
 	}
 
 	private void writeHeader(long tick) throws IOException {
 		randomAccessFile.seek(0);
 		randomAccessFile.writeLong(tick);
-		if (fileOffset == 0) {
-			fileOffset = randomAccessFile.getFilePointer();
-		} else {
-			randomAccessFile.seek(fileOffset);
-		}
+		randomAccessFile.seek(fileOffset);
+	}
+
+	private void writeStartState() throws IOException {
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		startStateAction.write(buf);
+		randomAccessFile.seek(8);
+		SerializationUtil.writeSizedBuffer(buf, randomAccessFile);
+		fileOffset = randomAccessFile.getFilePointer();
+		startStateWritten = true;
 	}
 
 	private long readTickFromFile() throws IOException {
-		int size = randomAccessFile.readInt();
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer(size));
-		while (size > 0) {
-			int read = buf.writeBytes(randomAccessFile.getChannel(), size);
-			if (read < 0) throw new EOFException();
-			size -= read;
+		long offset = randomAccessFile.getFilePointer();
+		try {
+			PacketByteBuf buf = SerializationUtil.readSizedBuffer(randomAccessFile);
+			long tick = buf.readVarLong();
+			TickInfo info = new TickInfo(this);
+			info.read(buf);
+			buf.release();
+			recording.put(tick, info);
+			return tick;
+		} catch (Exception e) {
+			throw new IOException("Error reading tick from file @" + offset + "-" + randomAccessFile.getFilePointer(), e);
 		}
-		long tick = buf.readVarLong();
-		TickInfo info = new TickInfo(this);
-		info.read(buf);
-		recording.put(tick, info);
-		return tick;
 	}
 
 	public void loadHeader() throws IOException {
-		randomAccessFile.seek(0);
-		lastTick = randomAccessFile.readLong();
-		if (fileOffset == 0) {
-			fileOffset = randomAccessFile.getFilePointer();
-		} else {
-			randomAccessFile.seek(fileOffset);
+		try {
+			randomAccessFile.seek(0);
+			lastTick = randomAccessFile.readLong();
+			PacketByteBuf buf = SerializationUtil.readSizedBuffer(randomAccessFile);
+			startStateAction.read(buf);
+			buf.release();
+			if (fileOffset == 0) {
+				fileOffset = randomAccessFile.getFilePointer();
+			} else {
+				randomAccessFile.seek(fileOffset);
+			}
+		} catch (Exception e) {
+			throw new IOException("Error reading header", e);
 		}
 	}
 
 	public RecordingSummary readSummary() throws IOException {
-		if (randomAccessFile == null) return new RecordingSummary(null, 0, lastTick);
+		if (randomAccessFile == null) return new RecordingSummary(null, 0, lastTick, startStateAction);
 		loadHeader();
-		return new RecordingSummary(file, randomAccessFile.length(), lastTick);
+		return new RecordingSummary(file, randomAccessFile.length(), lastTick, startStateAction);
 	}
 
 	public CompletableFuture<Void> loadAsync(DoubleConsumer progressListener) {
