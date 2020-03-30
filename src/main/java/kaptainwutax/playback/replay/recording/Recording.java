@@ -4,7 +4,7 @@ import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.action.PacketAction;
+import kaptainwutax.playback.replay.action.ExtraStateAction;
 import kaptainwutax.playback.replay.capture.TickInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.PacketByteBuf;
@@ -15,7 +15,10 @@ import java.util.function.DoubleConsumer;
 
 public class Recording implements AutoCloseable {
 
+	//TODO: Save this!
+	protected ExtraStateAction extraStateAction;
 	protected Long2ObjectMap<TickInfo> recording = new Long2ObjectOpenHashMap<>();
+
 	protected final File file;
 	protected final RandomAccessFile randomAccessFile;
 	/**
@@ -25,11 +28,7 @@ public class Recording implements AutoCloseable {
 	private long lastTick;
 
 	public long currentTick = 0;
-	private TickInfo previousTickInfo = new TickInfo();
-	private TickInfo currentTickInfo = new TickInfo();
-	private TickInfo nextTickInfo = new TickInfo();
-
-	public PacketAction joinPacket;
+	private TickInfo currentTickInfo = new TickInfo(this);
 
 	public static final ThreadLocal<Recording> currentlyReading = new ThreadLocal<>();
 
@@ -47,13 +46,16 @@ public class Recording implements AutoCloseable {
 		return !Playback.isReplaying;
 	}
 
+	public ExtraStateAction getExtraStateAction() {
+		return this.extraStateAction;
+	}
+
 	public void tickRecord(long tick) {
 		if(tick == this.currentTick) return;
 
 		if(!this.currentTickInfo.isEmpty()) {
 			this.recording.put(this.currentTick, this.currentTickInfo);
 		}
-
 
 		System.out.println("Tick " + tick);
 		if (randomAccessFile != null && !currentTickInfo.isEmpty()) {
@@ -67,9 +69,7 @@ public class Recording implements AutoCloseable {
 			System.out.println("Not writing: no file");
 		}
 
-		this.previousTickInfo = this.currentTickInfo;
-		this.currentTickInfo = this.nextTickInfo;
-		this.nextTickInfo = new TickInfo();
+		this.currentTickInfo = new TickInfo(this);
 		this.currentTick = tick;
 		lastTick = tick;
 	}
@@ -106,7 +106,7 @@ public class Recording implements AutoCloseable {
 			size -= read;
 		}
 		long tick = buf.readVarLong();
-		TickInfo info = new TickInfo();
+		TickInfo info = new TickInfo(this);
 		info.read(buf);
 		recording.put(tick, info);
 		return tick;
@@ -155,9 +155,7 @@ public class Recording implements AutoCloseable {
 
 	public void playTick(long tick) {
 		this.currentTick = tick;
-		this.previousTickInfo = this.recording.getOrDefault(tick - 1, TickInfo.EMPTY);
 		this.currentTickInfo = this.recording.getOrDefault(tick, TickInfo.EMPTY);
-		this.nextTickInfo = this.recording.getOrDefault(tick + 1, TickInfo.EMPTY);
 		this.currentTickInfo.play(Playback.manager.getView());
 	}
 
@@ -168,16 +166,8 @@ public class Recording implements AutoCloseable {
 		}
 	}
 
-	public TickInfo getPreviousTickInfo() {
-		return this.previousTickInfo;
-	}
-
 	public TickInfo getCurrentTickInfo() {
 		return this.currentTickInfo;
-	}
-
-	public TickInfo getNextTickInfo() {
-		return this.nextTickInfo;
 	}
 
 	public long getEnd() {
@@ -192,4 +182,5 @@ public class Recording implements AutoCloseable {
 	public void close() throws IOException {
 		if (randomAccessFile != null) randomAccessFile.close();
 	}
+
 }

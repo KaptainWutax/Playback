@@ -42,10 +42,6 @@ public class TickCapture implements PlaybackSerializable {
 		this.addAction(new MouseAction(action, d1, d2, i1, isCursorLocked));
 	}
 
-	public void addF5ModeFixAction(int perspectiveF5mode) {
-		this.addAction(new F5ModeFixAction(perspectiveF5mode));
-	}
-
 	public void addKeyState(int i) {
 		this.keyStates.add(i);
 	}

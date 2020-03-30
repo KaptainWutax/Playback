@@ -18,7 +18,7 @@ public class InputUtilMixin {
 		if(!Playback.isReplaying && GLFW.glfwGetKey(handle, i) == 1) {
 			Playback.recording.getCurrentTickInfo().recordKeyState(i);
 		} else if(Playback.isReplaying && Playback.manager.getView() == ReplayView.FIRST_PERSON && !KeyBindings.hasKeyCode(i)) {
-			ci.setReturnValue(Playback.recording.getCurrentTickInfo().getKeyState(handle, i));
+			ci.setReturnValue(Playback.recording.getCurrentTickInfo().getKeyState(i));
 		}
 	}
 }

@@ -41,17 +41,14 @@ public class Playback implements ModInitializer {
 		if(paused)return; //todo what happens on multiplayer when the menu is opened, would the replay pause?
 
 		if(Playback.recording.isRecording()) {
-			if (Playback.tickCounter == 0) {
-				Playback.recording.getCurrentTickInfo().recordFirstTickFixes();
-			}
 			Playback.recording.getCurrentTickInfo().recordDebug();
 			recording.tickRecord(++tickCounter);
 		} else {
 			if(tickCounter > recording.getEnd()) {
 				replayingHasFinished = true;
+			} else {
+				recording.playTick(tickCounter++);
 			}
-
-			recording.playTick(tickCounter++);
 		}
 	}
 
