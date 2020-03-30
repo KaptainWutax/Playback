@@ -33,15 +33,10 @@ public class TickInfo implements PlaybackSerializable {
 
 	public void recordPacket(Packet<ClientPlayPacketListener> packet) {
 		if(packet instanceof GameJoinS2CPacket) {
-			this.recording.getExtraStateAction().addJoinPacket(packet);
 			return;
 		}
 
 		this.tickCapture.addPacketAction(packet);
-	}
-
-	public void recordPerspective(int perspective) {
-		this.recording.getExtraStateAction().addPerspective(perspective);
 	}
 
 	public void recordKey(int action, int key, int scanCode, int i, int j) {

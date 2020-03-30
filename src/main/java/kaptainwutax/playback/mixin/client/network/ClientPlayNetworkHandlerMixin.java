@@ -26,10 +26,12 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onGameJoin", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-		if (!Playback.getManager().isReplaying()) {
+		if (Playback.getManager().isRecording()) {
 			try {
 				Playback.getManager().recording = new Recording(Playback.getNewRecordingFile(), "rw");
-				Playback.getManager().recording.getCurrentTickInfo().recordPacket(packet);
+				Playback.getManager().recording.recordJoinPacket(packet);
+				Playback.getManager().recording.recordPerspective(MinecraftClient.getInstance().options.perspective);
+				Playback.getManager().recording.recordPhysicalSide(MinecraftClient.getInstance().isInSingleplayer());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

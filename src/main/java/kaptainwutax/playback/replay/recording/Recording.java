@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.action.ExtraStateAction;
 import kaptainwutax.playback.replay.capture.TickInfo;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.PacketByteBuf;
 
 import java.io.*;
@@ -43,6 +45,18 @@ public class Recording implements AutoCloseable {
 
 	public ExtraStateAction getExtraStateAction() {
 		return this.extraStateAction;
+	}
+
+	public void recordJoinPacket(Packet<ClientPlayPacketListener> packet) {
+		this.extraStateAction.addJoinPacket(packet);
+	}
+
+	public void recordPerspective(int perspective) {
+		this.extraStateAction.addPerspective(perspective);
+	}
+
+	public void recordPhysicalSide(boolean isSinglePlayer) {
+		this.extraStateAction.addPhysicalSide(isSinglePlayer);
 	}
 
 	public void tickRecord(long tick) {
@@ -162,8 +176,8 @@ public class Recording implements AutoCloseable {
 		return lastTick;
 	}
 
-	public boolean isSingleplayerRecording() {
-		return true; //TODO record whether this is a singleplayer (integrated server non serializing communication) recording
+	public boolean isSinglePlayerRecording() {
+		return this.extraStateAction.isSinglePlayer();
 	}
 
 	@Override
