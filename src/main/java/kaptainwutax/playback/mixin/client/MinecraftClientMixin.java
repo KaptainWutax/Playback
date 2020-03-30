@@ -122,7 +122,9 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 					s = true;
 				}
 
-				if(s)Playback.getManager().toggleView();
+				if(s) {
+					Playback.getManager().toggleView();
+				}
 			}
 		}
 	}
