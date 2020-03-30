@@ -65,7 +65,7 @@ public class TickInfo implements PlaybackSerializable {
 	}
 
 	public void recordDebug() {
-		this.tickCapture.addDebugAction(new DebugAction());
+		this.tickCapture.addDebugAction(new DebugAction(MinecraftClient.getInstance().player));
 	}
 
 	public boolean isEmpty() {

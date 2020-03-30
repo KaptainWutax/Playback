@@ -1,6 +1,7 @@
 package kaptainwutax.playback.util;
 
 import net.minecraft.util.PacketByteBuf;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,5 +26,15 @@ public class SerializationUtil {
             map.put(readKey.apply(buf), readValue.apply(buf));
         }
         return map;
+    }
+
+    public static Vec3d readVec3d(PacketByteBuf buf) {
+        return new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
+    }
+
+    public static void writeVec3d(PacketByteBuf buf, Vec3d v) {
+        buf.writeDouble(v.x);
+        buf.writeDouble(v.y);
+        buf.writeDouble(v.z);
     }
 }
