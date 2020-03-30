@@ -24,7 +24,8 @@
     "MouseMixin",
     "SoundSystemMixin",
     "TitleScreenMixin",
-    "WorldRendererMixin"
+    "WorldRendererMixin",
+    "PositionedSoundInstanceMixin"
   ],
   "injectors": {
     "defaultRequire": 1
