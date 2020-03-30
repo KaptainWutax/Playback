@@ -4,7 +4,7 @@ import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.action.ExtraStateAction;
+import kaptainwutax.playback.replay.action.StartStateAction;
 import kaptainwutax.playback.replay.capture.TickInfo;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -17,7 +17,7 @@ import java.util.function.DoubleConsumer;
 public class Recording implements AutoCloseable {
 
 	//TODO: Save this!
-	protected ExtraStateAction extraStateAction;
+	protected StartStateAction startStateAction;
 	protected Long2ObjectMap<TickInfo> recording = new Long2ObjectOpenHashMap<>();
 
 	protected final File file;
@@ -43,20 +43,20 @@ public class Recording implements AutoCloseable {
 		this.randomAccessFile = new RandomAccessFile(file, mode);
 	}
 
-	public ExtraStateAction getExtraStateAction() {
-		return this.extraStateAction;
+	public StartStateAction getStartStateAction() {
+		return this.startStateAction;
 	}
 
 	public void recordJoinPacket(Packet<ClientPlayPacketListener> packet) {
-		this.extraStateAction.addJoinPacket(packet);
+		this.startStateAction.addJoinPacket(packet);
 	}
 
 	public void recordPerspective(int perspective) {
-		this.extraStateAction.addPerspective(perspective);
+		this.startStateAction.addPerspective(perspective);
 	}
 
 	public void recordPhysicalSide(boolean isSinglePlayer) {
-		this.extraStateAction.addPhysicalSide(isSinglePlayer);
+		this.startStateAction.addPhysicalSide(isSinglePlayer);
 	}
 
 	public void tickRecord(long tick) {
@@ -177,7 +177,7 @@ public class Recording implements AutoCloseable {
 	}
 
 	public boolean isSinglePlayerRecording() {
-		return this.extraStateAction.isSinglePlayer();
+		return this.startStateAction.isSinglePlayer();
 	}
 
 	@Override

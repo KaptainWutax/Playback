@@ -8,13 +8,13 @@ import net.minecraft.util.PacketByteBuf;
 
 import java.io.IOException;
 
-public class ExtraStateAction implements PlaybackSerializable {
+public class StartStateAction implements PlaybackSerializable {
 
 	private PacketAction joinPacket;
 	private int perspective;
 	private boolean isSinglePlayer;
 
-	public ExtraStateAction() {}
+	public StartStateAction() {}
 
 	public void addPerspective(int perspective) {
 		this.perspective = perspective;
