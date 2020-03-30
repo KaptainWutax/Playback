@@ -1,6 +1,7 @@
 package kaptainwutax.playback.mixin.client;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.KeyAction;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
@@ -26,7 +27,14 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 		if(Playback.getManager().isRecording()) {
 			Playback.getManager().recording.getCurrentTickInfo().recordKey(0, key, scanCode, i, j);
 		} else if(!Playback.getManager().isCurrentlyAcceptingInputs()) {
-			ci.cancel();
+			if(Playback.getManager().isProcessingReplay) {
+				ci.cancel();
+			} else {
+				ReplayView view = Playback.getManager().getView();
+				Playback.getManager().updateView(ReplayView.THIRD_PERSON);
+				Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
+				Playback.getManager().updateView(view);
+			}
 		}
 	}
 

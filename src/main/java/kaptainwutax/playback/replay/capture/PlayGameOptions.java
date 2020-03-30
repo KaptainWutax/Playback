@@ -8,7 +8,7 @@ import net.minecraft.client.util.InputUtil;
 import java.util.Map;
 import java.util.Set;
 
-public class PlayGameOptions extends GameOptions {
+public class PlayGameOptions {
 
 	private Map<String, KeyBinding> keysById;
 	private Map<InputUtil.KeyCode, KeyBinding> keysByCode;
@@ -17,14 +17,24 @@ public class PlayGameOptions extends GameOptions {
 
 	private final IKeyBindingCaller dummyKey;
 
+	GameOptions options;
+
 	public PlayGameOptions() {
-		super(MinecraftClient.getInstance(), null);
-		this.dummyKey = ((IKeyBindingCaller)this.keysAll[0]);
+		this(new GameOptions(MinecraftClient.getInstance(), null));
+	}
+
+	public PlayGameOptions(GameOptions options) {
+		this.options = options;
+		this.dummyKey = ((IKeyBindingCaller)this.options.keysAll[0]);
 		this.keysById = this.dummyKey.getKeysById();
 		this.keysByCode = this.dummyKey.getKeysByCode();
 		this.keyCategories = this.dummyKey.getKeyCategories();
 		this.categoryOrderMap = this.dummyKey.getCategoryOrderMap();
 		this.dummyKey.resetStaticCollections();
+	}
+
+	public GameOptions getOptions() {
+		return this.options;
 	}
 
 	public void apply() {

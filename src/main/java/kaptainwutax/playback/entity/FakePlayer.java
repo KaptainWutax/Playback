@@ -25,7 +25,7 @@ public class FakePlayer extends ClientPlayerEntity {
 		this.interactionManager = interactionManager;
 		((IInteractionCaller) interactionManager).setGameModeNoUpdates(gameMode);
 
-		this.input = new KeyboardInput(options);
+		this.input = new KeyboardInput(options.getOptions());
 		this.dimension = null;
 	}
 
