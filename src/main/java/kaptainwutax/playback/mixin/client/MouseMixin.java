@@ -2,7 +2,7 @@ package kaptainwutax.playback.mixin.client;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.PlayerFrame;
-import kaptainwutax.playback.replay.action.IMouse;
+import kaptainwutax.playback.replay.action.MouseAction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.util.InputUtil;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Mouse.class)
-public abstract class MouseMixin implements IMouse {
+public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 	@Unique private boolean replayingAction;
 	@Unique private boolean windowFocusOverride;

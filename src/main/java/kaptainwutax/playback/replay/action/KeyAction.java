@@ -22,7 +22,7 @@ public class KeyAction extends Action {
 
 	@Override
 	public void play() {
-		((IKeyboard) client.keyboard).execute(this.action, this.key, this.scanCode, this.i, this.j);
+		((IKeyboardCaller)client.keyboard).execute(this.action, this.key, this.scanCode, this.i, this.j);
 	}
 
 	@Override
@@ -46,6 +46,10 @@ public class KeyAction extends Action {
 		buf.writeVarInt(scanCode);
 		buf.writeVarInt(i);
 		buf.writeVarInt(j);
+	}
+
+	public interface IKeyboardCaller {
+		void execute(int action, int key, int scanCode, int i, int j);
 	}
 
 }

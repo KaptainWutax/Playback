@@ -25,7 +25,7 @@ public class MouseAction extends Action {
 
 	@Override
 	public void play() {
-		((IMouse) client.mouse).execute(this.action, this.d1, this.d2, this.i1, this.windowFocused, this.cursorLocked);
+		((IMouseCaller)client.mouse).execute(this.action, this.d1, this.d2, this.i1, this.windowFocused, this.cursorLocked);
 	}
 
 	@Override
@@ -54,6 +54,10 @@ public class MouseAction extends Action {
 		if (windowFocused) flags |= 1;
 		if (cursorLocked) flags |= 2;
 		buf.writeByte(flags);
+	}
+
+	public interface IMouseCaller {
+		void execute(int action, double d1, double d2, int mods, boolean windowFocused, boolean cursorLocked);
 	}
 
 }

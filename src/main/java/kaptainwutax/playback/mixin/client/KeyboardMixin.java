@@ -1,7 +1,7 @@
 package kaptainwutax.playback.mixin.client;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.action.IKeyboard;
+import kaptainwutax.playback.replay.action.KeyAction;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Keyboard.class)
-public abstract class KeyboardMixin implements IKeyboard {
+public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 
 	@Shadow
 	public abstract void onKey(long window, int key, int scanCode, int i, int j);
