@@ -8,7 +8,6 @@ import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(InputUtil.class)
@@ -20,13 +19,6 @@ public class InputUtilMixin {
 			Playback.recording.getCurrentTickInfo().recordKeyState(i);
 		} else if(Playback.isReplaying && Playback.manager.getView() == ReplayView.FIRST_PERSON && !KeyBindings.hasKeyCode(i)) {
 			ci.setReturnValue(Playback.recording.getCurrentTickInfo().getKeyState(handle, i));
-		}
-	}
-
-	@Inject(method = "setCursorParameters", at = @At("HEAD"), cancellable = true)
-	private static void setCursorParameters(long l, int i, double d, double e, CallbackInfo ci) {
-		if(Playback.isProcessingReplay && Playback.manager.getView() == ReplayView.THIRD_PERSON) {
-			ci.cancel();
 		}
 	}
 
