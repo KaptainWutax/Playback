@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client.sound;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.ReplayView;
@@ -12,11 +12,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PositionedSoundInstance.class)
-public class PositionedSoundInstanceMixin {
+public abstract class PositionedSoundInstanceMixin {
 
 	@Inject(method = "master(Lnet/minecraft/sound/SoundEvent;FF)Lnet/minecraft/client/sound/PositionedSoundInstance;", at = @At("HEAD"), cancellable = true)
 	private static void master(SoundEvent sound, float volume, float pitch, CallbackInfoReturnable<PositionedSoundInstance> ci) {
-		if(Playback.isProcessingReplay && Playback.manager.getView() == ReplayView.THIRD_PERSON) {
+		if(Playback.getManager().isProcessingReplay && Playback.getManager().getView() == ReplayView.THIRD_PERSON) {
 			float newValues = 0.0F;
 
 			ci.setReturnValue(new PositionedSoundInstance(sound.getId(), SoundCategory.MASTER, newValues, newValues, false,

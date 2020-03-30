@@ -4,7 +4,6 @@ import io.netty.buffer.Unpooled;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.DebugAction;
-import kaptainwutax.playback.replay.action.PacketAction;
 import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.client.MinecraftClient;
@@ -13,27 +12,27 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.util.PacketByteBuf;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 
 public class TickInfo implements PlaybackSerializable {
 
-	public static final TickInfo EMPTY = new TickInfo();
+	public static final TickInfo EMPTY = new TickInfo(null);
 
 	public TickCapture tickCapture = new TickCapture();
-	@Nullable
-	private PacketAction joinPacket;
+	private final Recording recording;
+
+	public TickInfo(Recording recording) {
+		this.recording = recording;
+	}
 
 	public void play(ReplayView view) {
-		Playback.isProcessingReplay = true;
+		Playback.getManager().isProcessingReplay = true;
 		this.tickCapture.play();
-		Playback.isProcessingReplay = false;
+		Playback.getManager().isProcessingReplay = false;
 	}
 
 	public void recordPacket(Packet<ClientPlayPacketListener> packet) {
 		if(packet instanceof GameJoinS2CPacket) {
-			joinPacket = new PacketAction(packet);
-			Playback.recording.joinPacket = joinPacket;
 			return;
 		}
 
@@ -52,17 +51,13 @@ public class TickInfo implements PlaybackSerializable {
 		this.tickCapture.addKeyState(i);
 	}
 
-	public boolean getKeyState(long handle, int i) {
+	public boolean getKeyState(int i) {
 		return this.tickCapture.getKeyState(i);
 	}
 
-	public void recordWindowFocus(boolean windowFocus) {
-		this.tickCapture.addWindowFocusAction(windowFocus);
-	}
-
-	public void recordFirstTickFixes() {
-		this.tickCapture.addF5ModeFixAction(MinecraftClient.getInstance().options.perspective);
-	}
+    public void recordWindowFocus(boolean windowFocus) {
+        this.tickCapture.addWindowFocusAction(windowFocus);
+    }
 
 	public void recordDebug() {
 		this.tickCapture.addDebugAction(new DebugAction(MinecraftClient.getInstance().player));
@@ -75,14 +70,8 @@ public class TickInfo implements PlaybackSerializable {
 	@Override
 	public void read(PacketByteBuf buf) throws IOException {
 		int captureSize = buf.readVarInt();
-		tickCapture.read(new PacketByteBuf(buf.slice(buf.readerIndex(), captureSize)));
+		this.tickCapture.read(new PacketByteBuf(buf.slice(buf.readerIndex(), captureSize)));
 		buf.readerIndex(buf.readerIndex() + captureSize);
-		if (buf.readBoolean()) {
-			joinPacket = new PacketAction();
-			joinPacket.read(buf);
-			Recording current = Recording.currentlyReading.get();
-			if (current != null) current.joinPacket = joinPacket;
-		}
 	}
 
 	@Override
@@ -92,11 +81,6 @@ public class TickInfo implements PlaybackSerializable {
 		buf.writeVarInt(tmp.writerIndex());
 		buf.writeBytes(tmp);
 		tmp.release();
-		if (joinPacket != null) {
-			buf.writeBoolean(true);
-			joinPacket.write(buf);
-		} else {
-			buf.writeBoolean(false);
-		}
 	}
+
 }

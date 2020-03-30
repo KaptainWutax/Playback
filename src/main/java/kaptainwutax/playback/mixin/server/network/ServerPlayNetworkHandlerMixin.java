@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.server.network;
 
 import kaptainwutax.playback.Playback;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -8,14 +8,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayNetworkHandler.class)
-public class ServerPlayNetworkHandlerMixin {
+public abstract class ServerPlayNetworkHandlerMixin {
 
 	/**
 	 * Disables the anti-cheat in replay worlds.
 	 **/
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	public void tick(CallbackInfo ci) {
-		if(Playback.isReplaying) {
+		if(Playback.getManager().isReplaying()) {
 			ci.cancel();
 		}
 	}

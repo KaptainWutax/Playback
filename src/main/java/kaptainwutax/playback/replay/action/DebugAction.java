@@ -4,9 +4,7 @@ import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import kaptainwutax.playback.util.SerializationUtil;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.Vec3d;
 
@@ -30,7 +28,7 @@ public class DebugAction extends Action {
 		boolean everythingMatches = true;
 
 		Formatter formatter = new Formatter();
-		String header = "==============================[Tick " + Playback.tickCounter + "]==============================";
+		String header = "==============================[Tick " + Playback.getManager().tickCounter + "]==============================";
 		formatter.format(header + "\n");
 
 		Debugs actual = new Debugs(client.player);
@@ -42,9 +40,9 @@ public class DebugAction extends Action {
 				Object expectedValue = field.get(values);
 
 				if(actualValue.equals(expectedValue)) {
-					formatter.format("[Tick %d] %s is matching.\n", Playback.tickCounter, field.getName());
+					formatter.format("[Tick %d] %s is matching.\n", Playback.getManager().tickCounter, field.getName());
 				} else {
-					formatter.format("[Tick %d] %s doesn't match! Is %s but should be %s.\n", Playback.tickCounter, field.getName(), actualValue, expectedValue);
+					formatter.format("[Tick %d] %s doesn't match! Is %s but should be %s.\n", Playback.getManager().tickCounter, field.getName(), actualValue, expectedValue);
 					everythingMatches = false;
 				}
 			} catch (IllegalAccessException e) {
@@ -85,7 +83,6 @@ public class DebugAction extends Action {
 		public EntityPose pose;
 		public int entityListSize;
 		public int playerListSize;
-		public Vec3d vehicleRotation;
 
 		public Debugs() {}
 
@@ -96,12 +93,11 @@ public class DebugAction extends Action {
 		public void load(ClientPlayerEntity player) {
 			playerId = player.getEntityId();
 			position = player.getPos();
-			rotation = getRotation(player);
+			rotation = new Vec3d(player.yaw, player.pitch, 0);
 			velocity = player.getVelocity();
 			pose = player.getPose();
 			entityListSize = player.clientWorld.getRegularEntityCount();
 			playerListSize = player.clientWorld.getPlayers().size();
-			vehicleRotation = getVehicleRotation(player);
 		}
 
 		@Override
@@ -113,7 +109,6 @@ public class DebugAction extends Action {
 			pose = EntityPose.values()[buf.readVarInt()];
 			entityListSize = buf.readVarInt();
 			playerListSize = buf.readVarInt();
-			vehicleRotation = SerializationUtil.readVec3d(buf);
 		}
 
 		@Override
@@ -125,18 +120,7 @@ public class DebugAction extends Action {
 			buf.writeVarInt(pose.ordinal());
 			buf.writeVarInt(entityListSize);
 			buf.writeVarInt(playerListSize);
-			SerializationUtil.writeVec3d(buf, vehicleRotation);
 		}
-
-
-		private static Vec3d getRotation(Entity entity) {
-			return new Vec3d(entity.yaw, entity.pitch, 0);
-		}
-
-		private static final Vec3d NAN_VECTOR = new Vec3d(Float.NaN,Float.NaN, 0);
-		private static Vec3d getVehicleRotation(PlayerEntity entity) {
-			return entity.getVehicle() == null ? NAN_VECTOR : getRotation(entity.getVehicle());
-		}
-
 	}
+
 }

@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client.input;
 
 import kaptainwutax.playback.replay.PlayerFrame;
 import net.minecraft.client.input.KeyboardInput;

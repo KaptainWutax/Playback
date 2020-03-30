@@ -46,22 +46,23 @@ public class PlayerFrame {
 		if(this.isActive()) {
 			return this;
 		} else {
-			if(this == Playback.manager.cameraPlayer) {
-				return Playback.manager.replayPlayer;
+			if(this == Playback.getManager().cameraPlayer) {
+				return Playback.getManager().replayPlayer;
 			} else {
-				return Playback.manager.cameraPlayer;
+				return Playback.getManager().cameraPlayer;
 			}
 		}
 
 	}
 
 	public void apply() {
-		PlayerFrame prevFrame = Playback.manager.currentAppliedPlayer;
+		PlayerFrame prevFrame = Playback.getManager().currentAppliedPlayer;
 		//commented out for now because the code after has to run at least once
 		if(this == prevFrame) {
 			return;
 		}
-		Playback.manager.currentAppliedPlayer = this;
+
+		Playback.getManager().currentAppliedPlayer = this;
 
 		if(prevFrame != null) {
 			prevFrame.copyState();
@@ -72,7 +73,7 @@ public class PlayerFrame {
 			client.interactionManager = this.interactionManager;
 			((IClientCaller)client).setOptions(this.options);
 			this.options.apply();
-			boolean withCallback = this == Playback.manager.cameraPlayer || (Playback.mode == ReplayView.FIRST_PERSON && Playback.manager.isCurrentlyAcceptingInputs());
+			boolean withCallback = this == Playback.getManager().cameraPlayer || (Playback.getManager().getView() == ReplayView.FIRST_PERSON && Playback.getManager().isCurrentlyAcceptingInputs());
 			((IClientCaller)client).setMouse(this.mouse, withCallback);
 			((IClientCaller)client).setKeyboard(this.keyboard, withCallback);
 			this.applyState();

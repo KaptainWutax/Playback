@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin.packets;
+package kaptainwutax.playback.mixin.network.packet.s2c.play;
 
 import io.netty.buffer.ByteBuf;
 import kaptainwutax.playback.Playback;
@@ -16,14 +16,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * This is necessary only when the values are coming from the internal server without being serialized like from dedicated servers.
  */
 @Mixin(EntitySpawnS2CPacket.class)
-public class EntitySpawnS2CPacketMixin {
+public abstract class EntitySpawnS2CPacketMixin {
     @Shadow private int pitch; //the problem is that the datatype is int not byte
     @Shadow private int yaw; //the problem is that the datatype is int not byte
 
     @Redirect(method = "write", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/PacketByteBuf;writeByte(I)Lio/netty/buffer/ByteBuf;"))
     private ByteBuf saveIntInstead(PacketByteBuf packetByteBuf, int i) {
         ByteBuf retVal;
-        if (Playback.recording != null && Playback.recording.isSingleplayerRecording())
+        if (Playback.getManager().recording != null && Playback.getManager().recording.isSinglePlayerRecording())
             retVal = packetByteBuf.writeInt(i);
         else
             retVal = packetByteBuf.writeByte(i);
@@ -32,7 +32,7 @@ public class EntitySpawnS2CPacketMixin {
 
     @Redirect(method = "read", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/PacketByteBuf;readByte()B"))
     private byte readNothing(PacketByteBuf packetByteBuf) {
-        if (Playback.recording != null && Playback.recording.isSingleplayerRecording()) {
+        if (Playback.getManager().recording != null && Playback.getManager().recording.isSinglePlayerRecording()) {
             return 0;
         } else {
             return packetByteBuf.readByte();
@@ -41,7 +41,7 @@ public class EntitySpawnS2CPacketMixin {
 
     @Inject(method = "read", require = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/PacketByteBuf;readInt()I", ordinal = 0, shift = At.Shift.BEFORE))
     private void readIntsInstead(PacketByteBuf buf, CallbackInfo ci) {
-        if (Playback.recording != null && Playback.recording.isSingleplayerRecording()) {
+        if (Playback.getManager().recording != null && Playback.getManager().recording.isSinglePlayerRecording()) {
             this.pitch = buf.readInt();
             this.yaw = buf.readInt();
         }

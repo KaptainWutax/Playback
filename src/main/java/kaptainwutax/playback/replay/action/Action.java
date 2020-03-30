@@ -40,7 +40,6 @@ public abstract class Action implements PlaybackSerializable {
 	public enum Type {
 		DEBUG(DebugAction.class),
 		PACKET(PacketAction.class),
-		F5_FIX(F5ModeFixAction.class),
 		KEY(KeyAction.class),
 		MOUSE(MouseAction.class),
 		WINDOW_FOCUS(WindowFocusAction.class);

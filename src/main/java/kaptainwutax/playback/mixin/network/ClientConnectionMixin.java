@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.network;
 
 import com.google.common.collect.ImmutableSet;
 import io.netty.channel.ChannelHandlerContext;
@@ -48,14 +48,14 @@ public abstract class ClientConnectionMixin {
 	 **/
 	@Inject(method = "sendImmediately", at = @At("HEAD"), cancellable = true)
 	private void sendImmediately(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> callback, CallbackInfo ci) {
-		if(this.side == NetworkSide.CLIENTBOUND && Playback.isReplaying && !SEND_WHITELIST.contains(packet.getClass())) {
+		if(this.side == NetworkSide.CLIENTBOUND && Playback.getManager().isReplaying() && !SEND_WHITELIST.contains(packet.getClass())) {
 			ci.cancel();
 		}
 	}
 
 	@Inject(method = "channelRead0", at = @At("HEAD"), cancellable = true)
 	protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo ci) {
-		if(this.side == NetworkSide.CLIENTBOUND && Playback.isReplaying && RECEIVE_BLACKLIST.contains(packet.getClass())) {
+		if(this.side == NetworkSide.CLIENTBOUND && Playback.getManager().isReplaying() && RECEIVE_BLACKLIST.contains(packet.getClass())) {
 			ci.cancel();
 		}
 	}

@@ -12,7 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.GameMode;
 
 public class FakePlayer extends ClientPlayerEntity {
-	private boolean spawned;
+
 	private ClientPlayerInteractionManager interactionManager;
 
 	//This is the player that carries the camera in THIRD PERSON replay. This should act like a freecam, without influencing the replay

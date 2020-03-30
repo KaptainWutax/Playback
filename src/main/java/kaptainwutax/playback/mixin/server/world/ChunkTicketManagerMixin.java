@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.server.world;
 
 import kaptainwutax.playback.Playback;
 import net.minecraft.server.world.ChunkTicket;
@@ -10,14 +10,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ChunkTicketManager.class)
-public class ChunkTicketManagerMixin {
+public abstract class ChunkTicketManagerMixin {
 
 	/**
 	 * Disables server chunk loading in replay worlds.
 	 **/
 	@Inject(method = "addTicket(JLnet/minecraft/server/world/ChunkTicket;)V", at = @At("HEAD"), cancellable = true)
 	private void addTicket(long position, ChunkTicket<?> chunkTicket, CallbackInfo ci) {
-		if(Playback.isReplaying && chunkTicket.getType() != ChunkTicketType.UNKNOWN) {
+		if(Playback.getManager().isReplaying() && chunkTicket.getType() != ChunkTicketType.UNKNOWN) {
 			ci.cancel();
 		}
 	}

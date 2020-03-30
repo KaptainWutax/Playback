@@ -21,7 +21,7 @@ public class MouseAction extends Action {
 
 	@Override
 	public void play() {
-		((IMouse) client.mouse).execute(this.action, this.d1, this.d2, this.i1);
+		((IMouseCaller)client.mouse).execute(this.action, this.d1, this.d2, this.i1);
 	}
 
 	@Override
@@ -43,6 +43,10 @@ public class MouseAction extends Action {
 		buf.writeDouble(d1);
 		buf.writeDouble(d2);
 		buf.writeVarInt(i1);
+	}
+
+	public interface IMouseCaller {
+		void execute(int action, double d1, double d2, int mods);
 	}
 
 }

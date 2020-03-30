@@ -1,8 +1,8 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.PlayerFrame;
-import kaptainwutax.playback.replay.action.IMouse;
+import kaptainwutax.playback.replay.action.MouseAction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.util.InputUtil;
@@ -14,29 +14,20 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Mouse.class)
-public abstract class MouseMixin implements IMouse {
-
-	@Shadow
-	protected abstract void onCursorPos(long window, double x, double y);
-
-	@Shadow
-	protected abstract void onMouseButton(long window, int button, int action, int mods);
-
-	@Shadow
-	protected abstract void onMouseScroll(long window, double d, double e);
-
-	@Shadow
-	public abstract void updateMouse();
-
+public abstract class MouseMixin implements MouseAction.IMouseCaller {
+	@Shadow protected abstract void onCursorPos(long window, double x, double y);
+	@Shadow protected abstract void onMouseButton(long window, int button, int action, int mods);
+	@Shadow protected abstract void onMouseScroll(long window, double d, double e);
+	@Shadow public abstract void updateMouse();
 	@Shadow private boolean isCursorLocked;
 
 	@Inject(method = "onCursorPos", at = @At("HEAD"), cancellable = true)
 	private void onCursorPos(long window, double x, double y, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null) return;
 
-		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickInfo().recordMouse(0, x, y, 0, this.isCursorLocked);
-		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
+		if(Playback.getManager().isRecording()) {
+			Playback.getManager().recording.getCurrentTickInfo().recordMouse(0, x, y, 0, this.isCursorLocked);
+		} else if(!Playback.getManager().isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}
@@ -45,9 +36,9 @@ public abstract class MouseMixin implements IMouse {
 	private void onMouseButton(long window, int button, int action, int mods, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null) return;
 
-		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickInfo().recordMouse(1, button, action, mods, this.isCursorLocked);
-		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
+		if(Playback.getManager().isRecording()) {
+			Playback.getManager().recording.getCurrentTickInfo().recordMouse(1, button, action, mods, this.isCursorLocked);
+		} else if(!Playback.getManager().isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}
@@ -56,9 +47,9 @@ public abstract class MouseMixin implements IMouse {
 	private void onMouseScroll(long window, double d, double e, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null) return;
 
-		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickInfo().recordMouse(2, d, e, 0, this.isCursorLocked);
-		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
+		if(Playback.getManager().isRecording()) {
+			Playback.getManager().recording.getCurrentTickInfo().recordMouse(2, d, e, 0, this.isCursorLocked);
+		} else if(!Playback.getManager().isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}
@@ -67,17 +58,17 @@ public abstract class MouseMixin implements IMouse {
 	private void updateMouse(CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null) return;
 
-		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickInfo().recordMouse(3, 0, 0, 0, this.isCursorLocked);
-		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
+		if(Playback.getManager().isRecording()) {
+			Playback.getManager().recording.getCurrentTickInfo().recordMouse(3, 0, 0, 0, this.isCursorLocked);
+		} else if(!Playback.getManager().isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}
 
 	@Redirect(method = "lockCursor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/InputUtil;setCursorParameters(JIDD)V"))
 	private void setCursorParameters1(long l, int i, double d, double e) {
-		PlayerFrame player = Playback.manager.getPlayerFrameForView(Playback.mode);
-		if (player == null || player.mouse == (Object)this && Playback.manager.isCurrentlyAcceptingInputs()) {
+		PlayerFrame player = Playback.getManager().getPlayerFrameForView(Playback.getManager().getView());
+		if (player == null || player.mouse == (Object)this && Playback.getManager().isCurrentlyAcceptingInputs()) {
 			InputUtil.setCursorParameters(l, i, d, e);
 		}
 	}
@@ -86,8 +77,6 @@ public abstract class MouseMixin implements IMouse {
 	private void setCursorParameters2(long l, int i, double d, double e) {
 		this.setCursorParameters1(l, i, d, e);
 	}
-
-
 
 	@Override
 	public void execute(int action, double d1, double d2, int i1) {

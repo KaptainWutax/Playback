@@ -1,14 +1,35 @@
 package kaptainwutax.playback.replay;
 
-import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.replay.recording.Recording;
+import net.minecraft.client.MinecraftClient;
 
 public class ReplayManager {
+
+	public Recording recording = new Recording();
+	public long tickCounter;
 
 	public PlayerFrame replayPlayer;
 	public PlayerFrame cameraPlayer;
 	public PlayerFrame currentAppliedPlayer;
 
 	public ReplayView view = ReplayView.THIRD_PERSON;
+
+	private boolean isReplaying;
+	public boolean isProcessingReplay;
+	public boolean replayingHasFinished;
+	public boolean joined;
+
+	public boolean isReplaying() {
+		return this.isReplaying;
+	}
+
+	public boolean isRecording() {
+		return !this.isReplaying();
+	}
+
+	public void setReplaying(boolean flag) {
+		this.isReplaying = flag;
+	}
 
 	public void updateView(ReplayView view) {
 		this.view = view;
@@ -22,15 +43,30 @@ public class ReplayManager {
 		}
 	}
 
+	public void tick(boolean paused) {
+		if(paused)return; //todo what happens on multiplayer when the menu is opened, would the replay pause?
+
+		if(!this.isReplaying) {
+			this.recording.getCurrentTickInfo().recordDebug();
+			recording.tickRecord(++tickCounter);
+		} else {
+			if(tickCounter > recording.getEnd()) {
+				replayingHasFinished = true;
+			} else {
+				recording.playTick(tickCounter++);
+			}
+		}
+	}
+
 	public boolean isCurrentlyAcceptingInputs() {
 		if (this.currentAppliedPlayer == null) {
-			if (Playback.isReplaying) {
+			if (this.isReplaying) {
 				System.out.println("Inputs with no player frame! Allowing them...");
 			}
 			return true;
 		}
 
-		return this.currentAppliedPlayer == cameraPlayer || Playback.isProcessingReplay || Playback.replayingHasFinished;
+		return this.currentAppliedPlayer == cameraPlayer || this.isProcessingReplay || this.replayingHasFinished;
 	}
 
 	public ReplayView getView() {
@@ -42,6 +78,31 @@ public class ReplayManager {
 			return replayPlayer;
 		else
 			return cameraPlayer;
+	}
+
+	public void toggleView() {
+		this.updateView(ReplayView.values()[(this.view.ordinal() + 1) % ReplayView.values().length]);
+
+		//TODO: Maybe swapping this is better.
+		MinecraftClient.getInstance().getToastManager().clear();
+
+		//Teleport the camera player to the replay player.
+		this.cameraPlayer.getPlayer().updatePositionAndAngles(
+				this.replayPlayer.getPlayer().getX(),
+				this.replayPlayer.getPlayer().getY(),
+				this.replayPlayer.getPlayer().getZ(),
+				this.replayPlayer.getPlayer().yaw,
+				this.replayPlayer.getPlayer().pitch
+		);
+	}
+
+	public void restart() { //restart the replay (intended to have to reload the world right now as well)
+		this.tickCounter = 0;
+		this.replayingHasFinished = false;
+		this.cameraPlayer = null;
+		this.replayPlayer = null;
+		this.joined = false;
+		this.isReplaying = false;
 	}
 
 }

@@ -1,7 +1,7 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.action.IKeyboard;
+import kaptainwutax.playback.replay.action.KeyAction;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Keyboard.class)
-public abstract class KeyboardMixin implements IKeyboard {
+public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 
 	@Shadow
 	public abstract void onKey(long window, int key, int scanCode, int i, int j);
@@ -23,9 +23,9 @@ public abstract class KeyboardMixin implements IKeyboard {
 	public void onKey(long window, int key, int scanCode, int i, int j, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null) return;
 
-		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickInfo().recordKey(0, key, scanCode, i, j);
-		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
+		if(Playback.getManager().isRecording()) {
+			Playback.getManager().recording.getCurrentTickInfo().recordKey(0, key, scanCode, i, j);
+		} else if(!Playback.getManager().isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}
@@ -34,9 +34,9 @@ public abstract class KeyboardMixin implements IKeyboard {
 	private void onChar(long window, int i, int j, CallbackInfo ci) {
 		if(MinecraftClient.getInstance().player == null) return;
 
-		if(!Playback.isReplaying) {
-			Playback.recording.getCurrentTickInfo().recordKey(1, 0, 0, i, j);
-		} else if(!Playback.manager.isCurrentlyAcceptingInputs()) {
+		if(Playback.getManager().isRecording()) {
+			Playback.getManager().recording.getCurrentTickInfo().recordKey(1, 0, 0, i, j);
+		} else if(!Playback.getManager().isCurrentlyAcceptingInputs()) {
 			ci.cancel();
 		}
 	}

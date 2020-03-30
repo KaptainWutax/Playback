@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.client.gui.screen;
 
 import kaptainwutax.playback.gui.PlaybackBrowserScreen;
 import net.fabricmc.loader.api.FabricLoader;
@@ -13,7 +13,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TitleScreen.class)
-public class TitleScreenMixin extends Screen {
+public abstract class TitleScreenMixin extends Screen {
+
     protected TitleScreenMixin(Text title) {
         super(title);
         throw new AbstractMethodError();
@@ -24,11 +25,13 @@ public class TitleScreenMixin extends Screen {
         boolean modMenu = FabricLoader.getInstance().isModLoaded("modmenu");
         int line4 = this.height / 4 + 48 + 24 * 3;
         int x = modMenu ? this.width / 2 + 2 : this.width / 2 - 100;
-        addButton(new ButtonWidget(x, line4, 200, 20, "Playback", button -> minecraft.openScreen(new PlaybackBrowserScreen(this))));
-        for (AbstractButtonWidget button : this.buttons) {
+        this.addButton(new ButtonWidget(x, line4, 200, 20, "Playback", button -> minecraft.openScreen(new PlaybackBrowserScreen(this))));
+
+        for(AbstractButtonWidget button : this.buttons) {
             if (!modMenu && button.y <= line4) button.y -= 12;
             if (!modMenu && button.y > line4) button.y += 12;
             if (modMenu && button.y == line4 - 12) button.setWidth(98);
         }
     }
+
 }

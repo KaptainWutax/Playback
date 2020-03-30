@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin;
+package kaptainwutax.playback.mixin.server;
 
 import kaptainwutax.playback.Playback;
 import net.minecraft.server.MinecraftServer;
@@ -19,7 +19,7 @@ public abstract class MinecraftServerMixin {
 
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	protected void tick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
-		if(!Playback.isReplaying) return;
+		if(Playback.getManager().isRecording())return;
 		this.getNetworkIo().tick();
 		ci.cancel();
 	}

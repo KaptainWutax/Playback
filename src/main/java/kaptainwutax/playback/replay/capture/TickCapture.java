@@ -7,7 +7,10 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.PacketByteBuf;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class TickCapture implements PlaybackSerializable {
 
@@ -42,13 +45,9 @@ public class TickCapture implements PlaybackSerializable {
 		this.addAction(new MouseAction(action, d1, d2, i1, isCursorLocked));
 	}
 
-	public void addWindowFocusAction(boolean focused) {
-		this.addAction(new WindowFocusAction(focused));
-	}
-
-	public void addF5ModeFixAction(int perspectiveF5mode) {
-		this.addAction(new F5ModeFixAction(perspectiveF5mode));
-	}
+    public void addWindowFocusAction(boolean focused) {
+        this.addAction(new WindowFocusAction(focused));
+    }
 
 	public void addKeyState(int i) {
 		this.keyStates.add(i);

@@ -1,8 +1,12 @@
 package kaptainwutax.playback.util;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.Vec3d;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -36,5 +40,24 @@ public class SerializationUtil {
         buf.writeDouble(v.x);
         buf.writeDouble(v.y);
         buf.writeDouble(v.z);
+    }
+
+    public static PacketByteBuf readSizedBuffer(RandomAccessFile file) throws IOException {
+        int size = file.readInt();
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer(size));
+        while (size > 0) {
+            int read = buf.writeBytes(file.getChannel(), size);
+            if (read < 0) throw new EOFException();
+            size -= read;
+        }
+        return buf;
+    }
+
+    public static void writeSizedBuffer(PacketByteBuf buf, RandomAccessFile file) throws IOException {
+        file.writeInt(buf.readableBytes());
+        while (buf.isReadable()) {
+            buf.readBytes(file.getChannel(), buf.readableBytes());
+        }
+        buf.release();
     }
 }
