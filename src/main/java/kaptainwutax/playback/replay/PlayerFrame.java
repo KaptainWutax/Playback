@@ -54,11 +54,12 @@ public class PlayerFrame {
 	}
 
 	public void apply() {
-		PlayerFrame prevFrame = this.getAppliedPlayerFrame();
+		PlayerFrame prevFrame = Playback.manager.currentAppliedPlayer;
 		//commented out for now because the code after has to run at least once
-//		if(this == prevFrame) {
-//			return;
-//		}
+		if(this == prevFrame) {
+			return;
+		}
+		Playback.manager.currentAppliedPlayer = this;
 
 		if(prevFrame != null) {
 			prevFrame.copyState();
