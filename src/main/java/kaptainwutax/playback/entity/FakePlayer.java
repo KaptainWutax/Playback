@@ -30,12 +30,8 @@ public class FakePlayer extends ClientPlayerEntity {
 
 	@Override
 	public void tick() {
-		//todo think about applying the camera player here even in first person mode
-		if (MinecraftClient.getInstance().player == this) //prevent handling input events twice when in first person replay
-		{
-			MinecraftClient.getInstance().gameRenderer.updateTargetedEntity(1.0F);
-			((IClientCaller) MinecraftClient.getInstance()).fakeHandleInputEvents();
-		}
+		MinecraftClient.getInstance().gameRenderer.updateTargetedEntity(1.0F);
+		((IClientCaller) MinecraftClient.getInstance()).fakeHandleInputEvents();
 		super.tick();
 	}
 

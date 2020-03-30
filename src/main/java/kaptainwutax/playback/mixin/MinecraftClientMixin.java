@@ -114,8 +114,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		if(this.world != null) {
 			applyCameraPlayerIfNecessary();
 
-			//todo should the player tick when it is not applied? currently only handleinputevents etc is turned off
-			if(Playback.isReplaying && Playback.manager.cameraPlayer != null) {
+			if(Playback.isReplaying && Playback.manager.getView() == ReplayView.THIRD_PERSON) {
 				this.world.tickEntity(Playback.manager.cameraPlayer.getPlayer());
 			}
 
