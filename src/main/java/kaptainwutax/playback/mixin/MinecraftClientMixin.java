@@ -139,6 +139,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 
 		if (Playback.mode == ReplayView.FIRST_PERSON) {
+			//could somehow remember the last focused to apply at the end of the replay
 			ci.cancel();
 			return;
 		}
@@ -149,7 +150,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 		MinecraftClient.getInstance().send(() -> {
 			if (Playback.manager.currentAppliedPlayer == Playback.manager.cameraPlayer) {
-				((PlayerFrame.IClientCaller)this).setWindowFocusNoInjects(focused);
+				this.windowFocused = focused;
 			}
 		});
 		ci.cancel();
@@ -167,7 +168,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	}
 
 	@Inject(method = "openPauseMenu", at = @At("HEAD"), cancellable = true)
-	public void openPauseMenu(CallbackInfo ci) {
+	private void openPauseMenu(CallbackInfo ci) {
 		if(Playback.isReplaying && Playback.isProcessingReplay) {
 			ci.cancel();
 		}
