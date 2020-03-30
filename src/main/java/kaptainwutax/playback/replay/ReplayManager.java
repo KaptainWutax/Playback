@@ -4,6 +4,8 @@ public class ReplayManager {
 
 	public PlayerFrame replayPlayer;
 	public PlayerFrame cameraPlayer;
+	public PlayerFrame currentAppliedPlayer;
+
 	public ReplayView view = ReplayView.THIRD_PERSON;
 
 	public void updateView(ReplayView view) {

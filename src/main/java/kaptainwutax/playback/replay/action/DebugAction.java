@@ -1,9 +1,13 @@
 package kaptainwutax.playback.replay.action;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import kaptainwutax.playback.Playback;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Formatter;
@@ -13,7 +17,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class DebugAction extends Action {
-
+	private static final Gson GSON = new Gson();
+	private static final java.lang.reflect.Type MAP_TYPE = new TypeToken<Map<String, Object>>(){}.getType();
 	public static final Map<String, Function<ClientPlayerEntity, ?>> DEBUGS = new LinkedHashMap<>();
 
 	static {
@@ -25,9 +30,9 @@ public class DebugAction extends Action {
 		DEBUGS.put("Entity list size", player -> player.clientWorld.getRegularEntityCount());
 		DEBUGS.put("Player list size", player -> player.clientWorld.getPlayers().size());
 		DEBUGS.put("Vehicle Rotation", DebugAction::getVehicleRotation);
+		//DEBUGS.put("Screen open", player -> (MinecraftClient.getInstance().currentScreen != null));
 	}
 
-	//NOT USING MOJANGS Vec2f THAT DOESN'T EVEN OVERRIDE equals
 	private static Vec3d getRotation(Entity entity) {
 		return new Vec3d(entity.yaw, entity.pitch, 0);
 	}
@@ -39,8 +44,10 @@ public class DebugAction extends Action {
 
 	protected Map<String, Object> values = new HashMap<>();
 
-	public DebugAction() {
-		DEBUGS.forEach((name, debug) -> this.values.put(name, debug.apply(client.player)));
+	public DebugAction() {}
+
+	public DebugAction(ClientPlayerEntity player) {
+		DEBUGS.forEach((name, debug) -> this.values.put(name, debug.apply(player)));
 	}
 
 	@Override
@@ -59,7 +66,7 @@ public class DebugAction extends Action {
 			Object actualValue = debug.apply(client.player);
 			Object expectedValue = this.values.get(name);
 
-			if(actualValue.equals(expectedValue)) {
+			if(actualValue.equals(expectedValue) || expectedValue == null) { // hack for not serializing
 				formatter.format("[Tick %d] %s is matching.\n", Playback.tickCounter, name);
 			} else {
 				formatter.format("[Tick %d] %s doesn't match! Is %s but should be %s.\n", Playback.tickCounter, name, actualValue, expectedValue);
@@ -75,6 +82,22 @@ public class DebugAction extends Action {
 			formatter.format("\n");
 			System.out.format(formatter.toString());
 		}
+	}
+
+	@Override
+	public Type getType() {
+		return Type.DEBUG;
+	}
+
+	@Override
+	public void read(PacketByteBuf buf) {
+		values.clear();
+		// values.putAll(GSON.fromJson(buf.readString(), MAP_TYPE));
+	}
+
+	@Override
+	public void write(PacketByteBuf buf) {
+		// buf.writeString(GSON.toJson(values, MAP_TYPE));
 	}
 
 }

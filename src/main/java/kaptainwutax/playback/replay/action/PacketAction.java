@@ -1,7 +1,5 @@
 package kaptainwutax.playback.replay.action;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.fixes.PacketByteBuf_NotifyPacketActionOnDataloss;
 import net.minecraft.network.ClientConnection;
@@ -18,51 +16,19 @@ public class PacketAction extends Action {
 	public static boolean dataLost = false;
 	public static final boolean debug = true;
 
-	private int packetId;
-	private byte[] packet;
+	private Packet<ClientPlayPacketListener> packet;
 
-	public PacketAction(Packet<?> packet) {
-		Integer i = NetworkState.PLAY.getPacketId(NetworkSide.CLIENTBOUND, packet);
+	public PacketAction() {}
 
-		if(i == null) {
-			return;
-		}
-
-		this.packetId = i;
-		PacketByteBuf packetByteBuf = debug && Playback.recording.isSingleplayerRecording() ?
-				new PacketByteBuf_NotifyPacketActionOnDataloss(Unpooled.buffer()) :
-				new PacketByteBuf(Unpooled.buffer());
-
-		try {
-			packet.write(packetByteBuf);
-			if (dataLost) {
-				System.err.println("Packet with type " + packet.getClass().toString() + " was serialized with dataloss!");
-				dataLost = false;
-			}
-
-			this.packet = new byte[packetByteBuf.writerIndex()];
-			packetByteBuf.readerIndex(0);
-			packetByteBuf.readBytes(this.packet);
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+	public PacketAction(Packet<ClientPlayPacketListener> packet) {
+		this.packet = packet;
 	}
 
 	@Override
 	public void play() {
 		if(this.packet == null) return;
-
-		ByteBuf byteBuf = Unpooled.buffer();
-		byteBuf.writeBytes(this.packet);
-		PacketByteBuf packetByteBuf = new PacketByteBuf(byteBuf);
-		packetByteBuf.readerIndex(0);
-
 		try {
-			Packet<ClientPlayPacketListener> packet = (Packet<ClientPlayPacketListener>) NetworkState.PLAY.getPacketHandler(NetworkSide.CLIENTBOUND, this.packetId);
-			packet.read(packetByteBuf);
-
 			ClientPlayPacketListener listener = client.getNetworkHandler();
-
 			if(listener != null) {
 				packet.apply(listener);
 			} else {
@@ -71,6 +37,32 @@ public class PacketAction extends Action {
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public Type getType() {
+		return Type.PACKET;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void read(PacketByteBuf buf) throws IOException {
+		int id = buf.readVarInt();
+		this.packet = (Packet<ClientPlayPacketListener>) NetworkState.PLAY.getPacketHandler(NetworkSide.CLIENTBOUND, id);
+		if (this.packet == null) throw new IOException("Invalid packet id " + id);
+		this.packet.read(buf);
+	}
+
+	@Override
+	public void write(PacketByteBuf buf) throws IOException {
+		Integer id = NetworkState.PLAY.getPacketId(NetworkSide.CLIENTBOUND, packet);
+		if (id == null) throw new IOException("Invalid packet " + packet.getClass());
+		buf.writeVarInt(id);
+		packet.write(debug && Playback.recording.isSingleplayerRecording() ? new PacketByteBuf_NotifyPacketActionOnDataloss(buf) : buf);
+		if (dataLost) {
+			System.err.println("Packet with type " + packet.getClass().toString() + " was serialized with dataloss!");
+			dataLost = false;
 		}
 	}
 

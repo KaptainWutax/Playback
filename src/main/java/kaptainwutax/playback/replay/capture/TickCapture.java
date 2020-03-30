@@ -1,11 +1,15 @@
 package kaptainwutax.playback.replay.capture;
 
 import kaptainwutax.playback.replay.action.*;
+import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.util.PacketByteBuf;
 
+import java.io.IOException;
 import java.util.*;
 
-public class TickCapture {
+public class TickCapture implements PlaybackSerializable {
 
 	private List<Action> actions = new ArrayList<>();
 	protected Map<Long, Set<Integer>> keyStates = new HashMap<>();
@@ -22,7 +26,7 @@ public class TickCapture {
 		this.actions.add(action);
 	}
 
-	public void addPacketAction(Packet<?> packet) {
+	public void addPacketAction(Packet<ClientPlayPacketListener> packet) {
 		this.addAction(new PacketAction(packet));
 	}
 
@@ -62,4 +66,16 @@ public class TickCapture {
 		return this.actions.isEmpty() && this.keyStates.isEmpty();
 	}
 
+	@Override
+	public void write(PacketByteBuf buf) throws IOException {
+		for (Action action : actions) Action.writeAction(buf, action);
+	}
+
+	@Override
+	public void read(PacketByteBuf buf) throws IOException {
+		actions.clear();
+		while (buf.readableBytes() > 0) {
+			actions.add(Action.readAction(buf));
+		}
+	}
 }

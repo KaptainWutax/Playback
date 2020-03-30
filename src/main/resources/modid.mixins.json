@@ -23,6 +23,7 @@
     "MinecraftClientMixin",
     "MouseMixin",
     "SoundSystemMixin",
+    "TitleScreenMixin",
     "WorldRendererMixin"
   ],
   "injectors": {

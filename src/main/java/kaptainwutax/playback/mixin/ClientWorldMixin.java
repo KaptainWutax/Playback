@@ -8,22 +8,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.io.IOException;
+
 @Mixin(ClientWorld.class)
 public abstract class ClientWorldMixin {
 
 	@Inject(method = "disconnect", at = @At("HEAD"))
 	private void disconnect(CallbackInfo ci) {
 		if(!Playback.isReplaying) { //wasRecording
-			Playback.recording.setEnd();
+			try {
+				Playback.recording.close();
+				Playback.recording = new Recording();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		Playback.isReplaying = true;
-		if(!Playback.isReplaying) {
-			Playback.recording = new Recording(); //experimental, didn't test yet. allows viewing a recording only once, but allows recording again without restart
-		}
-		//reopening the world will show the replay from the other perspective
-		//Playback.toggleView();
 		Playback.restart();
-
 	}
 
 }
