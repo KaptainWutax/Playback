@@ -12,7 +12,7 @@ import java.util.*;
 public class TickCapture implements PlaybackSerializable {
 
 	private List<Action> actions = new ArrayList<>();
-	protected Map<Long, Set<Integer>> keyStates = new HashMap<>();
+	protected Set<Integer> keyStates = new HashSet<>();
 
 	public TickCapture() {
 
@@ -46,20 +46,12 @@ public class TickCapture implements PlaybackSerializable {
 		this.addAction(new F5ModeFixAction(perspectiveF5mode));
 	}
 
-	public void addKeyState(long handle, int i) {
-		if(!this.keyStates.containsKey(handle)) {
-			this.keyStates.put(handle, new HashSet<>());
-		}
-
-		this.keyStates.get(handle).add(i);
+	public void addKeyState(int i) {
+		this.keyStates.add(i);
 	}
 
-	public boolean getKeyState(long handle, int i) {
-		if(!this.keyStates.containsKey(handle)) {
-			return false;
-		}
-
-		return this.keyStates.get(handle).contains(i);
+	public boolean getKeyState(int i) {
+		return this.keyStates.contains(i);
 	}
 
 	public boolean isEmpty() {
