@@ -1,53 +1,28 @@
 package kaptainwutax.playback.replay.action;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import kaptainwutax.playback.Playback;
-import net.minecraft.client.MinecraftClient;
+import kaptainwutax.playback.util.PlaybackSerializable;
+import kaptainwutax.playback.util.SerializationUtil;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.Vec3d;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Formatter;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.Function;
 
 public class DebugAction extends Action {
-	private static final Gson GSON = new Gson();
-	private static final java.lang.reflect.Type MAP_TYPE = new TypeToken<Map<String, Object>>(){}.getType();
-	public static final Map<String, Function<ClientPlayerEntity, ?>> DEBUGS = new LinkedHashMap<>();
+	private Debugs values;
 
-	static {
-		DEBUGS.put("Player Id", Entity::getEntityId);
-		DEBUGS.put("Position", Entity::getPos);
-		DEBUGS.put("Rotation", DebugAction::getRotation);
-		DEBUGS.put("Velocity", Entity::getVelocity);
-		DEBUGS.put("Pose", Entity::getPose);
-		DEBUGS.put("Entity list size", player -> player.clientWorld.getRegularEntityCount());
-		DEBUGS.put("Player list size", player -> player.clientWorld.getPlayers().size());
-		DEBUGS.put("Vehicle Rotation", DebugAction::getVehicleRotation);
-		//DEBUGS.put("Screen open", player -> (MinecraftClient.getInstance().currentScreen != null));
+	public DebugAction() {
+		values = new Debugs();
 	}
-
-	private static Vec3d getRotation(Entity entity) {
-		return new Vec3d(entity.yaw, entity.pitch, 0);
-	}
-
-	private static final Vec3d NAN_VECTOR = new Vec3d(Float.NaN,Float.NaN, 0);
-	private static Vec3d getVehicleRotation(PlayerEntity entity) {
-		return entity.getVehicle() == null ? NAN_VECTOR : getRotation(entity.getVehicle());
-	}
-
-	protected Map<String, Object> values = new HashMap<>();
-
-	public DebugAction() {}
 
 	public DebugAction(ClientPlayerEntity player) {
-		DEBUGS.forEach((name, debug) -> this.values.put(name, debug.apply(player)));
+		values = new Debugs(player);
 	}
 
 	@Override
@@ -58,19 +33,22 @@ public class DebugAction extends Action {
 		String header = "==============================[Tick " + Playback.tickCounter + "]==============================";
 		formatter.format(header + "\n");
 
-		for(Map.Entry<String, Function<ClientPlayerEntity, ?>> e : DEBUGS.entrySet()) {
-			String name = e.getKey();
-			Function<ClientPlayerEntity, ?> debug = e.getValue();
+		Debugs actual = new Debugs(client.player);
+		Field[] fields = Debugs.class.getFields();
+		for (Field field : fields) {
+			if (field.getModifiers() != Modifier.PUBLIC) continue;
+			try {
+				Object actualValue = field.get(actual);
+				Object expectedValue = field.get(values);
 
-			//replayPlayer could be more future proof? Doesn't matter for now since it's the same player instance.
-			Object actualValue = debug.apply(client.player);
-			Object expectedValue = this.values.get(name);
-
-			if(actualValue.equals(expectedValue) || expectedValue == null) { // hack for not serializing
-				formatter.format("[Tick %d] %s is matching.\n", Playback.tickCounter, name);
-			} else {
-				formatter.format("[Tick %d] %s doesn't match! Is %s but should be %s.\n", Playback.tickCounter, name, actualValue, expectedValue);
-				everythingMatches = false;
+				if(actualValue.equals(expectedValue)) {
+					formatter.format("[Tick %d] %s is matching.\n", Playback.tickCounter, field.getName());
+				} else {
+					formatter.format("[Tick %d] %s doesn't match! Is %s but should be %s.\n", Playback.tickCounter, field.getName(), actualValue, expectedValue);
+					everythingMatches = false;
+				}
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -91,13 +69,74 @@ public class DebugAction extends Action {
 
 	@Override
 	public void read(PacketByteBuf buf) {
-		values.clear();
-		// values.putAll(GSON.fromJson(buf.readString(), MAP_TYPE));
+		values.read(buf);
 	}
 
 	@Override
 	public void write(PacketByteBuf buf) {
-		// buf.writeString(GSON.toJson(values, MAP_TYPE));
+		values.write(buf);
 	}
 
+	private static class Debugs implements PlaybackSerializable {
+		public int playerId;
+		public Vec3d position;
+		public Vec3d rotation;
+		public Vec3d velocity;
+		public EntityPose pose;
+		public int entityListSize;
+		public int playerListSize;
+		public Vec3d vehicleRotation;
+
+		public Debugs() {}
+
+		public Debugs(ClientPlayerEntity player) {
+			load(player);
+		}
+
+		public void load(ClientPlayerEntity player) {
+			playerId = player.getEntityId();
+			position = player.getPos();
+			rotation = getRotation(player);
+			velocity = player.getVelocity();
+			pose = player.getPose();
+			entityListSize = player.clientWorld.getRegularEntityCount();
+			playerListSize = player.clientWorld.getPlayers().size();
+			vehicleRotation = getVehicleRotation(player);
+		}
+
+		@Override
+		public void read(PacketByteBuf buf) {
+			playerId = buf.readVarInt();
+			position = SerializationUtil.readVec3d(buf);
+			rotation = SerializationUtil.readVec3d(buf);
+			velocity = SerializationUtil.readVec3d(buf);
+			pose = EntityPose.values()[buf.readVarInt()];
+			entityListSize = buf.readVarInt();
+			playerListSize = buf.readVarInt();
+			vehicleRotation = SerializationUtil.readVec3d(buf);
+		}
+
+		@Override
+		public void write(PacketByteBuf buf) {
+			buf.writeVarInt(playerId);
+			SerializationUtil.writeVec3d(buf, position);
+			SerializationUtil.writeVec3d(buf, rotation);
+			SerializationUtil.writeVec3d(buf, velocity);
+			buf.writeVarInt(pose.ordinal());
+			buf.writeVarInt(entityListSize);
+			buf.writeVarInt(playerListSize);
+			SerializationUtil.writeVec3d(buf, vehicleRotation);
+		}
+
+
+		private static Vec3d getRotation(Entity entity) {
+			return new Vec3d(entity.yaw, entity.pitch, 0);
+		}
+
+		private static final Vec3d NAN_VECTOR = new Vec3d(Float.NaN,Float.NaN, 0);
+		private static Vec3d getVehicleRotation(PlayerEntity entity) {
+			return entity.getVehicle() == null ? NAN_VECTOR : getRotation(entity.getVehicle());
+		}
+
+	}
 }

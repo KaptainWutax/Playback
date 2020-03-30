@@ -26,12 +26,8 @@ public class TickInfo implements PlaybackSerializable {
 
 	public void play(ReplayView view) {
 		Playback.isProcessingReplay = true;
-		Playback.allowInput = true;
-		//if(view == ReplayView.FIRST_PERSON)
 		this.tickCapture.play();
-		//else if(view == ReplayView.THIRD_PERSON) this.third.play();
 		Playback.isProcessingReplay = false;
-		Playback.allowInput = Playback.allowInputDefault;
 	}
 
 	public void recordPacket(Packet<ClientPlayPacketListener> packet) {
@@ -65,7 +61,7 @@ public class TickInfo implements PlaybackSerializable {
 	}
 
 	public void recordDebug() {
-		this.tickCapture.addDebugAction(new DebugAction());
+		this.tickCapture.addDebugAction(new DebugAction(MinecraftClient.getInstance().player));
 	}
 
 	public boolean isEmpty() {
