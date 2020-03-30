@@ -60,11 +60,19 @@ public class TickCapture implements PlaybackSerializable {
 
 	@Override
 	public void write(PacketByteBuf buf) throws IOException {
-		for (Action action : actions) Action.writeAction(buf, action);
+		buf.writeInt(this.keyStates.size());
+		this.keyStates.forEach(buf::writeInt);
+		for (Action action : actions)Action.writeAction(buf, action);
 	}
 
 	@Override
 	public void read(PacketByteBuf buf) throws IOException {
+		int keyStatesSize = buf.readInt();
+
+		for(int i = 0; i < keyStatesSize; i++) {
+			this.keyStates.add(buf.readInt());
+		}
+
 		actions.clear();
 		while (buf.readableBytes() > 0) {
 			actions.add(Action.readAction(buf));
