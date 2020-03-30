@@ -16,11 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Mouse.class)
 public abstract class MouseMixin implements IMouse {
 
-	private boolean replayingAction;
-	private boolean windowFocusOverride;
-	private boolean originalIsCursorLocked;
-
-
 	@Shadow
 	protected abstract void onCursorPos(long window, double x, double y);
 
@@ -79,28 +74,6 @@ public abstract class MouseMixin implements IMouse {
 		}
 	}
 
-	/**
-	 * Apply the recorded window focus, to make mouse actions be interpreted like in the recording
-	 * Fix tabbing out causing wrong rotation in 1st person replay due to mouse event being interpreted depending on window focus.
-	 * @param minecraftClient the minecraft client
-	 * @return whether the window is focused, the recorded value when replaying an event at the moment, otherwise actual value
-	 */
-	@Redirect(method = "lockCursor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;isWindowFocused()Z"))
-	private boolean isWindowFocusOverride(MinecraftClient minecraftClient) {
-		if (this.replayingAction) {
-			return this.windowFocusOverride;
-		}
-		return minecraftClient.isWindowFocused();
-	}
-	@Redirect(method = "onCursorPos", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;isWindowFocused()Z"))
-	private boolean isWindowFocusOverride2(MinecraftClient minecraftClient) {
-		return isWindowFocusOverride(minecraftClient);
-	}
-	@Redirect(method = "updateMouse", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;isWindowFocused()Z"))
-	private boolean isWindowFocusOverride3(MinecraftClient minecraftClient) {
-		return isWindowFocusOverride(minecraftClient);
-	}
-
 	@Redirect(method = "lockCursor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/InputUtil;setCursorParameters(JIDD)V"))
 	private void setCursorParameters1(long l, int i, double d, double e) {
 		PlayerFrame player = Playback.manager.getPlayerFrameForView(Playback.mode);
@@ -117,10 +90,7 @@ public abstract class MouseMixin implements IMouse {
 
 
 	@Override
-	public void execute(int action, double d1, double d2, int i1, boolean windowFocused, boolean cursorLocked) {
-		this.windowFocusOverride = windowFocused; //necessary to fix tabbing out causing wrong rotation in first person
-		this.replayingAction = true;
-
+	public void execute(int action, double d1, double d2, int i1) {
 		if(action == 0) {
 			this.onCursorPos(MinecraftClient.getInstance().getWindow().getHandle(), d1, d2);
 		} else if(action == 1) {
@@ -130,8 +100,6 @@ public abstract class MouseMixin implements IMouse {
 		} else if(action == 3) {
 			this.updateMouse();
 		}
-
-		this.replayingAction = false;
 	}
 
 }

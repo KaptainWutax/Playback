@@ -56,6 +56,10 @@ public class TickInfo implements PlaybackSerializable {
 		return this.tickCapture.getKeyState(i);
 	}
 
+	public void recordWindowFocus(boolean windowFocus) {
+		this.tickCapture.addWindowFocusAction(windowFocus);
+	}
+
 	public void recordFirstTickFixes() {
 		this.tickCapture.addF5ModeFixAction(MinecraftClient.getInstance().options.perspective);
 	}

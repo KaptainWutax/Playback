@@ -22,15 +22,16 @@ public class PlayerFrame {
 	private PlayGameOptions options;
 	public Mouse mouse;
 	private Keyboard keyboard;
+	private boolean cameraOnly;
 
 	//Those states are just there to store the old values in MinecraftClient.
 	private Screen currentScreen;
 	private int attackCooldown;
 
-	private boolean cameraOnly;
 	private HitResult crosshairTarget;
 	private Entity targetedEntity;
 	private int itemUseCooldown;
+	private boolean windowFocus;
 
 	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager, PlayGameOptions options, Mouse mouse, Keyboard keyboard) {
 		this.player = player;
@@ -38,6 +39,7 @@ public class PlayerFrame {
 		this.options = options;
 		this.mouse = mouse;
 		this.keyboard = keyboard;
+		this.windowFocus = MinecraftClient.getInstance().isWindowFocused();
 	}
 
 	public PlayerFrame getAppliedPlayerFrame() {
@@ -85,6 +87,7 @@ public class PlayerFrame {
 		this.itemUseCooldown = ((IClientCaller) client).getItemUseCooldown();
 		this.crosshairTarget = client.crosshairTarget;
 		this.targetedEntity = client.targetedEntity;
+		this.windowFocus = client.isWindowFocused();
 	}
 
 	public void applyState() {
@@ -93,6 +96,7 @@ public class PlayerFrame {
 		((IClientCaller) client).setItemUseCooldown(this.itemUseCooldown);
 		client.crosshairTarget = this.crosshairTarget;
 		client.targetedEntity = this.targetedEntity;
+		((IClientCaller) client).setWindowFocusNoInjects(this.windowFocus);
 	}
 
 	public static PlayerFrame createFromExisting() {
@@ -136,6 +140,7 @@ public class PlayerFrame {
 		void setKeyboard(Keyboard keyboard, boolean withCallback);
 		void setAttackCooldown(int attackCooldown);
 		void setItemUseCooldown(int itemUseCooldown);
+		void setWindowFocusNoInjects(boolean windowFocus);
 	}
 
 	public interface IKeyboardInputCaller {

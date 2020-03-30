@@ -42,7 +42,8 @@ public abstract class Action implements PlaybackSerializable {
 		PACKET(PacketAction.class),
 		F5_FIX(F5ModeFixAction.class),
 		KEY(KeyAction.class),
-		MOUSE(MouseAction.class);
+		MOUSE(MouseAction.class),
+		WINDOW_FOCUS(WindowFocusAction.class);
 
 		static final Type[] values = values();
 

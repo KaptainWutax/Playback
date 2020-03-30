@@ -126,12 +126,33 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
-	//During first person replay pretend window has focus so recorded mouse actions always get processed
-	@Inject(method = "onWindowFocusChanged", at = @At("RETURN"))
-	private void setWindowFocusedDuringReplay(boolean focused, CallbackInfo ci) {
-		if(Playback.isReplaying && Playback.mode == ReplayView.FIRST_PERSON) {
-			this.windowFocused = true;
+	//Record window focus and prevent offthread calls affecting the replay.
+	//Focus might be wrong when the replay ends
+	@Inject(method = "onWindowFocusChanged", at = @At("RETURN"), cancellable = true)
+	private void recordOrDelayWindowFocus(boolean focused, CallbackInfo ci) {
+		if (this.windowFocused == focused) {
+			return;
 		}
+		if (!Playback.isReplaying) {
+			Playback.recording.getCurrentTickInfo().recordWindowFocus(focused);
+			return;
+		}
+
+		if (Playback.mode == ReplayView.FIRST_PERSON) {
+			ci.cancel();
+			return;
+		}
+
+		if (Playback.manager.currentAppliedPlayer == Playback.manager.cameraPlayer) {
+			return;
+		}
+
+		MinecraftClient.getInstance().send(() -> {
+			if (Playback.manager.currentAppliedPlayer == Playback.manager.cameraPlayer) {
+				((PlayerFrame.IClientCaller)this).setWindowFocusNoInjects(focused);
+			}
+		});
+		ci.cancel();
 	}
 
 
@@ -200,5 +221,10 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Override
 	public void setItemUseCooldown(int itemUseCooldown) {
 		this.itemUseCooldown = itemUseCooldown;
+	}
+
+	@Override
+	public void setWindowFocusNoInjects(boolean windowFocused) {
+		this.windowFocused = windowFocused;
 	}
 }
