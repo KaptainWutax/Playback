@@ -16,6 +16,7 @@ public abstract class MouseMixin implements IMouse {
 
 	private boolean replayingAction;
 	private boolean windowFocusOverride;
+	private boolean originalIsCursorLocked;
 
 
 	@Shadow
@@ -101,7 +102,10 @@ public abstract class MouseMixin implements IMouse {
 	@Override
 	public void execute(int action, double d1, double d2, int i1, boolean windowFocused, boolean cursorLocked) {
 		this.windowFocusOverride = windowFocused; //necessary to fix tabbing out causing wrong rotation in first person
+		//the following is probably no longer neccessary
+		this.originalIsCursorLocked = this.isCursorLocked;
 		this.isCursorLocked = cursorLocked; //replay cursor locked, possibly not necessary to fix tabbing out
+		//
 		this.replayingAction = true;
 
 		if(action == 0) {
@@ -114,6 +118,7 @@ public abstract class MouseMixin implements IMouse {
 			this.updateMouse();
 		}
 
+		this.isCursorLocked = this.originalIsCursorLocked;
 		this.replayingAction = false;
 	}
 

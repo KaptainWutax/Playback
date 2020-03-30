@@ -3,6 +3,7 @@ package kaptainwutax.playback.replay.action;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import kaptainwutax.playback.Playback;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,9 +30,9 @@ public class DebugAction extends Action {
 		DEBUGS.put("Entity list size", player -> player.clientWorld.getRegularEntityCount());
 		DEBUGS.put("Player list size", player -> player.clientWorld.getPlayers().size());
 		DEBUGS.put("Vehicle Rotation", DebugAction::getVehicleRotation);
+		//DEBUGS.put("Screen open", player -> (MinecraftClient.getInstance().currentScreen != null));
 	}
 
-	//NOT USING MOJANGS Vec2f THAT DOESN'T EVEN OVERRIDE equals
 	private static Vec3d getRotation(Entity entity) {
 		return new Vec3d(entity.yaw, entity.pitch, 0);
 	}

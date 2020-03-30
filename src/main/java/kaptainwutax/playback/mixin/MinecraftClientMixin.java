@@ -13,6 +13,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.util.Hand;
@@ -27,6 +28,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller, PlayerFrame.IClientCaller {
+
+	private Keyboard callbackKeyboard;
+	private Mouse callbackMouse;
 
 	@Shadow
 	public ClientWorld world;
@@ -54,6 +58,10 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Mutable
 	@Shadow @Final public Keyboard keyboard;
+
+	@Shadow private int itemUseCooldown;
+
+	@Shadow @Final private Window window;
 
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.isReplaying) {
@@ -157,22 +165,39 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	}
 
 	@Override
+	public int getItemUseCooldown() {
+		return this.itemUseCooldown;
+	}
+
+	@Override
 	public void setOptions(GameOptions options) {
 		this.options = options;
 	}
 
 	@Override
-	public void setMouse(Mouse mouse) {
+	public void setMouse(Mouse mouse, boolean withCallbacks) {
+		if (withCallbacks && mouse != this.callbackMouse) {
+			this.callbackMouse = mouse;
+			mouse.setup(this.window.getHandle());
+		}
 		this.mouse = mouse;
 	}
 
 	@Override
-	public void setKeyboard(Keyboard keyboard) {
+	public void setKeyboard(Keyboard keyboard, boolean withCallbacks) {
+		if (withCallbacks && keyboard != this.callbackKeyboard) {
+			this.callbackKeyboard = keyboard;
+			keyboard.setup(this.window.getHandle());
+		}
 		this.keyboard = keyboard;
 	}
 
 	@Override
 	public void setAttackCooldown(int attackCooldown) {
 		this.attackCooldown = attackCooldown;
+	}
+	@Override
+	public void setItemUseCooldown(int itemUseCooldown) {
+		this.itemUseCooldown = itemUseCooldown;
 	}
 }
