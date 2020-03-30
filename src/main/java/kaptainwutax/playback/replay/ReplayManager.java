@@ -24,7 +24,9 @@ public class ReplayManager {
 
 	public boolean isCurrentlyAcceptingInputs() {
 		if (this.currentAppliedPlayer == null) {
-			System.out.println("Inputs with no player frame! Allowing them...");
+			if (Playback.isReplaying) {
+				System.out.println("Inputs with no player frame! Allowing them...");
+			}
 			return true;
 		}
 
@@ -33,6 +35,13 @@ public class ReplayManager {
 
 	public ReplayView getView() {
 		return this.view;
+	}
+
+	public PlayerFrame getPlayerFrameForView(ReplayView view) {
+		if (view == ReplayView.FIRST_PERSON)
+			return replayPlayer;
+		else
+			return cameraPlayer;
 	}
 
 }

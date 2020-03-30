@@ -179,6 +179,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		if (withCallbacks && mouse != this.callbackMouse) {
 			this.callbackMouse = mouse;
 			mouse.setup(this.window.getHandle());
+			InputUtil.setCursorParameters(MinecraftClient.getInstance().getWindow().getHandle(), mouse.isCursorLocked() ? 212995 : 212993, mouse.getX(), mouse.getY());
 		}
 		this.mouse = mouse;
 	}

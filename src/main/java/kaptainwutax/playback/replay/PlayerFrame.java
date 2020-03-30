@@ -20,7 +20,7 @@ public class PlayerFrame {
 	private ClientPlayerEntity player;
 	private ClientPlayerInteractionManager interactionManager;
 	private PlayGameOptions options;
-	private Mouse mouse;
+	public Mouse mouse;
 	private Keyboard keyboard;
 
 	//Those states are just there to store the old values in MinecraftClient.

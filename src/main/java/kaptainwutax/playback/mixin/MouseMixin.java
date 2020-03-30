@@ -1,9 +1,11 @@
 package kaptainwutax.playback.mixin;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.replay.PlayerFrame;
 import kaptainwutax.playback.replay.action.IMouse;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
+import net.minecraft.client.util.InputUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -99,13 +101,24 @@ public abstract class MouseMixin implements IMouse {
 		return isWindowFocusOverride(minecraftClient);
 	}
 
+	@Redirect(method = "lockCursor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/InputUtil;setCursorParameters(JIDD)V"))
+	private void setCursorParameters1(long l, int i, double d, double e) {
+		PlayerFrame player = Playback.manager.getPlayerFrameForView(Playback.mode);
+		if (player == null || player.mouse == (Object)this && Playback.manager.isCurrentlyAcceptingInputs()) {
+			InputUtil.setCursorParameters(l, i, d, e);
+		}
+	}
+
+	@Redirect(method = "unlockCursor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/InputUtil;setCursorParameters(JIDD)V"))
+	private void setCursorParameters2(long l, int i, double d, double e) {
+		this.setCursorParameters1(l, i, d, e);
+	}
+
+
+
 	@Override
 	public void execute(int action, double d1, double d2, int i1, boolean windowFocused, boolean cursorLocked) {
 		this.windowFocusOverride = windowFocused; //necessary to fix tabbing out causing wrong rotation in first person
-		//the following is probably no longer neccessary
-		this.originalIsCursorLocked = this.isCursorLocked;
-		this.isCursorLocked = cursorLocked; //replay cursor locked, possibly not necessary to fix tabbing out
-		//
 		this.replayingAction = true;
 
 		if(action == 0) {
@@ -118,7 +131,6 @@ public abstract class MouseMixin implements IMouse {
 			this.updateMouse();
 		}
 
-		this.isCursorLocked = this.originalIsCursorLocked;
 		this.replayingAction = false;
 	}
 
