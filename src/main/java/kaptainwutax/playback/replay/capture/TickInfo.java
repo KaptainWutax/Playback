@@ -48,12 +48,12 @@ public class TickInfo implements PlaybackSerializable {
 		this.tickCapture.addMouseAction(action, d1, d2, i1, isCursorLocked);
 	}
 
-	public void recordKeyState(long handle, int i) {
-		this.tickCapture.addKeyState(handle, i);
+	public void recordKeyState(int i) {
+		this.tickCapture.addKeyState(i);
 	}
 
 	public boolean getKeyState(long handle, int i) {
-		return this.tickCapture.getKeyState(handle, i);
+		return this.tickCapture.getKeyState(i);
 	}
 
 	public void recordFirstTickFixes() {
@@ -61,7 +61,7 @@ public class TickInfo implements PlaybackSerializable {
 	}
 
 	public void recordDebug() {
-		this.tickCapture.addDebugAction(new DebugAction());
+		this.tickCapture.addDebugAction(new DebugAction(MinecraftClient.getInstance().player));
 	}
 
 	public boolean isEmpty() {
