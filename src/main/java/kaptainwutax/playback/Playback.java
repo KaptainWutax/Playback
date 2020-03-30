@@ -61,6 +61,7 @@ public class Playback implements ModInitializer {
 		Playback.manager.cameraPlayer = null;
 		Playback.manager.replayPlayer = null;
 		Playback.joined = false;
+		Playback.isReplaying = false;
 	}
 
 	public static void resetRecording() { //untested, idk when to invoke either
