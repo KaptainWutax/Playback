@@ -100,7 +100,7 @@ public class ReplayManager {
 				this.replayPlayer.getPlayer().pitch
 		);
 
-		MinecraftClient.getInstance().player.sendMessage(new LiteralText("Switched to " + Formatting.GREEN + this.view + "."));
+		MinecraftClient.getInstance().player.sendMessage(new LiteralText("Switched to " + Formatting.GREEN + this.view + Formatting.WHITE + "."));
 	}
 
 	public void restart() { //restart the replay (intended to have to reload the world right now as well)

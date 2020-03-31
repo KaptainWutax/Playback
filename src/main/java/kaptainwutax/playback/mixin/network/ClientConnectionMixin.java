@@ -20,18 +20,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 
 @Mixin(ClientConnection.class)
 public abstract class ClientConnectionMixin {
 
-	@Shadow
-	@Final
-	private NetworkSide side;
+	@Shadow @Final private NetworkSide side;
 
 	private static Set<Class<? extends Packet<?>>> SEND_WHITELIST = ImmutableSet.of(
 			HandshakeC2SPacket.class, LoginHelloC2SPacket.class,
-			RequestCommandCompletionsC2SPacket.class, ClientStatusC2SPacket.class
+			RequestCommandCompletionsC2SPacket.class, ClientStatusC2SPacket.class,
+			ChatMessageS2CPacket.class
 	);
 
 	private static Set<Class<? extends Packet<?>>> RECEIVE_BLACKLIST = ImmutableSet.of(
@@ -56,6 +56,13 @@ public abstract class ClientConnectionMixin {
 	@Inject(method = "channelRead0", at = @At("HEAD"), cancellable = true)
 	protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo ci) {
 		if(this.side == NetworkSide.CLIENTBOUND && Playback.getManager().isReplaying() && RECEIVE_BLACKLIST.contains(packet.getClass())) {
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V", at = @At("HEAD"), cancellable = true)
+	public void send(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback, CallbackInfo ci) {
+		if(Playback.getManager().replayPlayer != null && Playback.getManager().replayPlayer.isActive()) {
 			ci.cancel();
 		}
 	}

@@ -143,7 +143,7 @@ public class PlayerFrame {
 	public boolean isActive() {
 		if(this.cameraOnly)return MinecraftClient.getInstance().cameraEntity == this.player;
 		return MinecraftClient.getInstance().player == this.player;
-	}
+}
 
 	public ClientPlayerEntity getPlayer() {
 		return player;
