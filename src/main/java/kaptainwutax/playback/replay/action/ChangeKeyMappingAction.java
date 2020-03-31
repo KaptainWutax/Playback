@@ -12,6 +12,10 @@ public class ChangeKeyMappingAction extends Action {
 	private String keyId;
 	private String keyCodeId;
 
+	public ChangeKeyMappingAction() {
+
+	}
+
 	public ChangeKeyMappingAction(KeyBinding key, InputUtil.KeyCode keyCode) {
 		this.keyId = key.getId();
 		this.keyCodeId = keyCode.getName();
