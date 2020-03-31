@@ -14,7 +14,7 @@ public class ReplayManager {
 	public PlayerFrame cameraPlayer;
 	public PlayerFrame currentAppliedPlayer;
 
-	public ReplayView view = ReplayView.THIRD_PERSON;
+	public ReplayView view = ReplayView.FIRST_PERSON;
 
 	private boolean isReplaying;
 	public boolean isProcessingReplay;
@@ -53,8 +53,10 @@ public class ReplayManager {
 			recording.tickRecord(++tickCounter);
 		} else {
 			if(tickCounter > recording.getEnd()) {
-				replayingHasFinished = true;
-				replayPlayer.onReplayFinished();
+				if (!replayingHasFinished) {
+					replayingHasFinished = true;
+					replayPlayer.onReplayFinished();
+				}
 			} else {
 				recording.playTick(tickCounter++);
 			}

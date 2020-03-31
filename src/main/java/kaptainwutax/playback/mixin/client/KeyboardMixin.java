@@ -31,6 +31,7 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 				ci.cancel();
 			} else {
 				ReplayView view = Playback.getManager().getView();
+				//TODO THIS IS BAD. REMOVE THE NEXT LINE. IT MESSES WITH THE MOUSE CALLBACKS, FREES THE MOUSE ETC. HORRIBLE HACK
 				Playback.getManager().updateView(ReplayView.THIRD_PERSON);
 				Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
 				Playback.getManager().updateView(view);
