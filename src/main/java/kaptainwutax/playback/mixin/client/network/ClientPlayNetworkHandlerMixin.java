@@ -21,6 +21,8 @@ import java.io.IOException;
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
 
+	private boolean initialTeleport;
+
 	@Shadow
 	private MinecraftClient client;
 
@@ -59,9 +61,10 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onPlayerPositionLook", at = @At("TAIL"))
 	public void onPlayerPositionLook(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
-		if(Playback.getManager().isRecording() || Playback.getManager().getView() != ReplayView.THIRD_PERSON
+		if(Playback.getManager().isRecording() || this.initialTeleport ||Playback.getManager().getView() != ReplayView.THIRD_PERSON
 				|| Playback.getManager().cameraPlayer == null || Playback.getManager().cameraPlayer.isActive()) return;
 
+		this.initialTeleport = true;
 		FakePlayer cameraPlayer = (FakePlayer) Playback.getManager().cameraPlayer.getPlayer();
 		PlayerEntity replayPlayer = Playback.getManager().replayPlayer.getPlayer();
 

@@ -14,7 +14,7 @@ public class StartStateAction implements PlaybackSerializable {
 	private PacketAction joinPacket;
 	private int perspective;
 	private boolean isSinglePlayer;
-	private WindowFocusAction windowFocus;
+	private WindowFocusAction windowFocus = new WindowFocusAction(true);
 
 	public StartStateAction() {}
 
@@ -42,15 +42,17 @@ public class StartStateAction implements PlaybackSerializable {
 	@Override
 	public void read(PacketByteBuf buf) throws IOException {
 		this.perspective = buf.readVarInt();
+		this.isSinglePlayer = buf.readBoolean();
 		this.joinPacket = new PacketAction();
 		this.joinPacket.read(buf);
-		this.windowFocus = new WindowFocusAction(false);
+		this.windowFocus = new WindowFocusAction(true);
 		this.windowFocus.read(buf);
 	}
 
 	@Override
 	public void write(PacketByteBuf buf) throws IOException {
 		buf.writeVarInt(this.perspective);
+		buf.writeBoolean(this.isSinglePlayer);
 		this.joinPacket.write(buf);
 		this.windowFocus.write(buf);
 	}
