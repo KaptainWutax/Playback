@@ -1,6 +1,5 @@
 package kaptainwutax.playback.replay.capture;
 
-import kaptainwutax.playback.replay.PlayerFrame;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.options.KeyBinding;
@@ -17,8 +16,7 @@ public class PlayGameOptions {
 	private Map<String, Integer> categoryOrderMap;
 
 	private final IKeyBindingCaller dummyKey;
-
-	GameOptions options;
+	private GameOptions options;
 
 	public PlayGameOptions() {
 		this(new GameOptions(MinecraftClient.getInstance(), null));

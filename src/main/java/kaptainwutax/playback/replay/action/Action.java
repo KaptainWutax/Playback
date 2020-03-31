@@ -42,7 +42,8 @@ public abstract class Action implements PlaybackSerializable {
 		PACKET(PacketAction.class),
 		KEY(KeyAction.class),
 		MOUSE(MouseAction.class),
-		WINDOW_FOCUS(WindowFocusAction.class);
+		WINDOW_FOCUS(WindowFocusAction.class),
+		CHANGE_KEY_MAPPING(ChangeKeyMappingAction.class);
 
 		static final Type[] values = values();
 
