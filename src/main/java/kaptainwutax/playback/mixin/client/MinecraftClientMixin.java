@@ -151,9 +151,11 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			return;
 		}
 
-		if (Playback.getManager().cameraPlayer != null && Playback.getManager().isReplaying()) {
+		if (Playback.getManager().isReplaying()) {
 			ci.cancel();
-			Playback.getManager().cameraPlayer.setWindowFocus(focused);
+			if (Playback.getManager().cameraPlayer != null) {
+				Playback.getManager().cameraPlayer.setWindowFocus(focused);
+			}
 			if (Playback.getManager().replayingHasFinished) {
 				Playback.getManager().replayPlayer.setWindowFocus(focused);
 			}
