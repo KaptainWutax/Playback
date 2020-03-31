@@ -73,4 +73,8 @@ public class StartStateAction implements PlaybackSerializable {
 	public GameJoinS2CPacket getJoinPacket() {
 		return joinPacket == null ? null : (GameJoinS2CPacket) joinPacket.getPacket();
 	}
+
+	public boolean getWindowFocus() {
+	    return this.windowFocus.getFocus();
+    }
 }

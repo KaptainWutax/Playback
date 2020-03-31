@@ -16,7 +16,13 @@ public class WindowFocusAction extends Action {
 
 	@Override
 	public void play() {
-		Playback.getManager().replayPlayer.setWindowFocus(windowFocused);
+		if (Playback.getManager().replayPlayer != null)
+			Playback.getManager().replayPlayer.setWindowFocus(windowFocused);
+		//else: replayPlayer initialization queries the initial window focus
+	}
+
+	public boolean getFocus() {
+		return this.windowFocused;
 	}
 
 	@Override

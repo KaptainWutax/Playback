@@ -33,12 +33,13 @@ public class PlayerFrame {
 	private int itemUseCooldown;
 	private boolean windowFocus;
 
-	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager, PlayGameOptions options, Mouse mouse, Keyboard keyboard) {
+	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager, PlayGameOptions options, Mouse mouse, Keyboard keyboard, boolean windowFocus) {
 		this.player = player;
 		this.interactionManager = interactionManager;
 		this.options = options;
 		this.mouse = mouse;
 		this.keyboard = keyboard;
+		this.windowFocus = windowFocus;
 	}
 
 	public PlayerFrame getAppliedPlayerFrame() {
@@ -105,7 +106,7 @@ public class PlayerFrame {
 		PlayGameOptions options = new PlayGameOptions();
 		((IKeyboardInputCaller)client.player.input).setOptions(options.getOptions());
 		Mouse mouse = new Mouse(client);
-		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client));
+		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client), Playback.getManager().recording.getStartStateAction().getWindowFocus());
 	}
 
 	public static PlayerFrame createNew() {
@@ -113,7 +114,7 @@ public class PlayerFrame {
 		PlayGameOptions options = new PlayGameOptions(MinecraftClient.getInstance().options);
 		FakePlayer player = new FakePlayer(client, client.world, client.getNetworkHandler(), interactionManager, options);
 		Mouse mouse = new Mouse(client);
-		return new PlayerFrame(player, interactionManager, options, mouse, new Keyboard(client));
+		return new PlayerFrame(player, interactionManager, options, mouse, new Keyboard(client), MinecraftClient.getInstance().isWindowFocused());
 	}
 
 	public PlayerFrame cameraOnly() {
