@@ -73,6 +73,7 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 				ci.cancel();
 			}
 		}
+	}
 
 	@Override
 	public void execute(int action, int key, int scanCode, int i, int j) {
