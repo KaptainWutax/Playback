@@ -16,7 +16,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.DoubleConsumer;
 
 public class Recording implements AutoCloseable {
-	private static int HEADER_SIZE = 12;
+	public static int FORMAT_VERSION = 1;
+	private static int HEADER_SIZE = 16;
 
 	protected StartStateAction startStateAction = new StartStateAction();
 	protected Long2ObjectMap<TickInfo> recording = new Long2ObjectOpenHashMap<>();
@@ -29,6 +30,7 @@ public class Recording implements AutoCloseable {
 	private long fileOffset = HEADER_SIZE;
 	private long lastTick;
 	private boolean startStateWritten;
+	private int version = FORMAT_VERSION;
 
 	public long currentTick = 0;
 	private TickInfo currentTickInfo = new TickInfo(this);
@@ -100,7 +102,7 @@ public class Recording implements AutoCloseable {
 	}
 
 	private void writeHeader(long tick) throws IOException {
-		randomAccessFile.seek(0);
+		randomAccessFile.seek(4);
 		randomAccessFile.writeLong(tick);
 		randomAccessFile.seek(fileOffset);
 	}
@@ -108,7 +110,9 @@ public class Recording implements AutoCloseable {
 	private void writeStartState() throws IOException {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		startStateAction.write(buf);
-		randomAccessFile.seek(8);
+		randomAccessFile.seek(0);
+		randomAccessFile.writeInt(version);
+		randomAccessFile.seek(12);
 		SerializationUtil.writeSizedBuffer(buf, randomAccessFile);
 		fileOffset = randomAccessFile.getFilePointer();
 		startStateWritten = true;
@@ -132,6 +136,11 @@ public class Recording implements AutoCloseable {
 	public void loadHeader() throws IOException {
 		try {
 			randomAccessFile.seek(0);
+			version = randomAccessFile.readInt();
+			if (version != FORMAT_VERSION) {
+				System.out.println("Not loading header of unknown version " + version);
+				return;
+			}
 			lastTick = randomAccessFile.readLong();
 			PacketByteBuf buf = SerializationUtil.readSizedBuffer(randomAccessFile);
 			startStateAction.read(buf);
@@ -147,9 +156,9 @@ public class Recording implements AutoCloseable {
 	}
 
 	public RecordingSummary readSummary() throws IOException {
-		if (randomAccessFile == null) return new RecordingSummary(null, 0, lastTick, startStateAction);
+		if (randomAccessFile == null) return new RecordingSummary(null, version, 0, lastTick, startStateAction);
 		loadHeader();
-		return new RecordingSummary(file, randomAccessFile.length(), lastTick, startStateAction);
+		return new RecordingSummary(file, version, randomAccessFile.length(), lastTick, startStateAction);
 	}
 
 	public CompletableFuture<Void> loadAsync(DoubleConsumer progressListener) {

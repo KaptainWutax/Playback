@@ -9,7 +9,7 @@ import net.minecraft.text.TranslatableText;
 public class PlaybackBrowserScreen extends Screen {
     protected final Screen parent;
     protected PlaybackListWidget list;
-    private ButtonWidget loadButton;
+    ButtonWidget loadButton;
 
     public PlaybackBrowserScreen(Screen parent) {
         super(new TranslatableText("Playback Viewer"));
@@ -23,6 +23,7 @@ public class PlaybackBrowserScreen extends Screen {
         this.loadButton = this.addButton(new ButtonWidget(this.width / 2 - 154, this.height - 52, 150, 20, "Load", (buttonWidget) -> {
             this.list.getSelectedRecording().ifPresent(RecordingSummary::load);
         }));
+        this.loadButton.active = false;
         this.addButton(new ButtonWidget(this.width / 2 + 4, this.height - 52, 150, 20, I18n.translate("gui.cancel"), b -> this.onClose()));
     }
 

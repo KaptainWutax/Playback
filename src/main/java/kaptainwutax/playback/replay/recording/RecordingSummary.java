@@ -17,12 +17,14 @@ import java.io.IOException;
 public class RecordingSummary {
     @Nullable
     public final File file;
+    public final int version;
     public final long length;
     public final long duration;
     public final StartStateAction startState;
 
-    RecordingSummary(@Nullable File file, long length, long duration, StartStateAction startState) {
+    RecordingSummary(@Nullable File file, int version, long length, long duration, StartStateAction startState) {
         this.file = file;
+        this.version = version;
         this.length = length;
         this.duration = duration;
         this.startState = startState;
@@ -34,7 +36,12 @@ public class RecordingSummary {
         }
     }
 
+    public boolean canLoad() {
+        return version == Recording.FORMAT_VERSION;
+    }
+
     public void load() {
+        if (version != Recording.FORMAT_VERSION) throw new IllegalStateException("Cannot load recording of version " + version);
         try {
             MinecraftClient client = MinecraftClient.getInstance();
             LoadingScreen loadingScreen = new LoadingScreen(new LiteralText("Loading Recording"));

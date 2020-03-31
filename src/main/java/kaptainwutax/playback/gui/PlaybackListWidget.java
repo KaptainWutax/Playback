@@ -1,6 +1,7 @@
 package kaptainwutax.playback.gui;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.replay.recording.RecordingSummary;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
@@ -16,9 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackListWidget.Entry> {
+    private final PlaybackBrowserScreen parentScreen;
     private List<RecordingSummary> summaries;
     public PlaybackListWidget(PlaybackBrowserScreen parent, MinecraftClient client, int width, int height, int top, int bottom, int itemHeight, @Nullable PlaybackListWidget previous) {
         super(client, width, height, top, bottom, itemHeight);
+        this.parentScreen = parent;
         if (previous != null) summaries = previous.summaries;
         loadReplays(false);
     }
@@ -78,16 +81,22 @@ public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackLi
             if (extIndex > 0) filename = filename.substring(0, extIndex);
             DrawableHelper.fill(x, y, x + 32, y + 32, 0xa0909090);
             String fileSize = String.format("%.2fMB", summary.length / (1024.0 * 1024.0));
-            String type = I18n.translate(summary.startState.isSinglePlayer() ? "menu.singleplayer" : "menu.multiplayer");
-            String line1 = fileSize + " " + type;
-            long time = summary.duration / 20;
-            int seconds = (int) (time % 60);
-            time = (time - seconds) / 60;
-            int minutes = (int) (time % 60);
-            int hours = (int) ((time - minutes) / 60);
-            String timeStr = hours > 0 ? String.format("%d:%02d:%02d", hours, minutes, seconds) : String.format("%d:%02d", minutes, seconds);
-            GameJoinS2CPacket joinPacket = summary.startState.getJoinPacket();
-            String line2 = joinPacket == null ? timeStr : timeStr + " " + joinPacket.getGameMode().getTranslatableName().asFormattedString();
+            String line1 = fileSize;
+            String line2 = null;
+            if (summary.version != Recording.FORMAT_VERSION) {
+                line2 = "Unsupported Version (" + summary.version + ")";
+            } else {
+                String type = I18n.translate(summary.startState.isSinglePlayer() ? "menu.singleplayer" : "menu.multiplayer");
+                line1 = fileSize + " " + type;
+                long time = summary.duration / 20;
+                int seconds = (int) (time % 60);
+                time = (time - seconds) / 60;
+                int minutes = (int) (time % 60);
+                int hours = (int) ((time - minutes) / 60);
+                String timeStr = hours > 0 ? String.format("%d:%02d:%02d", hours, minutes, seconds) : String.format("%d:%02d", minutes, seconds);
+                GameJoinS2CPacket joinPacket = summary.startState.getJoinPacket();
+                line2 = joinPacket == null ? timeStr : timeStr + " " + joinPacket.getGameMode().getTranslatableName().asFormattedString();
+            }
             this.client.textRenderer.draw(filename, x + 32 + 3, y + 1, 0xffffff);
             this.client.textRenderer.draw(line1, x + 32 + 3, y + 3 + 9, 0x808080);
             this.client.textRenderer.draw(line2, x + 32 + 3, y + 3 + 9 + 9, 0x808080);
@@ -96,6 +105,7 @@ public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackLi
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             parent.setSelected(this);
+            parent.parentScreen.loadButton.active = summary.canLoad();
             return false;
         }
     }
