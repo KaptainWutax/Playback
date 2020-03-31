@@ -1,6 +1,7 @@
 package kaptainwutax.playback.gui;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.replay.action.PacketAction;
 import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.replay.recording.RecordingSummary;
 import net.minecraft.client.MinecraftClient;
@@ -94,7 +95,8 @@ public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackLi
                 int minutes = (int) (time % 60);
                 int hours = (int) ((time - minutes) / 60);
                 String timeStr = hours > 0 ? String.format("%d:%02d:%02d", hours, minutes, seconds) : String.format("%d:%02d", minutes, seconds);
-                GameJoinS2CPacket joinPacket = summary.startState.getJoinPacket();
+                PacketAction joinPacketAction = summary.startState.getJoinPacket();
+                GameJoinS2CPacket joinPacket = joinPacketAction == null ? null : (GameJoinS2CPacket)joinPacketAction.getPacket();
                 line2 = joinPacket == null ? timeStr : timeStr + " " + joinPacket.getGameMode().getTranslatableName().asFormattedString();
             }
             this.client.textRenderer.draw(filename, x + 32 + 3, y + 1, 0xffffff);
