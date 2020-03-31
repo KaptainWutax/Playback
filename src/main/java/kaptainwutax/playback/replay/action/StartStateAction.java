@@ -37,6 +37,7 @@ public class StartStateAction implements PlaybackSerializable {
 	public void play() {
 		MinecraftClient.getInstance().options.perspective = this.perspective;
 		this.joinPacket.play();
+		this.windowFocus.play();
 	}
 
 	@Override

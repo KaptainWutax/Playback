@@ -39,7 +39,6 @@ public class PlayerFrame {
 		this.options = options;
 		this.mouse = mouse;
 		this.keyboard = keyboard;
-		this.windowFocus = MinecraftClient.getInstance().isWindowFocused();
 	}
 
 	public PlayerFrame getAppliedPlayerFrame() {
