@@ -62,7 +62,7 @@ public abstract class ClientConnectionMixin {
 
 	@Inject(method = "send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V", at = @At("HEAD"), cancellable = true)
 	public void send(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback, CallbackInfo ci) {
-		if(Playback.getManager().replayPlayer != null && Playback.getManager().replayPlayer.isActive()) {
+		if(this.side == NetworkSide.CLIENTBOUND && Playback.getManager().replayPlayer != null && Playback.getManager().replayPlayer.isActive()) {
 			ci.cancel();
 		}
 	}
