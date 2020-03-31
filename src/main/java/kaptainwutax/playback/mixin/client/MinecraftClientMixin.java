@@ -6,6 +6,7 @@ import kaptainwutax.playback.init.KeyBindings;
 import kaptainwutax.playback.replay.PlayerFrame;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.PacketAction;
+import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
@@ -27,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
-public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller, PlayerFrame.IClientCaller {
+public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller, PlayerFrame.IClientCaller, PlayGameOptions.IClientCaller {
 
 	private Keyboard callbackKeyboard;
 	private Mouse callbackMouse;
@@ -117,10 +118,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 				this.world.tickEntity(Playback.getManager().cameraPlayer.getPlayer());
 			}
 
-			//We need to switch to third person to get the camera player's presses.
-			ReplayView view = Playback.getManager().getView();
-			//TODO THIS IS BAD. REMOVE THE NEXT LINE. IT MESSES WITH THE MOUSE CALLBACKS, FREES THE MOUSE ETC. HORRIBLE HACK
-			Playback.getManager().updateView(ReplayView.THIRD_PERSON);
+			Playback.getManager().cameraPlayer.options.apply();
 
 			boolean shouldToggleView = false;
 
@@ -132,8 +130,9 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 			}
 
-			//Switch it back to whatever it was.
-			Playback.getManager().updateView(view);
+			if(Playback.getManager().view == ReplayView.FIRST_PERSON) {
+				Playback.getManager().replayPlayer.options.apply();
+			}
 
 			if(shouldToggleView) {
 				Playback.getManager().toggleView();

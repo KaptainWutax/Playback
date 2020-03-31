@@ -19,7 +19,7 @@ public class PlayerFrame {
 
 	private ClientPlayerEntity player;
 	private ClientPlayerInteractionManager interactionManager;
-	private PlayGameOptions options;
+	public PlayGameOptions options;
 	public Mouse mouse;
 	public Keyboard keyboard;
 	private boolean cameraOnly;
@@ -71,7 +71,6 @@ public class PlayerFrame {
 		if(!this.cameraOnly) {
 			client.player = this.player;
 			client.interactionManager = this.interactionManager;
-			((IClientCaller)client).setOptions(this.options.getOptions());
 			this.options.apply();
 			boolean withCallback = this == Playback.getManager().cameraPlayer || (Playback.getManager().getView() == ReplayView.FIRST_PERSON && Playback.getManager().isCurrentlyAcceptingInputs());
 			((IClientCaller)client).setMouse(this.mouse, withCallback);
@@ -154,7 +153,6 @@ public class PlayerFrame {
 		int getAttackCooldown();
 		int getItemUseCooldown();
 
-		void setOptions(GameOptions options);
 		void setMouse(Mouse mouse, boolean withCallback);
 		void setKeyboard(Keyboard keyboard, boolean withCallback);
 		void setAttackCooldown(int attackCooldown);

@@ -1,5 +1,6 @@
 package kaptainwutax.playback.replay.capture;
 
+import kaptainwutax.playback.replay.PlayerFrame;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.options.KeyBinding;
@@ -38,7 +39,12 @@ public class PlayGameOptions {
 	}
 
 	public void apply() {
+		((IClientCaller)MinecraftClient.getInstance()).setOptions(this.options);
 		this.dummyKey.setStaticCollections(this.keysById, this.keysByCode, this.keyCategories, this.categoryOrderMap);
+	}
+
+	public boolean isActive() {
+		return MinecraftClient.getInstance().options == this.options;
 	}
 
 	public interface IKeyBindingCaller {
@@ -53,6 +59,10 @@ public class PlayGameOptions {
 		Set<String> getKeyCategories();
 
 		Map<String, Integer> getCategoryOrderMap();
+	}
+
+	public interface IClientCaller {
+		void setOptions(GameOptions options);
 	}
 
 }
