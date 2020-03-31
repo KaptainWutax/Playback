@@ -2,6 +2,8 @@ package kaptainwutax.playback.replay;
 
 import kaptainwutax.playback.replay.recording.Recording;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.Formatting;
 
 public class ReplayManager {
 
@@ -33,8 +35,8 @@ public class ReplayManager {
 
 	public void updateView(ReplayView view) {
 		this.view = view;
-		if(this.replayPlayer == null)this.replayPlayer = PlayerFrame.createFromExisting();
 		if(this.cameraPlayer == null)this.cameraPlayer = PlayerFrame.createNew();
+		if(this.replayPlayer == null)this.replayPlayer = PlayerFrame.createFromExisting();
 
 		if(view == ReplayView.FIRST_PERSON) {
 			this.replayPlayer.apply();
@@ -95,9 +97,12 @@ public class ReplayManager {
 				this.replayPlayer.getPlayer().yaw,
 				this.replayPlayer.getPlayer().pitch
 		);
+
+		MinecraftClient.getInstance().player.sendMessage(new LiteralText("Switched to " + Formatting.GREEN + this.view + "."));
 	}
 
 	public void restart() { //restart the replay (intended to have to reload the world right now as well)
+		if(cameraPlayer != null)cameraPlayer.apply();
 		this.tickCounter = 0;
 		this.replayingHasFinished = false;
 		this.cameraPlayer = null;

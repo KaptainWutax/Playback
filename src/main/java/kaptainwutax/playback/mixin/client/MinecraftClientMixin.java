@@ -114,17 +114,25 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 				this.world.tickEntity(Playback.getManager().cameraPlayer.getPlayer());
 			}
 
+			//We need to switch to third person to get the camera player's presses.
+			ReplayView view = Playback.getManager().getView();
+			Playback.getManager().updateView(ReplayView.THIRD_PERSON);
+
+			boolean shouldToggleView = false;
+
 			//TODO: Add spam protection.
 			if(KeyBindings.TOGGLE_VIEW.isPressed()) {
-				boolean s = false;
-
 				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {
-					s = true;
+					shouldToggleView = true;
 				}
 
-				if(s) {
-					Playback.getManager().toggleView();
-				}
+			}
+
+			//Switch it back to whatever it was.
+			Playback.getManager().updateView(view);
+
+			if(shouldToggleView) {
+				Playback.getManager().toggleView();
 			}
 		}
 	}

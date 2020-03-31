@@ -21,7 +21,7 @@ public class PlayerFrame {
 	private ClientPlayerInteractionManager interactionManager;
 	private PlayGameOptions options;
 	public Mouse mouse;
-	private Keyboard keyboard;
+	public Keyboard keyboard;
 	private boolean cameraOnly;
 
 	//Those states are just there to store the old values in MinecraftClient.
@@ -71,7 +71,7 @@ public class PlayerFrame {
 		if(!this.cameraOnly) {
 			client.player = this.player;
 			client.interactionManager = this.interactionManager;
-			((IClientCaller)client).setOptions(this.options);
+			((IClientCaller)client).setOptions(this.options.getOptions());
 			this.options.apply();
 			boolean withCallback = this == Playback.getManager().cameraPlayer || (Playback.getManager().getView() == ReplayView.FIRST_PERSON && Playback.getManager().isCurrentlyAcceptingInputs());
 			((IClientCaller)client).setMouse(this.mouse, withCallback);
@@ -103,16 +103,14 @@ public class PlayerFrame {
 	public static PlayerFrame createFromExisting() {
 		((PlayGameOptions.IKeyBindingCaller)client.options.keysAll[0]).resetStaticCollections();
 		PlayGameOptions options = new PlayGameOptions();
-		((IKeyboardInputCaller)client.player.input).setOptions(options);
+		((IKeyboardInputCaller)client.player.input).setOptions(options.getOptions());
 		Mouse mouse = new Mouse(client);
 		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client));
 	}
 
 	public static PlayerFrame createNew() {
 		ClientPlayerInteractionManager interactionManager = new ClientPlayerInteractionManager(client, client.getNetworkHandler());
-		((PlayGameOptions.IKeyBindingCaller)client.options.keysAll[0]).resetStaticCollections();
-		PlayGameOptions options = new PlayGameOptions();
-		//options.load(); //We'll have to do this at some point.
+		PlayGameOptions options = new PlayGameOptions(MinecraftClient.getInstance().options);
 		FakePlayer player = new FakePlayer(client, client.world, client.getNetworkHandler(), interactionManager, options);
 		Mouse mouse = new Mouse(client);
 		return new PlayerFrame(player, interactionManager, options, mouse, new Keyboard(client));

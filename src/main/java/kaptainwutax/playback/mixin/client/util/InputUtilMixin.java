@@ -1,7 +1,6 @@
 package kaptainwutax.playback.mixin.client.util;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.init.KeyBindings;
 import kaptainwutax.playback.replay.ReplayView;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
@@ -17,8 +16,9 @@ public abstract class InputUtilMixin {
 	private static void isKeyPressed(long handle, int i, CallbackInfoReturnable<Boolean> ci) {
 		if(Playback.getManager().isRecording() && GLFW.glfwGetKey(handle, i) == 1) {
 			Playback.getManager().recording.getCurrentTickInfo().recordKeyState(i);
-		} else if(Playback.getManager().isReplaying() && Playback.getManager().getView() == ReplayView.FIRST_PERSON && !KeyBindings.hasKeyCode(i)) {
+		} else if(Playback.getManager().isReplaying() && Playback.getManager().getView() == ReplayView.FIRST_PERSON && Playback.getManager().isProcessingReplay) {
 			ci.setReturnValue(Playback.getManager().recording.getCurrentTickInfo().getKeyState(i));
 		}
 	}
+	
 }
