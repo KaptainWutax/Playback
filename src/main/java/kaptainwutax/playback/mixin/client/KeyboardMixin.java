@@ -30,7 +30,7 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 		}
 		//code duplicated to onChar Inject
 		if(Playback.getManager().isReplaying()) {
-			if (Playback.getManager().isProcessingReplay) {
+			if (Playback.getManager().isProcessingReplay || Playback.getManager().cameraPlayer.options.getOptions() == MinecraftClient.getInstance().options) {
 				return;
 			}
 			//user input, so check keybindings (e.g. toggle replay)
