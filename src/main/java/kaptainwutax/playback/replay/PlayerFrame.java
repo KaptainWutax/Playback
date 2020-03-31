@@ -73,7 +73,9 @@ public class PlayerFrame {
 			client.interactionManager = this.interactionManager;
 			((IClientCaller)client).setOptions(this.options.getOptions());
 			this.options.apply();
-			boolean withCallback = this == Playback.getManager().cameraPlayer || (Playback.getManager().getView() == ReplayView.FIRST_PERSON && Playback.getManager().isCurrentlyAcceptingInputs());
+			//boolean withCallback = this == Playback.getManager().cameraPlayer || (Playback.getManager().getView() == ReplayView.FIRST_PERSON && Playback.getManager().isCurrentlyAcceptingInputs());
+			boolean withCallback = !Playback.getManager().isOnlyAcceptingReplayedInputs();
+			withCallback = withCallback && this == Playback.getManager().getPlayerFrameForView(Playback.getManager().view);
 			((IClientCaller)client).setMouse(this.mouse, withCallback);
 			((IClientCaller)client).setKeyboard(this.keyboard, withCallback);
 			this.applyState();
@@ -128,16 +130,22 @@ public class PlayerFrame {
 		this.windowFocus = windowFocus;
 	}
 
+	public Screen getCurrentScreen() {
+		if (this == Playback.getManager().currentAppliedPlayer) {
+			return MinecraftClient.getInstance().currentScreen;
+		}
+		return currentScreen;
+	}
+
 	public void onReplayFinished() {
 		if (this == Playback.getManager().replayPlayer) {
 			//copy the window focus over
 			this.setWindowFocus(Playback.getManager().cameraPlayer.windowFocus);
-			if (this == Playback.getManager().currentAppliedPlayer && Playback.getManager().getView() == ReplayView.FIRST_PERSON) {
-				boolean withCallback = Playback.getManager().isCurrentlyAcceptingInputs();
-				//set whether mouse is grabbed etc.
-				((IClientCaller)client).setMouse(this.mouse, withCallback);
-				((IClientCaller)client).setKeyboard(this.keyboard, withCallback);
-			}
+			boolean withCallback = !Playback.getManager().isOnlyAcceptingReplayedInputs();
+			withCallback = withCallback && this == Playback.getManager().getPlayerFrameForView(Playback.getManager().view);
+			//set whether mouse is grabbed etc.
+			((IClientCaller)client).setMouse(this.mouse, withCallback);
+			((IClientCaller)client).setKeyboard(this.keyboard, withCallback);
 		}
 	}
 

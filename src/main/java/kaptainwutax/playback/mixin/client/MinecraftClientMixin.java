@@ -120,7 +120,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			//We need to switch to third person to get the camera player's presses.
 			ReplayView view = Playback.getManager().getView();
 			//TODO THIS IS BAD. REMOVE THE NEXT LINE. IT MESSES WITH THE MOUSE CALLBACKS, FREES THE MOUSE ETC. HORRIBLE HACK
-			Playback.getManager().updateView(ReplayView.THIRD_PERSON);
+//			Playback.getManager().updateView(ReplayView.THIRD_PERSON);
 
 			boolean shouldToggleView = false;
 
@@ -133,10 +133,11 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			}
 
 			//Switch it back to whatever it was.
-			Playback.getManager().updateView(view);
+//			Playback.getManager().updateView(view);
 
 			if(shouldToggleView) {
 				Playback.getManager().toggleView();
+				KeyBindings.TOGGLE_VIEW.setPressed(false); //hackfix for now here, as the keybinding isn't registered properly
 			}
 		}
 	}

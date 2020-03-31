@@ -63,6 +63,16 @@ public class ReplayManager {
 		}
 	}
 
+	public boolean isOnlyAcceptingReplayedInputs() {
+		if (this.currentAppliedPlayer == null) {
+			if (this.isReplaying) {
+				System.out.println("Input permission request with no player frame! Allowing ...");
+			}
+			return false;
+		}
+		return this.isReplaying && this.currentAppliedPlayer == replayPlayer && !this.replayingHasFinished;
+	}
+
 	public boolean isCurrentlyAcceptingInputs() {
 		if (this.currentAppliedPlayer == null) {
 			if (this.isReplaying) {

@@ -26,15 +26,18 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 
 		if(Playback.getManager().isRecording()) {
 			Playback.getManager().recording.getCurrentTickInfo().recordKey(0, key, scanCode, i, j);
-		} else if(!Playback.getManager().isCurrentlyAcceptingInputs()) {
-			if(Playback.getManager().isProcessingReplay) {
+			return;
+		}
+		//code duplicated to onChar Inject
+		if(Playback.getManager().isReplaying()) {
+			if (Playback.getManager().isProcessingReplay) {
+				return;
+			}
+			//user input, so check global keybindings (e.g. toggle replay)
+			//Playback.getManager().onKey_globalKeys(window, key, scanCode, i, j);
+			//user input, not allowed to reach replayPlayer
+			if (Playback.getManager().currentAppliedPlayer == Playback.getManager().replayPlayer && !Playback.getManager().replayingHasFinished) {
 				ci.cancel();
-			} else {
-				ReplayView view = Playback.getManager().getView();
-				//TODO THIS IS BAD. REMOVE THE NEXT LINE. IT MESSES WITH THE MOUSE CALLBACKS, FREES THE MOUSE ETC. HORRIBLE HACK
-				Playback.getManager().updateView(ReplayView.THIRD_PERSON);
-				Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
-				Playback.getManager().updateView(view);
 			}
 		}
 	}
@@ -45,9 +48,20 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 
 		if(Playback.getManager().isRecording()) {
 			Playback.getManager().recording.getCurrentTickInfo().recordKey(1, 0, 0, i, j);
-		} else if(!Playback.getManager().isCurrentlyAcceptingInputs()) {
-			ci.cancel();
 		}
+		//duplicated code from Inject into onKey
+		if(Playback.getManager().isReplaying()) {
+			if (Playback.getManager().isProcessingReplay) {
+				return;
+			}
+			//user input, so check global keybindings (e.g. toggle replay)
+			//Playback.getManager().onChar_globalKeys(window, i, j);
+			//user input, not allowed to reach replayPlayer
+			if (Playback.getManager().currentAppliedPlayer == Playback.getManager().replayPlayer && !Playback.getManager().replayingHasFinished) {
+				ci.cancel();
+			}
+		}
+
 	}
 
 	@Override
