@@ -40,7 +40,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 			}
 		} else if(!Playback.getManager().joined) {
 			Playback.getManager().joined = true;
-			Playback.getManager().recording.getStartStateAction().getJoinPacket().play();
+			Playback.getManager().recording.getStartStateAction().getJoinPacketAction().play();
 			Playback.getManager().updateView(Playback.getManager().getView());
 			Playback.getManager().recording.getStartStateAction().play();
 			this.client.openScreen(null);
