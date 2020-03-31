@@ -16,7 +16,7 @@ public abstract class InputUtilMixin {
 	private static void isKeyPressed(long handle, int i, CallbackInfoReturnable<Boolean> ci) {
 		if(Playback.getManager().isRecording() && GLFW.glfwGetKey(handle, i) == 1) {
 			Playback.getManager().recording.getCurrentTickInfo().recordKeyState(i);
-		} else if(Playback.getManager().isReplaying() && Playback.getManager().getView() == ReplayView.FIRST_PERSON && Playback.getManager().isProcessingReplay) {
+		} else if(Playback.getManager().isReplaying() && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
 			ci.setReturnValue(Playback.getManager().recording.getCurrentTickInfo().getKeyState(i));
 		}
 	}

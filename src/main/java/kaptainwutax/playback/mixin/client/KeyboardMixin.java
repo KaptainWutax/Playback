@@ -26,17 +26,24 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 
 		if(Playback.getManager().isRecording()) {
 			Playback.getManager().recording.getCurrentTickInfo().recordKey(0, key, scanCode, i, j);
-		} else if(!Playback.getManager().isCurrentlyAcceptingInputs() && Playback.getManager().replayPlayer.options.isActive()) {
-			if(Playback.getManager().isProcessingReplay) {
+			return;
+		}
+		//code duplicated to onChar Inject
+		if(Playback.getManager().isReplaying()) {
+			if (Playback.getManager().isProcessingReplay) {
+				return;
+			}
+			//user input, so check keybindings (e.g. toggle replay)
+            Playback.getManager().cameraPlayer.options.apply();
+
+            Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
+
+            if(Playback.getManager().view == ReplayView.FIRST_PERSON) {
+                Playback.getManager().replayPlayer.options.apply();
+            }
+			//user input, not allowed to reach replayPlayer
+			if (Playback.getManager().currentAppliedPlayer == Playback.getManager().replayPlayer && !Playback.getManager().replayingHasFinished) {
 				ci.cancel();
-			} else {
-				Playback.getManager().cameraPlayer.options.apply();
-
-				Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
-
-				if(Playback.getManager().view == ReplayView.FIRST_PERSON) {
-					Playback.getManager().replayPlayer.options.apply();
-				}
 			}
 		}
 	}
@@ -47,10 +54,25 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 
 		if(Playback.getManager().isRecording()) {
 			Playback.getManager().recording.getCurrentTickInfo().recordKey(1, 0, 0, i, j);
-		} else if(!Playback.getManager().isCurrentlyAcceptingInputs()) {
-			ci.cancel();
 		}
-	}
+		//duplicated code from Inject into onKey
+		if(Playback.getManager().isReplaying()) {
+			if (Playback.getManager().isProcessingReplay) {
+				return;
+			}
+			//user input, so check global keybindings (e.g. toggle replay)
+//            Playback.getManager().cameraPlayer.options.apply();
+//
+//            Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
+//
+//            if(Playback.getManager().view == ReplayView.FIRST_PERSON) {
+//                Playback.getManager().replayPlayer.options.apply();
+//            }
+            //user input, not allowed to reach replayPlayer
+			if (Playback.getManager().currentAppliedPlayer == Playback.getManager().replayPlayer && !Playback.getManager().replayingHasFinished) {
+				ci.cancel();
+			}
+		}
 
 	@Override
 	public void execute(int action, int key, int scanCode, int i, int j) {
