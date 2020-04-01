@@ -46,7 +46,7 @@ public class ReplayManager {
 	}
 
 	public void tick(boolean paused) {
-		if(paused)return; //todo what happens on multiplayer when the menu is opened, would the replay pause?
+		if(paused)return;
 
 		if(!this.isReplaying) {
 			this.recording.getCurrentTickInfo().recordDebug();
@@ -54,8 +54,9 @@ public class ReplayManager {
 		} else {
 			if(tickCounter > recording.getEnd()) {
 				if (!replayingHasFinished) {
-					replayingHasFinished = true;
-					replayPlayer.onReplayFinished();
+					//commented out because it seems to cause problems with switching views and screens when replay finished
+					//replayingHasFinished = true;
+					//replayPlayer.onReplayFinished();
 				}
 			} else {
 				recording.playTick(tickCounter++);
@@ -98,7 +99,7 @@ public class ReplayManager {
 	public void toggleView() {
 		this.updateView(ReplayView.values()[(this.view.ordinal() + 1) % ReplayView.values().length]);
 
-		//TODO: Maybe swapping this is better.
+		//TODO: Maybe swapping the toast manager is better.
 		MinecraftClient.getInstance().getToastManager().clear();
 
 		//Teleport the camera player to the replay player.

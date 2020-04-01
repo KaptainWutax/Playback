@@ -21,8 +21,6 @@ import java.io.IOException;
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
 
-	private boolean initialTeleport;
-
 	@Shadow
 	private MinecraftClient client;
 
@@ -48,25 +46,29 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		}
 	}
 
+	/**
+	 * Handle the replayed respawn packets. Update the player frames when changing dimensions
+	 */
 	@Inject(method = "onPlayerRespawn", at = @At("TAIL"))
 	public void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
 		if(Playback.getManager().isReplaying()) {
-			Playback.getManager().cameraPlayer = null;
-			Playback.getManager().replayPlayer = null;
-			Playback.getManager().updateView(Playback.getManager().getView());
-
-			if(Playback.getManager().isProcessingReplay) {
-				Playback.getManager().replayPlayer.apply();
+			if (Playback.getManager().isProcessingReplay) {
+				//Handling the replayed respawn packet
+				Playback.getManager().replayPlayer.updatePlayerFrameOnRespawnOrDimensionChange(client.player);
+				Playback.getManager().cameraPlayer.updatePlayerFrameOnRespawnOrDimensionChange(client.player);
 			}
 		}
 	}
 
+	/**
+	 * Teleport the camera player to the replay player at the beginning of the replay and on respawning.
+	 */
 	@Inject(method = "onPlayerPositionLook", at = @At("TAIL"))
 	public void onPlayerPositionLook(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
-		if(Playback.getManager().isRecording() || this.initialTeleport ||Playback.getManager().getView() != ReplayView.THIRD_PERSON
-				|| Playback.getManager().cameraPlayer == null || Playback.getManager().cameraPlayer.isActive()) return;
+		if(Playback.getManager().isRecording() || Playback.getManager().getView() != ReplayView.THIRD_PERSON
+				|| Playback.getManager().cameraPlayer == null || Playback.getManager().cameraPlayer.wasTeleported ||Playback.getManager().cameraPlayer.isActive()) return;
 
-		this.initialTeleport = true;
+		Playback.getManager().cameraPlayer.wasTeleported = true;
 		FakePlayer cameraPlayer = (FakePlayer) Playback.getManager().cameraPlayer.getPlayer();
 		PlayerEntity replayPlayer = Playback.getManager().replayPlayer.getPlayer();
 

@@ -7,10 +7,13 @@ import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.HitResult;
 
 public class PlayerFrame {
@@ -22,12 +25,13 @@ public class PlayerFrame {
 	public PlayGameOptions options;
 	public Mouse mouse;
 	public Keyboard keyboard;
+
 	private boolean cameraOnly;
+	public boolean wasTeleported;
 
 	//Those states are just there to store the old values in MinecraftClient.
 	private Screen currentScreen;
 	private int attackCooldown;
-
 	private HitResult crosshairTarget;
 	private Entity targetedEntity;
 	private int itemUseCooldown;
@@ -40,6 +44,8 @@ public class PlayerFrame {
 		this.mouse = mouse;
 		this.keyboard = keyboard;
 		this.windowFocus = windowFocus;
+
+		this.wasTeleported = false;
 	}
 
 	public PlayerFrame getAppliedPlayerFrame() {
@@ -112,9 +118,27 @@ public class PlayerFrame {
 	public static PlayerFrame createNew() {
 		ClientPlayerInteractionManager interactionManager = new ClientPlayerInteractionManager(client, client.getNetworkHandler());
 		PlayGameOptions options = new PlayGameOptions(MinecraftClient.getInstance().options);
-		FakePlayer player = new FakePlayer(client, client.world, client.getNetworkHandler(), interactionManager, options);
+		FakePlayer player = new FakePlayer(client, client.world, client.getNetworkHandler(), interactionManager, options, new KeyboardInput(options.getOptions()));
 		Mouse mouse = new Mouse(client);
 		return new PlayerFrame(player, interactionManager, options, mouse, new Keyboard(client), MinecraftClient.getInstance().isWindowFocused());
+	}
+
+
+	public void updatePlayerFrameOnRespawnOrDimensionChange(ClientPlayerEntity newReplayPlayerEntity) {
+		if (Playback.getManager().currentAppliedPlayer != Playback.getManager().replayPlayer) {
+			System.err.println("Skipping updating player frame on respawn because replay player isn't applied!");
+			return;
+		}
+
+		if (this == Playback.getManager().cameraPlayer) {
+			this.player = new FakePlayer(client, client.world, this.player.networkHandler, this.interactionManager, this.options, new KeyboardInput(options.getOptions()));
+			//teleport to the replayPlayer again
+			this.wasTeleported = false;
+		} else if (this == Playback.getManager().replayPlayer) {
+			this.player = newReplayPlayerEntity;
+		} else {
+			System.err.println("Updating unused player frame skipped");
+		}
 	}
 
 	public PlayerFrame cameraOnly() {
