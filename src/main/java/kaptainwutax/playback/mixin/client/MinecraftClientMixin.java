@@ -146,7 +146,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		if (this.windowFocused == focused) {
 			return;
 		}
-		if (Playback.getManager().isRecording()) {
+		if (Playback.getManager().isRecording() && this.world != null) {
 			Playback.getManager().recording.getCurrentTickInfo().recordWindowFocus(focused);
 			return;
 		}
