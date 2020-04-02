@@ -22,14 +22,6 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		super(world, profile);
 	}
 
-	@Inject(method = "isCamera", at = @At("HEAD"), cancellable = true)
-	private void isCamera(CallbackInfoReturnable<Boolean> ci) {
-		//usually returns true, but setting the camera on the cameraplayer shouldn't modify behavior (movement code), so still return true
-		if(Playback.getManager().replayPlayer != null && (Object) this == Playback.getManager().replayPlayer.getPlayer() && Playback.getManager().getView() == ReplayView.THIRD_PERSON) {
-			ci.setReturnValue(true);
-		}
-	}
-
 	/**
 	 * Cancel sounds that only play for the first person when in third person mode
 	 */
