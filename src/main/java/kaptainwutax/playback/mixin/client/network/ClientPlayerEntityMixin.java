@@ -25,7 +25,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	/**
 	 * Cancel sounds that only play for the first person when in third person mode
 	 */
-	@Inject(method = "updateWaterSubmersionState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;updateWaterSubmersionState()Z"), cancellable = true)
+	@Inject(method = "updateWaterSubmersionState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;updateWaterSubmersionState()Z", shift = At.Shift.AFTER), cancellable = true)
 	private void cancelWaterSoundsIfNotCameraPlayer(CallbackInfoReturnable<Boolean> cir) {
 		if (Playback.getManager().isReplaying() && (Playback.getManager().getView() == ReplayView.THIRD_PERSON) && ((PlayerEntity) this == Playback.getManager().replayPlayer.getPlayer())) {
 			cir.setReturnValue(this.isSubmergedInWater);
