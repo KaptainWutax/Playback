@@ -21,48 +21,107 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 	@Shadow public abstract void updateMouse();
 	@Shadow private boolean isCursorLocked;
 
+	private int recursionDepth;
+	private int debug_numNonRecordedRecursiveCalls;
+
 	@Inject(method = "onCursorPos", at = @At("HEAD"), cancellable = true)
 	private void onCursorPos(long window, double x, double y, CallbackInfo ci) {
-		if(MinecraftClient.getInstance().player == null) return;
+		this.recursionDepth++;
+		if (window != MinecraftClient.getInstance().getWindow().getHandle()) {
+			return;
+		} else if (MinecraftClient.getInstance().player == null) {
+			return;
+		}
 
 		if(Playback.getManager().isRecording()) {
-			Playback.getManager().recording.getCurrentTickInfo().recordMouse(0, x, y, 0, this.isCursorLocked);
+			if (this.recursionDepth == 1) {
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(0, x, y, 0, this.isCursorLocked);
+			} else {
+				debug_numNonRecordedRecursiveCalls++;
+			}
 		} else if(!Playback.getManager().isProcessingReplay && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
-			ci.cancel();
+            this.recursionDepth--;
+            ci.cancel();
 		}
+	}
+
+	@Inject(method = "onCursorPos", at = @At("RETURN"))
+	private void onCursorPosEnd(long window, double x, double y, CallbackInfo ci) {
+		this.recursionDepth--;
 	}
 
 	@Inject(method = "onMouseButton", at = @At("HEAD"), cancellable = true)
 	private void onMouseButton(long window, int button, int action, int mods, CallbackInfo ci) {
-		if(MinecraftClient.getInstance().player == null) return;
+		this.recursionDepth++;
+		if (window != MinecraftClient.getInstance().getWindow().getHandle()) {
+			return;
+		} else if (MinecraftClient.getInstance().player == null) {
+			return;
+		}
 
 		if(Playback.getManager().isRecording()) {
-			Playback.getManager().recording.getCurrentTickInfo().recordMouse(1, button, action, mods, this.isCursorLocked);
+			if (this.recursionDepth == 1) {
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(1, button, action, mods, this.isCursorLocked);
+			} else {
+				debug_numNonRecordedRecursiveCalls++;
+			}
 		} else if(!Playback.getManager().isProcessingReplay && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
-			ci.cancel();
+            this.recursionDepth--;
+            ci.cancel();
 		}
+	}
+
+	@Inject(method = "onMouseButton", at = @At("RETURN"))
+	private void onMouseButtonEnd(long window, int button, int action, int mods, CallbackInfo ci) {
+		this.recursionDepth--;
 	}
 
 	@Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
 	private void onMouseScroll(long window, double d, double e, CallbackInfo ci) {
-		if(MinecraftClient.getInstance().player == null) return;
+		this.recursionDepth++;
+		if (window != MinecraftClient.getInstance().getWindow().getHandle()) {
+			return;
+		} else if (MinecraftClient.getInstance().player == null) {
+			return;
+		}
 
 		if(Playback.getManager().isRecording()) {
-			Playback.getManager().recording.getCurrentTickInfo().recordMouse(2, d, e, 0, this.isCursorLocked);
+			if (this.recursionDepth == 1) {
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(2, d, e, 0, this.isCursorLocked);
+			} else {
+				debug_numNonRecordedRecursiveCalls++;
+			}
 		} else if(!Playback.getManager().isProcessingReplay && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
-			ci.cancel();
+            this.recursionDepth--;
+            ci.cancel();
 		}
+	}
+
+	@Inject(method = "onMouseScroll", at = @At("RETURN"))
+	private void onMouseScrollEnd(long window, double d, double e, CallbackInfo ci) {
+		this.recursionDepth--;
 	}
 
 	@Inject(method = "updateMouse", at = @At("HEAD"), cancellable = true)
 	private void updateMouse(CallbackInfo ci) {
+		this.recursionDepth++;
 		if(MinecraftClient.getInstance().player == null) return;
 
 		if(Playback.getManager().isRecording()) {
-			Playback.getManager().recording.getCurrentTickInfo().recordMouse(3, 0, 0, 0, this.isCursorLocked);
+			if (this.recursionDepth == 1) {
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(3, 0, 0, 0, this.isCursorLocked);
+			} else {
+				debug_numNonRecordedRecursiveCalls++;
+			}
 		} else if(!Playback.getManager().isProcessingReplay && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
-			ci.cancel();
+            this.recursionDepth--;
+            ci.cancel();
 		}
+	}
+
+	@Inject(method = "updateMouse", at = @At("RETURN"))
+	private void updateMouseEnd(CallbackInfo ci) {
+		this.recursionDepth--;
 	}
 
 	@Redirect(method = "lockCursor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/InputUtil;setCursorParameters(JIDD)V"))
