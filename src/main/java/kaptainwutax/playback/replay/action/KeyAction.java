@@ -1,6 +1,8 @@
 package kaptainwutax.playback.replay.action;
 
+import kaptainwutax.playback.Playback;
 import net.minecraft.util.PacketByteBuf;
+import org.lwjgl.glfw.GLFW;
 
 public class KeyAction extends Action {
 
@@ -22,6 +24,9 @@ public class KeyAction extends Action {
 
 	@Override
 	public void play() {
+		if (this.i != GLFW.GLFW_REPEAT) {
+			Playback.getManager().recording.setKeyState(this.key, this.i == GLFW.GLFW_PRESS);
+		}
 		((IKeyboardCaller)client.keyboard).execute(this.action, this.key, this.scanCode, this.i, this.j);
 	}
 

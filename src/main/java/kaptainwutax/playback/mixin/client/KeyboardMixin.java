@@ -34,7 +34,7 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 				return;
 			}
 			//user input, so check keybindings (e.g. toggle replay)
-            Playback.getManager().cameraPlayer.options.apply();
+            Playback.getManager().cameraPlayer.options.apply(); //todo also need to swap screens etc, just not mouse grabbed state
 
             Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
 

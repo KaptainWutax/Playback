@@ -1,7 +1,6 @@
 package kaptainwutax.playback.mixin.client.util;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.ReplayView;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,10 +13,13 @@ public abstract class InputUtilMixin {
 
 	@Inject(method = "isKeyPressed", at = @At("HEAD"), cancellable = true)
 	private static void isKeyPressed(long handle, int i, CallbackInfoReturnable<Boolean> ci) {
-		if(Playback.getManager().isRecording() && GLFW.glfwGetKey(handle, i) == 1) {
-			Playback.getManager().recording.getCurrentTickInfo().recordKeyState(i);
-		} else if(Playback.getManager().isReplaying() && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
-			ci.setReturnValue(Playback.getManager().recording.getCurrentTickInfo().getKeyState(i));
+		if (Playback.getManager().isRecording()) {
+			int pressedState = GLFW.glfwGetKey(handle, i);
+			Playback.getManager().recording.getCurrentTickInfo().recordKeyState(i, pressedState == GLFW.GLFW_PRESS);
+			ci.setReturnValue(pressedState == GLFW.GLFW_PRESS);
+		} else if (Playback.getManager().isReplaying() && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
+			boolean b = Playback.getManager().recording.getCurrentTickInfo().getKeyState(i);
+			ci.setReturnValue(b);
 		}
 	}
 	

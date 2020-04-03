@@ -1,5 +1,6 @@
 package kaptainwutax.playback.replay.capture;
 
+import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.action.*;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.network.Packet;
@@ -7,10 +8,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.PacketByteBuf;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class TickCapture implements PlaybackSerializable {
 
@@ -49,12 +47,16 @@ public class TickCapture implements PlaybackSerializable {
         this.addAction(new WindowFocusAction(focused));
     }
 
-	public void addKeyState(int i) {
-		this.keyStates.add(i);
+	public void addKeyState(int i, boolean state) {
+		if (this.getKeyState(i) != state) {
+			System.out.println("Lost data for key " + i + " on tick. Data was not recorded!" + Playback.getManager().recording.currentTick);
+		}
+		//this.keyStates.put(i, state);
 	}
 
 	public boolean getKeyState(int i) {
-		return this.keyStates.contains(i);
+		return Playback.getManager().recording.getKeyState(i);
+		//return this.keyStates.get(i);
 	}
 
 	public boolean isEmpty() {

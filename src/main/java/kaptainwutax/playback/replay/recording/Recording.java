@@ -12,6 +12,8 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.PacketByteBuf;
 
 import java.io.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.DoubleConsumer;
 
@@ -34,6 +36,9 @@ public class Recording implements AutoCloseable {
 
 	public long currentTick = 0;
 	private TickInfo currentTickInfo = new TickInfo(this);
+
+	transient protected Set<Integer> currentKeyStates = new HashSet<>(); //todo clear this at recording start etc
+
 
 	public static final ThreadLocal<Recording> currentlyReading = new ThreadLocal<>();
 
@@ -74,7 +79,7 @@ public class Recording implements AutoCloseable {
 			this.recording.put(this.currentTick, this.currentTickInfo);
 		}
 
-		System.out.println("Tick " + tick);
+		//System.out.println("Tick " + tick);
 		if (randomAccessFile != null && !currentTickInfo.isEmpty()) {
 			try {
 				recordToFile(tick, currentTickInfo);
@@ -207,6 +212,18 @@ public class Recording implements AutoCloseable {
 	@Override
 	public void close() throws IOException {
 		if (randomAccessFile != null) randomAccessFile.close();
+	}
+
+	public void setKeyState(int key, boolean pressed) {
+		if (pressed) {
+			this.currentKeyStates.add(key);
+		} else {
+			this.currentKeyStates.remove(key);
+		}
+	}
+
+	public boolean getKeyState(int key) {
+		return this.currentKeyStates.contains(key);
 	}
 
 }

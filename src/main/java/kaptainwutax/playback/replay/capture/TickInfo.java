@@ -11,6 +11,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.util.PacketByteBuf;
+import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;
 
@@ -41,14 +42,17 @@ public class TickInfo implements PlaybackSerializable {
 
 	public void recordKey(int action, int key, int scanCode, int i, int j) {
 		this.tickCapture.addKeyAction(action, key, scanCode, i, j);
+		if (i != GLFW.GLFW_REPEAT) {
+			Playback.getManager().recording.setKeyState(key, i == GLFW.GLFW_PRESS);
+		}
 	}
 
 	public void recordMouse(int action, double d1, double d2, int i1, boolean isCursorLocked) {
 		this.tickCapture.addMouseAction(action, d1, d2, i1, isCursorLocked);
 	}
 
-	public void recordKeyState(int i) {
-		this.tickCapture.addKeyState(i);
+	public void recordKeyState(int i, boolean state) {
+		this.tickCapture.addKeyState(i, state);
 	}
 
 	public boolean getKeyState(int i) {

@@ -55,8 +55,8 @@ public class ReplayManager {
 			if(tickCounter > recording.getEnd()) {
 				if (!replayingHasFinished) {
 					//commented out because it seems to cause problems with switching views and screens when replay finished
-					//replayingHasFinished = true;
-					//replayPlayer.onReplayFinished();
+					replayingHasFinished = true;
+					replayPlayer.onReplayFinished();
 				}
 			} else {
 				recording.playTick(tickCounter++);
