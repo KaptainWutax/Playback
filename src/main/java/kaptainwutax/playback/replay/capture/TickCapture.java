@@ -49,7 +49,7 @@ public class TickCapture implements PlaybackSerializable {
 
 	public void addKeyState(int i, boolean state) {
 		if (this.getKeyState(i) != state) {
-			System.out.println("Lost data for key " + i + " on tick. Data was not recorded!" + Playback.getManager().recording.currentTick);
+			System.out.println("Lost data for key " + i + " on tick " + Playback.getManager().recording.currentTick + " . Data was not recorded!");
 		}
 		//this.keyStates.put(i, state);
 	}
