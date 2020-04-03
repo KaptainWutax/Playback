@@ -115,7 +115,10 @@ public class ReplayManager {
 	}
 
 	public void restart() { //restart the replay (intended to have to reload the world right now as well)
-		if(cameraPlayer != null)cameraPlayer.apply();
+		if(cameraPlayer != null) {
+			cameraPlayer.options.apply();
+		}
+
 		this.tickCounter = 0;
 		this.replayingHasFinished = false;
 		this.cameraPlayer = null;

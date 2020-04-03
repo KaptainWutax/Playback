@@ -39,8 +39,12 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		} else if(!Playback.getManager().joined) {
 			Playback.getManager().joined = true;
 			Playback.getManager().recording.getStartStateAction().getJoinPacketAction().play();
-			Playback.getManager().updateView(Playback.getManager().getView());
+
+			ReplayView oldView = Playback.getManager().getView();
+			Playback.getManager().updateView(ReplayView.FIRST_PERSON);
 			Playback.getManager().recording.getStartStateAction().play();
+			Playback.getManager().updateView(oldView);
+
 			this.client.openScreen(null);
 			ci.cancel();
 		}

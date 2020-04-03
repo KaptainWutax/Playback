@@ -32,7 +32,6 @@ public class Playback implements ModInitializer {
 		return new Identifier(MOD_ID, name);
 	}
 
-
 	public static File getRecordingsFolder() throws IOException {
 		File recordingsFolder = new File("playback");
 		if (!recordingsFolder.exists()) {
