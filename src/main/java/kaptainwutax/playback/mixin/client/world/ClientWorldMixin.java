@@ -5,6 +5,7 @@ import kaptainwutax.playback.entity.FakePlayer;
 import kaptainwutax.playback.replay.recording.Recording;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.chunk.WorldChunk;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,6 +42,15 @@ public abstract class ClientWorldMixin {
 	private void addEntityIfNotFakePlayer(WorldChunk worldChunk, Entity entity) {
 		if (entity instanceof FakePlayer) {
 			entity.updateNeeded = true;
+			entity.chunkX = MathHelper.floor(entity.getX() / 16D);
+			entity.chunkY = MathHelper.floor(entity.getY() / 16D);
+			entity.chunkZ = MathHelper.floor(entity.getZ() / 16D);
+			if (entity.chunkY >= worldChunk.getEntitySectionArray().length) {
+				entity.chunkY = worldChunk.getEntitySectionArray().length - 1;
+			} else if (entity.chunkY < 0) {
+				entity.chunkY = 0;
+			}
+
 			return;
 		}
 		worldChunk.addEntity(entity);
