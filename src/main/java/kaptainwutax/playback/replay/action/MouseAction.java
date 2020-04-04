@@ -32,17 +32,26 @@ public class MouseAction extends Action {
 	@Override
 	public void read(PacketByteBuf buf) {
 		action = buf.readVarInt();
-		d1 = buf.readDouble();
-		d2 = buf.readDouble();
-		i1 = buf.readVarInt();
+		if (action != 3) {
+			d1 = buf.readDouble();
+			d2 = buf.readDouble();
+			if (action == 1) {
+				i1 = buf.readVarInt();
+			}
+		}
 	}
 
 	@Override
 	public void write(PacketByteBuf buf) {
 		buf.writeVarInt(action);
-		buf.writeDouble(d1);
-		buf.writeDouble(d2);
-		buf.writeVarInt(i1);
+		if (action != 3) {
+			buf.writeDouble(d1);
+			buf.writeDouble(d2);
+			if (action == 1) {
+				buf.writeVarInt(i1);
+			}
+		}
+
 	}
 
 	public interface IMouseCaller {

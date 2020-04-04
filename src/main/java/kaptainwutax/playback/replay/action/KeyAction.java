@@ -24,7 +24,7 @@ public class KeyAction extends Action {
 
 	@Override
 	public void play() {
-		if (this.i != GLFW.GLFW_REPEAT) {
+		if (this.i == GLFW.GLFW_PRESS || i == GLFW.GLFW_RELEASE) {
 			Playback.getManager().recording.setKeyState(this.key, this.i == GLFW.GLFW_PRESS);
 		}
 		((IKeyboardCaller)client.keyboard).execute(this.action, this.key, this.scanCode, this.i, this.j);
@@ -38,8 +38,10 @@ public class KeyAction extends Action {
 	@Override
 	public void read(PacketByteBuf buf) {
 		action = buf.readVarInt();
-		key = buf.readVarInt();
-		scanCode = buf.readVarInt();
+		if (action != 1) {
+			key = buf.readVarInt();
+			scanCode = buf.readVarInt();
+		}
 		i = buf.readVarInt();
 		j = buf.readVarInt();
 	}
@@ -47,8 +49,10 @@ public class KeyAction extends Action {
 	@Override
 	public void write(PacketByteBuf buf) {
 		buf.writeVarInt(action);
-		buf.writeVarInt(key);
-		buf.writeVarInt(scanCode);
+		if (action != 1) {
+			buf.writeVarInt(key);
+			buf.writeVarInt(scanCode);
+		}
 		buf.writeVarInt(i);
 		buf.writeVarInt(j);
 	}
