@@ -51,13 +51,13 @@ public class TickInfo implements PlaybackSerializable {
 		this.tickCapture.addMouseAction(action, d1, d2, i1, isCursorLocked);
 	}
 
-	public void recordKeyState(int i, boolean state) {
-		this.tickCapture.addKeyState(i, state);
-	}
+//	public void recordKeyState(int i, boolean state) {
+//		this.tickCapture.addKeyState(i, state);
+//	}
 
-	public boolean getKeyState(int i) {
-		return this.tickCapture.getKeyState(i);
-	}
+//	public boolean getKeyState(int i) {
+//		return this.tickCapture.getKeyState(i);
+//	}
 
     public void recordWindowFocus(boolean windowFocus) {
         this.tickCapture.addWindowFocusAction(windowFocus);
