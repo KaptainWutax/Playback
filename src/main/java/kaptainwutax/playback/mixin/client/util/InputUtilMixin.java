@@ -15,10 +15,10 @@ public abstract class InputUtilMixin {
 	private static void isKeyPressed(long handle, int i, CallbackInfoReturnable<Boolean> ci) {
 		if (Playback.getManager().isRecording()) {
 			int pressedState = GLFW.glfwGetKey(handle, i);
-			Playback.getManager().recording.getCurrentTickInfo().recordKeyState(i, pressedState == GLFW.GLFW_PRESS);
+			Playback.getManager().recording.setKeyState(i, pressedState == GLFW.GLFW_PRESS);
 			ci.setReturnValue(pressedState == GLFW.GLFW_PRESS);
 		} else if (Playback.getManager().isReplaying() && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
-			boolean b = Playback.getManager().recording.getCurrentTickInfo().getKeyState(i);
+			boolean b = Playback.getManager().recording.getKeyState(i);
 			ci.setReturnValue(b);
 		}
 	}
