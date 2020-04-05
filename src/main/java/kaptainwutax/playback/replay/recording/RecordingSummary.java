@@ -51,6 +51,7 @@ public class RecordingSummary {
                 load(Playback.getManager().recording);
             } else {
                 Recording r = new Recording(file, "r");
+                Playback.getManager().recording = r;
                 r.loadAsync(loadingScreen).thenRun(() -> load(r));
             }
         } catch (FileNotFoundException e) {
