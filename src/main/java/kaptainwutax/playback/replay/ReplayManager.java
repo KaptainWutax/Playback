@@ -124,6 +124,7 @@ public class ReplayManager {
 		this.replayingHasFinished = false;
 		this.cameraPlayer = null;
 		this.replayPlayer = null;
+		this.currentAppliedPlayer = null;
 		this.joined = false;
 		this.isReplaying = false;
 	}
