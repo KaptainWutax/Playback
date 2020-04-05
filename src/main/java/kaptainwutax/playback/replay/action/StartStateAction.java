@@ -12,11 +12,11 @@ import java.io.IOException;
 
 public class StartStateAction implements PlaybackSerializable {
 
-	private PacketAction joinPacket;
+	private PacketAction joinPacket = new PacketAction();
 	private int perspective;
 	private boolean isSinglePlayer;
 	private WindowFocusAction windowFocus = new WindowFocusAction(true);
-	private GameOptionsAction gameOptionsAction;
+	private GameOptionsAction gameOptionsAction = new GameOptionsAction();
 
 	public StartStateAction() {}
 
@@ -50,7 +50,6 @@ public class StartStateAction implements PlaybackSerializable {
 	public void read(PacketByteBuf buf) throws IOException {
 		this.perspective = buf.readVarInt();
 		this.isSinglePlayer = buf.readBoolean();
-		this.joinPacket = new PacketAction();
 		this.joinPacket.read(buf);
 		this.windowFocus = new WindowFocusAction(true);
 		this.windowFocus.read(buf);
