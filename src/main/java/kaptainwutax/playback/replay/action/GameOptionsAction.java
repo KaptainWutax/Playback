@@ -13,6 +13,10 @@ public class GameOptionsAction extends Action {
 
 	private Map<String, String> keyData = new HashMap<>();
 
+	public GameOptionsAction() {
+
+	}
+
 	public GameOptionsAction(GameOptions options) {
 		for(KeyBinding key: options.keysAll) {
 			this.keyData.put(key.getId(), ((IKeyBindingCaller)key).getKeyCode().getName());
