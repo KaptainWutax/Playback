@@ -33,7 +33,7 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 			if (Playback.getManager().isProcessingReplay || Playback.getManager().cameraPlayer.options.getOptions() == MinecraftClient.getInstance().options) {
 				return;
 			}
-			//user input, so check keybindings (e.g. toggle replay)
+			//user input, so send to camera player (e.g. toggle replay)
             Playback.getManager().cameraPlayer.options.apply(); //todo also need to swap screens etc, just not mouse grabbed state
 
             Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);

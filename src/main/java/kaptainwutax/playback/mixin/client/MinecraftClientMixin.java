@@ -122,7 +122,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 			boolean shouldToggleView = false;
 
-			//TODO: Add spam protection.
 			if(KeyBindings.TOGGLE_VIEW.isPressed()) {
 				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {
 					shouldToggleView = true;
