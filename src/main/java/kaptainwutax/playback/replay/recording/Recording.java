@@ -7,6 +7,7 @@ import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.action.StartStateAction;
 import kaptainwutax.playback.replay.capture.TickInfo;
 import kaptainwutax.playback.util.SerializationUtil;
+import net.minecraft.client.options.GameOptions;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.PacketByteBuf;
@@ -71,6 +72,10 @@ public class Recording implements AutoCloseable {
 
 	public void recordInitialWindowFocus(boolean windowFocus) {
 		this.startStateAction.addWindowFocus(windowFocus);
+	}
+
+	public void recordGameOptions(GameOptions options) {
+		this.startStateAction.addGameOptions(options);
 	}
 
 	public void tickRecord(long tick) {
