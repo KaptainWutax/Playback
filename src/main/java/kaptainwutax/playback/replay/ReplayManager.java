@@ -14,7 +14,7 @@ public class ReplayManager {
 	public PlayerFrame cameraPlayer;
 	public PlayerFrame currentAppliedPlayer;
 
-	public ReplayView view = ReplayView.FIRST_PERSON;
+	public ReplayView view = ReplayView.THIRD_PERSON;
 
 	private boolean isReplaying;
 	public boolean isProcessingReplay;
@@ -119,6 +119,7 @@ public class ReplayManager {
 			cameraPlayer.options.apply();
 		}
 
+		this.view = ReplayView.THIRD_PERSON;
 		this.tickCounter = 0;
 		this.replayingHasFinished = false;
 		this.cameraPlayer = null;
