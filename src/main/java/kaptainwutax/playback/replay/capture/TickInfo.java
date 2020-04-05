@@ -88,6 +88,7 @@ public class TickInfo implements PlaybackSerializable {
 	}
 
 	public void recordClipboard(String clipboard) {
+	    if (clipboard == null) clipboard = "";
 		if (clipboard.length() > 32767) {
 			System.out.println("Only recorded first 32767 characters of the clipboard when pasting because it was too long ("+ clipboard.length() +")!");
 			clipboard = clipboard.substring(0, 32767);

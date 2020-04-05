@@ -234,11 +234,11 @@ public class Recording implements AutoCloseable {
 
 
 	public String getClipboardNow() {
-		return this.clipboard;
+		return this.clipboard == null ? "" : this.clipboard;
 	}
 
 	public void setClipboard(String clipboard) {
-		this.clipboard = clipboard;
+		this.clipboard = clipboard == null ? "" : clipboard;
 	}
 
 }
