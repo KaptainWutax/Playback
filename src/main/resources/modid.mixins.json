@@ -16,6 +16,7 @@
     "client.network.ClientPlayerInteractionManagerMixin",
     "client.network.ClientPlayNetworkHandlerMixin",
     "client.world.ClientWorldMixin",
+    "client.util.ClipboardMixin",
     "client.util.InputUtilMixin",
     "client.options.KeyBindingMixin",
     "client.KeyboardMixin",

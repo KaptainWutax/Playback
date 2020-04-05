@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.DoubleConsumer;
 
 public class Recording implements AutoCloseable {
-	public static int FORMAT_VERSION = 4;
+	public static int FORMAT_VERSION = 5;
 	private static int HEADER_SIZE = 16;
 
 	protected StartStateAction startStateAction = new StartStateAction();
@@ -38,6 +38,7 @@ public class Recording implements AutoCloseable {
 	private TickInfo currentTickInfo = new TickInfo(this);
 
 	transient protected Set<Integer> currentKeyStates = new HashSet<>(); //todo clear this at recording start etc
+	transient protected String clipboard;
 
 
 	public static final ThreadLocal<Recording> currentlyReading = new ThreadLocal<>();
@@ -224,6 +225,15 @@ public class Recording implements AutoCloseable {
 
 	public boolean getKeyState(int key) {
 		return this.currentKeyStates.contains(key);
+	}
+
+
+	public String getClipboardNow() {
+		return this.clipboard;
+	}
+
+	public void setClipboard(String clipboard) {
+		this.clipboard = clipboard;
 	}
 
 }

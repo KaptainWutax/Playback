@@ -47,6 +47,13 @@ public class TickCapture implements PlaybackSerializable {
         this.addAction(new WindowFocusAction(focused));
     }
 
+    public void addClipboardReadAction(String clipboard) {
+		//Insert the clipboard action one action earlier so it is applied just before it is used. This is necessary
+		//as otherwise this action would need to be played while the one that uses the clipboard is played
+		int index = this.actions.size() >= 2 ? this.actions.size() - 2 : 0;
+		this.actions.add(index, new ClipboardReadAction(clipboard));
+	}
+
 //	public void addKeyState(int i, boolean state) {
 //		if (this.getKeyState(i) != state) {
 //			System.out.println("Lost data for key " + i + " on tick " + Playback.getManager().recording.currentTick + " . Data was not recorded!");
