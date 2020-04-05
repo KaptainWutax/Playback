@@ -2,6 +2,7 @@ package kaptainwutax.playback.mixin.client.options;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import kaptainwutax.playback.replay.action.GameOptionsAction;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -15,12 +16,14 @@ import java.util.Map;
 import java.util.Set;
 
 @Mixin(KeyBinding.class)
-public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCaller {
+public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCaller, GameOptionsAction.IKeyBindingCaller {
 
 	@Mutable @Shadow @Final private static Map<String, KeyBinding> keysById;
 	@Mutable @Shadow @Final private static Map<InputUtil.KeyCode, KeyBinding> keysByCode;
 	@Mutable @Shadow @Final private static Set<String> keyCategories;
 	@Mutable @Shadow @Final private static Map<String, Integer> categoryOrderMap;
+
+	@Shadow private InputUtil.KeyCode keyCode;
 
 	@Override
 	public void resetStaticCollections() {
@@ -66,6 +69,11 @@ public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCall
 	@Override
 	public Map<String, Integer> getCategoryOrderMap() {
 		return categoryOrderMap;
+	}
+
+	@Override
+	public InputUtil.KeyCode getKeyCode() {
+		return this.keyCode;
 	}
 
 }

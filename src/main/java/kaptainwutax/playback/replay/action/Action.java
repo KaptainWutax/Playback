@@ -43,7 +43,7 @@ public abstract class Action implements PlaybackSerializable {
 		KEY(KeyAction.class),
 		MOUSE(MouseAction.class),
 		WINDOW_FOCUS(WindowFocusAction.class),
-		CHANGE_KEY_MAPPING(ChangeKeyMappingAction.class);
+		GAME_OPTIONS(GameOptionsAction.class);
 
 		static final Type[] values = values();
 
