@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(NetworkThreadUtils.class)
 public abstract class NetworkThreadUtilsMixin {
 
+	@SuppressWarnings("unchecked")
 	@Inject(method = "forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", at = @At("HEAD"))
 	private static <T extends PacketListener> void forceMainThread(Packet<T> packet, T listener, ThreadExecutor<?> engine, CallbackInfo ci) {
 		if(Playback.getManager().isRecording() && engine.isOnThread() && engine == MinecraftClient.getInstance()) {
