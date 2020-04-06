@@ -2,8 +2,8 @@ package kaptainwutax.playback.mixin.client.network;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
+import kaptainwutax.playback.replay.ReplayManager;
 import kaptainwutax.playback.replay.ReplayView;
-import kaptainwutax.playback.replay.recording.Recording;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,8 +16,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.io.IOException;
-
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
 
@@ -26,25 +24,17 @@ public abstract class ClientPlayNetworkHandlerMixin {
 
 	@Inject(method = "onGameJoin", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-		if (Playback.getManager().isRecording()) {
-			try {
-				Playback.getManager().recording = new Recording(Playback.getNewRecordingFile(), "rw");
-				Playback.getManager().recording.recordJoinPacket(packet);
-				Playback.getManager().recording.recordPerspective(MinecraftClient.getInstance().options.perspective);
-				Playback.getManager().recording.recordPhysicalSide(MinecraftClient.getInstance().isInSingleplayer());
-				Playback.getManager().recording.recordInitialWindowFocus(MinecraftClient.getInstance().isWindowFocused());
-				Playback.getManager().recording.recordGameOptions(MinecraftClient.getInstance().options);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else if(!Playback.getManager().joined) {
-			Playback.getManager().joined = true;
-			Playback.getManager().recording.getStartStateAction().getJoinPacketAction().play();
+		ReplayManager manager = Playback.getManager();
+		if (!manager.isReplaying()) {
+			manager.startRecording(packet);
+		} else if(!manager.joined) {
+			manager.joined = true;
+			manager.recording.getStartStateAction().getJoinPacketAction().play();
 
-			ReplayView oldView = Playback.getManager().getView();
-			Playback.getManager().updateView(ReplayView.FIRST_PERSON);
-			Playback.getManager().recording.getStartStateAction().play();
-			Playback.getManager().updateView(oldView);
+			ReplayView oldView = manager.getView();
+			manager.updateView(ReplayView.FIRST_PERSON);
+			manager.recording.getStartStateAction().play();
+			manager.updateView(oldView);
 
 			this.client.openScreen(null);
 			ci.cancel();

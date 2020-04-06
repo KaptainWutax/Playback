@@ -2,7 +2,6 @@ package kaptainwutax.playback.mixin.client.world;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
-import kaptainwutax.playback.replay.recording.Recording;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -13,22 +12,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.io.IOException;
-
 @Mixin(ClientWorld.class)
 public abstract class ClientWorldMixin {
 
 	@Inject(method = "disconnect", at = @At("HEAD"))
 	private void disconnect(CallbackInfo ci) {
-		if(!Playback.getManager().isReplaying()) { //wasRecording
-			try {
-				Playback.getManager().recording.close();
-				Playback.getManager().recording = new Recording();
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
-		}
-
+		Playback.getManager().stopRecording();
 		Playback.getManager().restart();
 	}
 

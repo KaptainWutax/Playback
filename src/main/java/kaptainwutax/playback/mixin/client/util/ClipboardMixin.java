@@ -29,7 +29,7 @@ public class ClipboardMixin {
             Playback.getManager().recording.getCurrentTickInfo().recordClipboard(string);
     }
 
-    @Redirect(method = "setClipboard(JLjava/nio/ByteBuffer;[B)V", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwSetClipboardString(JLjava/nio/ByteBuffer;)V"))
+    @Redirect(method = "setClipboard(JLjava/nio/ByteBuffer;[B)V", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwSetClipboardString(JLjava/nio/ByteBuffer;)V", remap = false))
     private static void doNotSetClipboardIfReplayed(long window, ByteBuffer string) {
         if (!Playback.getManager().isProcessingReplay) {
             GLFW.glfwSetClipboardString(window, string);

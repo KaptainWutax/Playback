@@ -1,13 +1,17 @@
 package kaptainwutax.playback.replay;
 
+import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.recording.Recording;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 
+import java.io.IOException;
+
 public class ReplayManager {
 
-	public Recording recording = new Recording();
+	public Recording recording;
 	public long tickCounter;
 
 	public PlayerFrame replayPlayer;
@@ -22,11 +26,11 @@ public class ReplayManager {
 	public boolean joined;
 
 	public boolean isReplaying() {
-		return this.isReplaying;
+		return recording != null && this.isReplaying;
 	}
 
 	public boolean isRecording() {
-		return !this.isReplaying();
+		return recording != null && !this.isReplaying();
 	}
 
 	public void setReplaying(boolean flag) {
@@ -129,4 +133,31 @@ public class ReplayManager {
 		this.isReplaying = false;
 	}
 
+	public void startRecording(GameJoinS2CPacket packet) {
+		if (isRecording()) {
+			System.err.println("Recording already started");
+			return;
+		}
+		try {
+			recording = new Recording(Playback.getNewRecordingFile(), "rw");
+			recording.recordJoinPacket(packet);
+			recording.recordPerspective(MinecraftClient.getInstance().options.perspective);
+			recording.recordPhysicalSide(MinecraftClient.getInstance().isInSingleplayer());
+			recording.recordInitialWindowFocus(MinecraftClient.getInstance().isWindowFocused());
+			recording.recordGameOptions(MinecraftClient.getInstance().options);
+		} catch (IOException e) {
+			e.printStackTrace();
+			recording = null;
+		}
+	}
+
+	public void stopRecording() {
+		if (!isRecording()) return;
+		try {
+			recording.close();
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		recording = null;
+	}
 }

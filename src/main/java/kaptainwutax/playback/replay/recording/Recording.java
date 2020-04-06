@@ -44,11 +44,6 @@ public class Recording implements AutoCloseable {
 
 	public static final ThreadLocal<Recording> currentlyReading = new ThreadLocal<>();
 
-	public Recording() {
-		this.file = null;
-		this.randomAccessFile = null;
-	}
-
 	public Recording(File file, String mode) throws FileNotFoundException {
 		this.file = file;
 		this.randomAccessFile = new RandomAccessFile(file, mode);
@@ -167,7 +162,6 @@ public class Recording implements AutoCloseable {
 	}
 
 	public RecordingSummary readSummary() throws IOException {
-		if (randomAccessFile == null) return new RecordingSummary(null, version, 0, lastTick, startStateAction);
 		loadHeader();
 		return new RecordingSummary(file, version, randomAccessFile.length(), lastTick, startStateAction);
 	}
