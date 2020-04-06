@@ -1,36 +1,25 @@
 package kaptainwutax.playback.replay.action;
 
-import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
+import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.GameOptions;
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.PacketByteBuf;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class GameOptionsAction extends Action {
 
-	private Map<String, String> keyData = new HashMap<>();
+	private String contents;
 
 	public GameOptionsAction() {
 
 	}
 
 	public GameOptionsAction(GameOptions options) {
-		for(KeyBinding key: options.keysAll) {
-			this.keyData.put(key.getId(), ((KeyCodeAccessor)key).getKeyCode().getName());
-		}
+		this.contents = PlayGameOptions.getContents(options);
 	}
 
 	@Override
 	public void play() {
-		for(KeyBinding key: MinecraftClient.getInstance().options.keysAll) {
-			String keyCodeName = this.keyData.get(key.getId());
-			if(keyCodeName == null)continue;
-			MinecraftClient.getInstance().options.setKeyCode(key, InputUtil.fromName(keyCodeName));
-		}
+		PlayGameOptions.loadContents(MinecraftClient.getInstance().options, this.contents);
 	}
 
 	@Override
@@ -40,21 +29,12 @@ public class GameOptionsAction extends Action {
 
 	@Override
 	public void read(PacketByteBuf buf) {
-		int size = buf.readVarInt();
-
-		for(int i = 0; i < size; i++) {
-			this.keyData.put(buf.readString(), buf.readString());
-		}
+		this.contents = buf.readString();
 	}
 
 	@Override
 	public void write(PacketByteBuf buf) {
-		buf.writeVarInt(this.keyData.size());
-
-		this.keyData.forEach((k, v) -> {
-			buf.writeString(k);
-			buf.writeString(v);
-		});
+		buf.writeString(this.contents);
 	}
 
 }

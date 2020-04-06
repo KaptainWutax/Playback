@@ -5,6 +5,7 @@ import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
+import java.io.*;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,6 +42,53 @@ public class PlayGameOptions {
 		this.dummyKey.setStaticCollections(this.keysById, this.keysByCode, this.keyCategories, this.categoryOrderMap);
 	}
 
+	public static void loadContents(GameOptions options, String contents) {
+		File file = new File("temp_options.txt");
+		File actualFile = ((IOptionsCaller)options).getFile();
+
+		try {
+			((IOptionsCaller)options).setFile(file);
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			writer.write(contents);
+			writer.flush();
+			options.load();
+			((IOptionsCaller)options).setFile(actualFile);
+			writer.close();
+			file.delete();
+		} catch(IOException e) {
+			e.printStackTrace();
+			((IOptionsCaller)options).setFile(actualFile);
+			file.delete();
+		}
+	}
+
+	public static String getContents(GameOptions options) {
+		File file = new File("temp_options.txt");
+		File actualFile = ((IOptionsCaller)options).getFile();
+
+		try {
+			((IOptionsCaller)options).setFile(file);
+			options.write();
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			StringBuilder contents = new StringBuilder();
+
+			while(reader.ready()) {
+				contents.append(reader.readLine()).append("\n");
+			}
+
+			((IOptionsCaller)options).setFile(actualFile);
+			reader.close();
+			file.delete();
+			return contents.toString();
+		} catch(IOException e) {
+			e.printStackTrace();
+			((IOptionsCaller)options).setFile(actualFile);
+			file.delete();
+		}
+
+		return "";
+	}
+
 	public boolean isActive() {
 		return MinecraftClient.getInstance().options == this.options;
 	}
@@ -61,6 +109,11 @@ public class PlayGameOptions {
 
 	public interface IClientCaller {
 		void setOptions(GameOptions options);
+	}
+
+	public interface IOptionsCaller {
+		void setFile(File file);
+		File getFile();
 	}
 
 }

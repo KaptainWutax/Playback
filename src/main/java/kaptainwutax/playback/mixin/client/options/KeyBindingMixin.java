@@ -23,8 +23,6 @@ public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCall
 	@Mutable @Shadow @Final private static Set<String> keyCategories;
 	@Mutable @Shadow @Final private static Map<String, Integer> categoryOrderMap;
 
-	@Shadow private InputUtil.KeyCode keyCode;
-
 	@Override
 	public void resetStaticCollections() {
 		keysById = Maps.newHashMap();

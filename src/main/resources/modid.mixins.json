@@ -18,6 +18,7 @@
     "client.world.ClientWorldMixin",
     "client.util.ClipboardMixin",
     "client.util.InputUtilMixin",
+    "client.options.GameOptionsMixin",
     "client.options.KeyBindingMixin",
     "client.KeyboardMixin",
     "client.input.KeyboardInputMixin",

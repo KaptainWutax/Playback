@@ -46,7 +46,9 @@ public class ReplayManager {
 	}
 
 	public void tick(boolean paused) {
-		if(!this.isReplaying) {
+		if(this.isReplaying() && paused)return;
+
+		if(this.isRecording()) {
 			this.recording.getCurrentTickInfo().recordDebug();
 			recording.tickRecord(++tickCounter);
 		} else {
