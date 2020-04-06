@@ -1,5 +1,6 @@
 package kaptainwutax.playback.replay.action;
 
+import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.options.KeyBinding;
@@ -19,7 +20,7 @@ public class GameOptionsAction extends Action {
 
 	public GameOptionsAction(GameOptions options) {
 		for(KeyBinding key: options.keysAll) {
-			this.keyData.put(key.getId(), ((IKeyBindingCaller)key).getKeyCode().getName());
+			this.keyData.put(key.getId(), ((KeyCodeAccessor)key).getKeyCode().getName());
 		}
 	}
 
@@ -54,10 +55,6 @@ public class GameOptionsAction extends Action {
 			buf.writeString(k);
 			buf.writeString(v);
 		});
-	}
-
-	public interface IKeyBindingCaller {
-		InputUtil.KeyCode getKeyCode();
 	}
 
 }

@@ -175,7 +175,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Inject(method = "openPauseMenu", at = @At("HEAD"), cancellable = true)
 	public void openPauseMenu(CallbackInfo ci) {
 		if(Playback.getManager().isReplaying() && Playback.getManager().isProcessingReplay) {
-			ci.cancel();
+			//ci.cancel();
 		}
 	}
 

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Mixin(KeyBinding.class)
-public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCaller, GameOptionsAction.IKeyBindingCaller {
+public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCaller {
 
 	@Mutable @Shadow @Final private static Map<String, KeyBinding> keysById;
 	@Mutable @Shadow @Final private static Map<InputUtil.KeyCode, KeyBinding> keysByCode;
@@ -69,11 +69,6 @@ public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCall
 	@Override
 	public Map<String, Integer> getCategoryOrderMap() {
 		return categoryOrderMap;
-	}
-
-	@Override
-	public InputUtil.KeyCode getKeyCode() {
-		return this.keyCode;
 	}
 
 }
