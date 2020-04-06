@@ -63,6 +63,7 @@ public class RecordingSummary {
             Playback.getManager().restart();
             Playback.getManager().setReplaying(true);
             MinecraftClient.getInstance().startIntegratedServer("replay", "Replay", new LevelInfo(0, GameMode.SPECTATOR, false, false, LevelGeneratorType.DEFAULT));
+            MinecraftClient.getInstance().getServer().getPlayerManager().setCheatsAllowed(true);
         });
     }
 }

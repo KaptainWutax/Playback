@@ -14,9 +14,11 @@ public class KeyBindings {
 	public static Set<FabricKeyBinding> KEYS = new HashSet<>();
 
 	public static FabricKeyBinding TOGGLE_VIEW = FabricKeyBinding.Builder.create(Playback.createIdentifier("toggle_view"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_O, "key.categories.playback").build();
+	public static FabricKeyBinding TOGGLE_PAUSE = FabricKeyBinding.Builder.create(Playback.createIdentifier("toggle_pause"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.categories.playback").build();
 
 	static {
 		KEYS.add(TOGGLE_VIEW);
+		KEYS.add(TOGGLE_PAUSE);
 	}
 
 	public static void registerKeyCategories() {
@@ -25,16 +27,8 @@ public class KeyBindings {
 
 	public static void registerKeyBindings() {
 		KeyBindingRegistry.INSTANCE.register(TOGGLE_VIEW);
+		KeyBindingRegistry.INSTANCE.register(TOGGLE_PAUSE);
 	}
 
-	public static boolean hasKeyCode(int keyCode) {
-		for(FabricKeyBinding key: KEYS) {
-			if(key.getBoundKey().getKeyCode() == keyCode) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 
 }
