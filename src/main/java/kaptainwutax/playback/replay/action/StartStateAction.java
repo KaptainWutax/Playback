@@ -14,7 +14,7 @@ public class StartStateAction implements PlaybackSerializable {
 
 	private PacketAction joinPacket = new PacketAction();
 	private int perspective;
-	private boolean isSinglePlayer;
+	private int isSinglePlayer = -1;
 	private WindowFocusAction windowFocus = new WindowFocusAction(true);
 	private GameOptionsAction gameOptionsAction = new GameOptionsAction();
 
@@ -29,7 +29,7 @@ public class StartStateAction implements PlaybackSerializable {
 	}
 
 	public void addPhysicalSide(boolean isSinglePlayer) {
-		this.isSinglePlayer = isSinglePlayer;
+		this.isSinglePlayer = isSinglePlayer ? 1 : 0;
 	}
 
 	public void addWindowFocus(boolean windowFocus) {
@@ -49,7 +49,7 @@ public class StartStateAction implements PlaybackSerializable {
 	@Override
 	public void read(PacketByteBuf buf) throws IOException {
 		this.perspective = buf.readVarInt();
-		this.isSinglePlayer = buf.readBoolean();
+		this.isSinglePlayer = buf.readBoolean() ? 1 : 0;
 		this.joinPacket.read(buf);
 		this.windowFocus = new WindowFocusAction(true);
 		this.windowFocus.read(buf);
@@ -59,7 +59,7 @@ public class StartStateAction implements PlaybackSerializable {
 	@Override
 	public void write(PacketByteBuf buf) throws IOException {
 		buf.writeVarInt(this.perspective);
-		buf.writeBoolean(this.isSinglePlayer);
+		buf.writeBoolean(this.isSinglePlayer());
 		this.joinPacket.write(buf);
 		this.windowFocus.write(buf);
 		this.gameOptionsAction.write(buf);
@@ -74,7 +74,10 @@ public class StartStateAction implements PlaybackSerializable {
 	}
 
 	public boolean isSinglePlayer() {
-		return this.isSinglePlayer;
+		if (this.isSinglePlayer == -1) {
+			System.err.println("Accessing non-initialized isSinglePlayer!");
+		}
+		return this.isSinglePlayer == 1;
 	}
 
 	public GameJoinS2CPacket getJoinPacket() {
