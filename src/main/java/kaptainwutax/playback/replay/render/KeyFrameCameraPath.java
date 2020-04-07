@@ -1,6 +1,6 @@
 package kaptainwutax.playback.replay.render;
 
-import net.minecraft.util.math.Quaternion;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -8,22 +8,27 @@ import java.util.List;
 
 public class KeyFrameCameraPath implements CameraPath {
 
-    List<KeyFrame> keyFrames = new ArrayList<>();
+    private List<KeyFrame> keyFrames = new ArrayList<>();
     int currentKeyFrameIndex;
 
+    @Override
+    public Vec3d getCameraPositionAtTime(long tick, float tickDelta) {
+        return null;
+    }
 
+    @Override
+    public Vector3f getCameraRotationAtTime(long tick, float tickDelta) {
+        return null;
+    }
 
+    @Override
+    public GameTimeStamp getStartTime() {
+        return null;
+    }
 
-    public static class KeyFrame {
-        Vec3d position;
-        Quaternion cameraRotation;
-        long tickTimeOffset;
-        float tickDeltaOffset;
-
-        public KeyFrame(Vec3d position, Quaternion cameraRotation) {
-            this.position = position;
-            this.cameraRotation = cameraRotation.copy();
-        }
+    @Override
+    public GameTimeStamp getEndTime() {
+        return null;
     }
 
     public KeyFrame getStartKeyFrame() {
