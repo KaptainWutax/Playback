@@ -9,10 +9,11 @@ public class RenderManager {
     private static final int TPS = 20;
 
     private final MinecraftClient client;
-    private CameraPath exampleCameraPath = new FixedPointCameraPath(
-            new KeyFrame(0, 70, 0, 0, -80, -45, 0, 0),
-            new CameraPath.GameTimeStamp(60,0),
-            new CameraPath.GameTimeStamp(120,0));
+    private CameraPath exampleCameraPath = new KeyFrameCameraPath().add(
+            new KeyFrame(0, 70, 0, 0, 80, -45, 0, 0)).add(
+            new KeyFrame(30, 70, 0, 0, 50, 45, 100, 0.3f));
+
+
     private CameraPath playingCameraPath = exampleCameraPath;
 
     public RenderManager() {
