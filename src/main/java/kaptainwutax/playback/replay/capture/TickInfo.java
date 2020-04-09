@@ -74,7 +74,10 @@ public class TickInfo implements PlaybackSerializable {
 	@Override
 	public void read(PacketByteBuf buf) throws IOException {
 		int captureSize = buf.readVarInt();
-		this.tickCapture.read(new PacketByteBuf(buf.slice(buf.readerIndex(), captureSize)));
+		PacketByteBuf sliced = new PacketByteBuf(buf.slice(buf.readerIndex(), captureSize));
+		this.tickCapture.read(sliced);
+		if (sliced.readerIndex() != captureSize)
+			throw new IndexOutOfBoundsException();
 		buf.readerIndex(buf.readerIndex() + captureSize);
 	}
 
