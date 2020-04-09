@@ -27,7 +27,7 @@ public class WindowFocusAction extends Action {
 
 	@Override
 	public Type getType() {
-		return Type.MOUSE;
+		return Type.WINDOW_FOCUS;
 	}
 
 	@Override
