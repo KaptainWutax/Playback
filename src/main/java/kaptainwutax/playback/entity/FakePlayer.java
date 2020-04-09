@@ -19,12 +19,13 @@ public class FakePlayer extends ClientPlayerEntity {
 	public FakePlayer(MinecraftClient client, ClientWorld clientWorld, ClientPlayNetworkHandler clientPlayNetworkHandler, ClientPlayerInteractionManager interactionManager, PlayGameOptions options, Input keyboardInput) {
 		super(client, clientWorld, clientPlayNetworkHandler, null, new ClientRecipeBook(clientWorld.getRecipeManager()));
 
-		GameMode gameMode = GameMode.CREATIVE;
+		GameMode gameMode = GameMode.SPECTATOR;
 
 		gameMode.setAbilitites(this.abilities);
 		this.interactionManager = interactionManager;
 		((IInteractionCaller) interactionManager).setGameModeNoUpdates(gameMode);
 
+		this.setClientPermissionLevel(2);
 		this.input = keyboardInput;
 		this.dimension = null;
 	}

@@ -24,6 +24,7 @@ public class ReplayManager {
 	public boolean isProcessingReplay;
 	public boolean replayingHasFinished;
 	public boolean joined;
+	private boolean paused = true;
 
 	public boolean isReplaying() {
 		return recording != null && this.isReplaying;
@@ -31,6 +32,10 @@ public class ReplayManager {
 
 	public boolean isRecording() {
 		return recording != null && !this.isReplaying();
+	}
+
+	public boolean isPaused() {
+		return this.paused;
 	}
 
 	public void setReplaying(boolean flag) {
@@ -118,6 +123,10 @@ public class ReplayManager {
 		MinecraftClient.getInstance().player.sendMessage(new LiteralText("Switched to " + Formatting.GREEN + this.view + Formatting.WHITE + "."));
 	}
 
+	public void togglePause() {
+		this.paused = !this.paused;
+	}
+
 	public void restart() { //restart the replay (intended to have to reload the world right now as well)
 		if(cameraPlayer != null) {
 			cameraPlayer.options.apply();
@@ -131,6 +140,7 @@ public class ReplayManager {
 		this.currentAppliedPlayer = null;
 		this.joined = false;
 		this.isReplaying = false;
+		this.paused = true;
 	}
 
 	public void startRecording(GameJoinS2CPacket packet) {

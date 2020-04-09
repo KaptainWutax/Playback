@@ -12,6 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
@@ -64,6 +65,12 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Shadow @Final private Window window;
 
+	@Shadow private float pausedTickDelta;
+
+	@Shadow public abstract float getTickDelta();
+
+	@Shadow @Final private RenderTickCounter renderTickCounter;
+
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.getManager().isReplaying()) {
 			Playback.getManager().updateView(Playback.getManager().getView());
@@ -80,10 +87,25 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
-	@Inject(method = "tick", at = @At("HEAD"))
+	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
+	private void render(boolean tick, CallbackInfo ci) {
+		if(Playback.getManager().isReplaying() && Playback.getManager().isPaused()) {
+			this.paused = true;
+			this.pausedTickDelta = 0;
+		}
+	}
+
+	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	private void tickStart(CallbackInfo ci) {
 		if(this.world != null) {
 			applyReplayPlayerIfNecessary();
+
+			if(Playback.getManager().isReplaying() && Playback.getManager().isPaused()) {
+				this.runEndTickLogic();
+				ci.cancel();
+				return;
+			}
+
 			Playback.getManager().tick(this.paused);
 		}
 	}
@@ -108,6 +130,10 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	private void tickEnd(CallbackInfo ci) {
+		this.runEndTickLogic();
+	}
+
+	protected void runEndTickLogic() {
 		if(this.world != null) {
 			applyCameraPlayerIfNecessary();
 			if (!Playback.getManager().isReplaying()) {
@@ -121,12 +147,18 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			Playback.getManager().cameraPlayer.options.apply();
 
 			boolean shouldToggleView = false;
+			boolean shouldTogglePause = false;
 
 			if(KeyBindings.TOGGLE_VIEW.isPressed()) {
 				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {
 					shouldToggleView = true;
 				}
+			}
 
+			if(KeyBindings.TOGGLE_PAUSE.isPressed()) {
+				while(KeyBindings.TOGGLE_PAUSE.wasPressed()) {
+					shouldTogglePause = true;
+				}
 			}
 
 			if(Playback.getManager().view == ReplayView.FIRST_PERSON) {
@@ -135,6 +167,10 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 			if(shouldToggleView) {
 				Playback.getManager().toggleView();
+			}
+
+			if(shouldTogglePause) {
+				Playback.getManager().togglePause();
 			}
 		}
 	}
