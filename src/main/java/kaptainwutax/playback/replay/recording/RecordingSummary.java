@@ -50,7 +50,10 @@ public class RecordingSummary {
             } else {
                 Recording r = new Recording(file, "r");
                 Playback.getManager().recording = r;
-                r.loadAsync(loadingScreen).thenRun(() -> load(r));
+                r.loadAsync(loadingScreen).thenRun(() -> {
+                    loadingScreen.joining = true;
+                    load(r);
+                });
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

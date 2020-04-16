@@ -10,6 +10,7 @@ import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.render.RenderTickCounter;
@@ -27,6 +28,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import javax.annotation.Nullable;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller, PlayerFrame.IClientCaller, PlayGameOptions.IClientCaller {
@@ -70,6 +73,8 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Shadow public abstract float getTickDelta();
 
 	@Shadow @Final private RenderTickCounter renderTickCounter;
+
+	@Shadow public abstract void openScreen(@Nullable Screen screen);
 
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.getManager().isReplaying()) {
@@ -221,6 +226,16 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 				|| ((Playback.getManager().cameraPlayer != null) && (this.player == Playback.getManager().cameraPlayer.getPlayer()))) {
 			heldItemRenderer.resetEquipProgress(hand);
 		}
+	}
+
+	@Redirect(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
+	private void noLoadingScreen(MinecraftClient client, Screen screen) {
+		if (!Playback.getManager().isReplaying()) client.openScreen(screen);
+	}
+
+	@Redirect(method = "reset", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
+	private void noLoadingScreen2(MinecraftClient client, Screen screen) {
+		if (!Playback.getManager().isReplaying()) client.openScreen(screen);
 	}
 
 	@Override

@@ -9,7 +9,8 @@
     "server.MinecraftServerMixin",
     "network.NetworkThreadUtilsMixin",
     "server.world.ServerChunkManagerMixin",
-    "server.network.ServerPlayNetworkHandlerMixin"
+    "server.network.ServerPlayNetworkHandlerMixin",
+    "server.world.WorldSaveHandlerMixin"
   ],
   "client": [
     "client.network.ClientPlayerEntityMixin",
@@ -28,7 +29,8 @@
     "client.render.MinecraftClient_Render_Mixin",
     "client.render.RenderTickCounterMixin",
     "client.render.WorldRendererMixin",
-    "client.sound.PositionedSoundInstanceMixin"
+    "client.sound.PositionedSoundInstanceMixin",
+    "server.IntegratedServerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

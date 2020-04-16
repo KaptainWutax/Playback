@@ -7,7 +7,6 @@ import net.minecraft.server.ServerTask;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.util.snooper.SnooperListener;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
-import net.minecraft.util.thread.ThreadExecutor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,5 +32,4 @@ public abstract class MinecraftServerMixin extends ReentrantThreadExecutor<Serve
 		this.runTasks();
 		ci.cancel();
 	}
-
 }

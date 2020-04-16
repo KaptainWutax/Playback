@@ -1,6 +1,7 @@
 package kaptainwutax.playback.gui;
 
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
@@ -8,6 +9,7 @@ import java.util.function.DoubleConsumer;
 
 public class LoadingScreen extends Screen implements DoubleConsumer {
     private int progress = 0;
+    public boolean joining;
 
     public LoadingScreen(Text title) {
         super(title);
@@ -29,6 +31,7 @@ public class LoadingScreen extends Screen implements DoubleConsumer {
         drawCenteredString(this.font, progress + "%", center, barY - 20, 0xffffff);
         fill(center - 50 - border, barY - barHeight - border, center + 50 + border, barY + barHeight + border, 0xff666666);
         fill(center - 50, barY - barHeight, center - 50 + progress, barY + barHeight, 0xffffffff);
+        if (joining) drawCenteredString(this.font, I18n.translate("connect.joining"), center, barY + 20, 0xffffff);
         super.render(mouseX, mouseY, delta);
     }
 }
