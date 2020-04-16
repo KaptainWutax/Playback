@@ -13,7 +13,6 @@ import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
@@ -28,8 +27,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import javax.annotation.Nullable;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller, PlayerFrame.IClientCaller, PlayGameOptions.IClientCaller {
@@ -69,12 +66,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Shadow @Final private Window window;
 
 	@Shadow private float pausedTickDelta;
-
-	@Shadow public abstract float getTickDelta();
-
-	@Shadow @Final private RenderTickCounter renderTickCounter;
-
-	@Shadow public abstract void openScreen(@Nullable Screen screen);
 
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.getManager().isReplaying()) {

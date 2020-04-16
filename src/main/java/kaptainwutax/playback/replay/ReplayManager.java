@@ -31,7 +31,11 @@ public class ReplayManager {
 	}
 
 	public boolean isRecording() {
-		return recording != null && !this.isReplaying();
+		return recording != null && !this.isReplaying;
+	}
+
+	public boolean isOrWasReplaying() {
+		return this.isReplaying;
 	}
 
 	public boolean isPaused() {
@@ -75,7 +79,7 @@ public class ReplayManager {
 
 	public boolean isOnlyAcceptingReplayedInputs() {
 		if (this.currentAppliedPlayer == null) {
-			if (this.isReplaying) {
+			if (this.isReplaying()) {
 				System.out.println("Input permission request with no player frame! Allowing ...");
 			}
 			return false;
@@ -85,7 +89,7 @@ public class ReplayManager {
 
 	public boolean isCurrentlyAcceptingInputs() {
 		if (this.currentAppliedPlayer == null) {
-			if (this.isReplaying) {
+			if (this.isReplaying()) {
 				System.out.println("Inputs with no player frame! Allowing them...");
 			}
 			return true;
@@ -127,7 +131,7 @@ public class ReplayManager {
 		this.paused = !this.paused;
 	}
 
-	public void restart() { //restart the replay (intended to have to reload the world right now as well)
+	public void restart(Recording recording) {
 		if(cameraPlayer != null) {
 			cameraPlayer.options.apply();
 		}
@@ -139,7 +143,7 @@ public class ReplayManager {
 		this.replayPlayer = null;
 		this.currentAppliedPlayer = null;
 		this.joined = false;
-		this.isReplaying = false;
+		this.recording = recording;
 		this.paused = true;
 	}
 

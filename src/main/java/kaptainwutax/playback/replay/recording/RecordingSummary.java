@@ -62,10 +62,9 @@ public class RecordingSummary {
 
     private static void load(Recording recording) {
         MinecraftClient.getInstance().send(() -> {
-            Playback.getManager().recording = recording;
-            Playback.getManager().restart();
+            Playback.getManager().restart(recording);
             Playback.getManager().setReplaying(true);
-            MinecraftClient.getInstance().startIntegratedServer("replay", "Replay", new LevelInfo(0, GameMode.SPECTATOR, false, false, LevelGeneratorType.DEFAULT));
+            MinecraftClient.getInstance().startIntegratedServer(".replay", "Replay", new LevelInfo(0, GameMode.SPECTATOR, false, false, LevelGeneratorType.DEFAULT));
             MinecraftClient.getInstance().getServer().getPlayerManager().setCheatsAllowed(true);
         });
     }

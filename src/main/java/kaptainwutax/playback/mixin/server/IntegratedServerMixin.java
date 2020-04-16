@@ -13,7 +13,9 @@ import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.UserCache;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.File;
 import java.net.Proxy;
@@ -27,5 +29,10 @@ public abstract class IntegratedServerMixin extends MinecraftServer {
     @Redirect(method = "loadWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;prepareStartRegion(Lnet/minecraft/server/WorldGenerationProgressListener;)V"))
     private void dontLoadStartRegion(IntegratedServer integratedServer, WorldGenerationProgressListener worldGenerationProgressListener) {
         if (!Playback.getManager().isReplaying()) prepareStartRegion(worldGenerationProgressListener);
+    }
+
+    @Inject(method = "shutdown", at = @At("RETURN"))
+    private void onShutdown(CallbackInfo ci) {
+        Playback.getManager().setReplaying(false);
     }
 }

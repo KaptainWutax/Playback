@@ -18,7 +18,7 @@ public abstract class ClientWorldMixin {
 	@Inject(method = "disconnect", at = @At("HEAD"))
 	private void disconnect(CallbackInfo ci) {
 		Playback.getManager().stopRecording();
-		Playback.getManager().restart();
+		Playback.getManager().restart(null);
 	}
 
 	/**
