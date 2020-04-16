@@ -1,7 +1,6 @@
 package kaptainwutax.playback.replay.action;
 
 import kaptainwutax.playback.Playback;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.PacketByteBuf;
 
 public class WindowFocusAction extends Action {
@@ -23,11 +22,6 @@ public class WindowFocusAction extends Action {
 
 	public boolean getFocus() {
 		return this.windowFocused;
-	}
-
-	@Override
-	public Type getType() {
-		return Type.WINDOW_FOCUS;
 	}
 
 	@Override

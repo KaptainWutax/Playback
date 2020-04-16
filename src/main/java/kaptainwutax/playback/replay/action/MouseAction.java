@@ -1,6 +1,5 @@
 package kaptainwutax.playback.replay.action;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.PacketByteBuf;
 
 public class MouseAction extends Action {
@@ -22,11 +21,6 @@ public class MouseAction extends Action {
 	@Override
 	public void play() {
 		((IMouseCaller)client.mouse).execute(this.action, this.d1, this.d2, this.i1);
-	}
-
-	@Override
-	public Type getType() {
-		return Type.MOUSE;
 	}
 
 	@Override

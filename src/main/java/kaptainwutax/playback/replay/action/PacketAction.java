@@ -41,11 +41,6 @@ public class PacketAction extends Action {
 	}
 
 	@Override
-	public Type getType() {
-		return Type.PACKET;
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public void read(PacketByteBuf buf) throws IOException {
 		int id = buf.readVarInt();
