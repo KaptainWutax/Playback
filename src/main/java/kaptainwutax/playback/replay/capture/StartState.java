@@ -1,5 +1,8 @@
-package kaptainwutax.playback.replay.action;
+package kaptainwutax.playback.replay.capture;
 
+import kaptainwutax.playback.replay.action.GameOptionsAction;
+import kaptainwutax.playback.replay.action.PacketAction;
+import kaptainwutax.playback.replay.action.WindowFocusAction;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.GameOptions;
@@ -10,7 +13,7 @@ import net.minecraft.util.PacketByteBuf;
 
 import java.io.IOException;
 
-public class StartStateAction implements PlaybackSerializable {
+public class StartState implements PlaybackSerializable {
 
 	private PacketAction joinPacket = new PacketAction();
 	private int perspective;
@@ -18,7 +21,7 @@ public class StartStateAction implements PlaybackSerializable {
 	private WindowFocusAction windowFocus = new WindowFocusAction(true);
 	private GameOptionsAction gameOptionsAction = new GameOptionsAction();
 
-	public StartStateAction() {}
+	public StartState() {}
 
 	public void addPerspective(int perspective) {
 		this.perspective = perspective;

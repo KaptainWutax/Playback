@@ -4,7 +4,7 @@ import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.action.StartStateAction;
+import kaptainwutax.playback.replay.capture.StartState;
 import kaptainwutax.playback.replay.capture.TickInfo;
 import kaptainwutax.playback.util.SerializationUtil;
 import net.minecraft.client.options.GameOptions;
@@ -22,7 +22,7 @@ public class Recording implements AutoCloseable {
 	public static int FORMAT_VERSION = 6;
 	private static int HEADER_SIZE = 16;
 
-	protected StartStateAction startStateAction = new StartStateAction();
+	protected StartState startState = new StartState();
 	protected Long2ObjectMap<TickInfo> recording = new Long2ObjectOpenHashMap<>();
 
 	protected final File file;
@@ -49,28 +49,28 @@ public class Recording implements AutoCloseable {
 		this.randomAccessFile = new RandomAccessFile(file, mode);
 	}
 
-	public StartStateAction getStartStateAction() {
-		return this.startStateAction;
+	public StartState getStartState() {
+		return this.startState;
 	}
 
 	public void recordJoinPacket(Packet<ClientPlayPacketListener> packet) {
-		this.startStateAction.addJoinPacket(packet);
+		this.startState.addJoinPacket(packet);
 	}
 
 	public void recordPerspective(int perspective) {
-		this.startStateAction.addPerspective(perspective);
+		this.startState.addPerspective(perspective);
 	}
 
 	public void recordPhysicalSide(boolean isSinglePlayer) {
-		this.startStateAction.addPhysicalSide(isSinglePlayer);
+		this.startState.addPhysicalSide(isSinglePlayer);
 	}
 
 	public void recordInitialWindowFocus(boolean windowFocus) {
-		this.startStateAction.addWindowFocus(windowFocus);
+		this.startState.addWindowFocus(windowFocus);
 	}
 
 	public void recordGameOptions(GameOptions options) {
-		this.startStateAction.addGameOptions(options);
+		this.startState.addGameOptions(options);
 	}
 
 	public void tickRecord(long tick) {
@@ -115,7 +115,7 @@ public class Recording implements AutoCloseable {
 
 	private void writeStartState() throws IOException {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		startStateAction.write(buf);
+		startState.write(buf);
 		randomAccessFile.seek(0);
 		randomAccessFile.writeInt(version);
 		randomAccessFile.seek(12);
@@ -149,7 +149,7 @@ public class Recording implements AutoCloseable {
 			}
 			lastTick = randomAccessFile.readLong();
 			PacketByteBuf buf = SerializationUtil.readSizedBuffer(randomAccessFile);
-			startStateAction.read(buf);
+			startState.read(buf);
 			buf.release();
 			if (fileOffset == 0) {
 				fileOffset = randomAccessFile.getFilePointer();
@@ -163,7 +163,7 @@ public class Recording implements AutoCloseable {
 
 	public RecordingSummary readSummary() throws IOException {
 		loadHeader();
-		return new RecordingSummary(file, version, randomAccessFile.length(), lastTick, startStateAction);
+		return new RecordingSummary(file, version, randomAccessFile.length(), lastTick, startState);
 	}
 
 	public CompletableFuture<Void> loadAsync(DoubleConsumer progressListener) {
@@ -206,7 +206,7 @@ public class Recording implements AutoCloseable {
 	}
 
 	public boolean isSinglePlayerRecording() {
-		return this.startStateAction.isSinglePlayer();
+		return this.startState.isSinglePlayer();
 	}
 
 	@Override

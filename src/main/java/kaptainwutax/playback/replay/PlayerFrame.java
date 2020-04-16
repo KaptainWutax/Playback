@@ -11,9 +11,7 @@ import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.options.GameOptions;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.HitResult;
 
 public class PlayerFrame {
@@ -112,7 +110,7 @@ public class PlayerFrame {
 		PlayGameOptions options = new PlayGameOptions();
 		((IKeyboardInputCaller)client.player.input).setOptions(options.getOptions());
 		Mouse mouse = new Mouse(client);
-		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client), Playback.getManager().recording.getStartStateAction().getWindowFocus());
+		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client), Playback.getManager().recording.getStartState().getWindowFocus());
 	}
 
 	public static PlayerFrame createNew() {

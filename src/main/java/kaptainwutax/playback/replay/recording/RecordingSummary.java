@@ -2,7 +2,7 @@ package kaptainwutax.playback.replay.recording;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.gui.LoadingScreen;
-import kaptainwutax.playback.replay.action.StartStateAction;
+import kaptainwutax.playback.replay.capture.StartState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
 import net.minecraft.world.GameMode;
@@ -18,9 +18,9 @@ public class RecordingSummary {
     public final int version;
     public final long length;
     public final long duration;
-    public final StartStateAction startState;
+    public final StartState startState;
 
-    RecordingSummary(File file, int version, long length, long duration, StartStateAction startState) {
+    RecordingSummary(File file, int version, long length, long duration, StartState startState) {
         this.file = file;
         this.version = version;
         this.length = length;
