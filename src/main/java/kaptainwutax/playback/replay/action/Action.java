@@ -17,6 +17,10 @@ public abstract class Action implements PlaybackSerializable {
 
 	protected static MinecraftClient client = MinecraftClient.getInstance();
 
+	public Action() {
+
+	}
+
 	public abstract void play();
 
 	public static void writeAction(PacketByteBuf buf, Action action) throws IOException {

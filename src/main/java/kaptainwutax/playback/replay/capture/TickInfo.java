@@ -26,9 +26,15 @@ public class TickInfo implements PlaybackSerializable {
 		this.recording = recording;
 	}
 
-	public void play(ReplayView view) {
+	public void playTick() {
 		Playback.getManager().isProcessingReplay = true;
-		this.tickCapture.play();
+		this.tickCapture.playTick();
+		Playback.getManager().isProcessingReplay = false;
+	}
+
+	public void playFrame(float tickDelta) {
+		Playback.getManager().isProcessingReplay = true;
+		this.tickCapture.playFrame(tickDelta);
 		Playback.getManager().isProcessingReplay = false;
 	}
 
@@ -47,8 +53,8 @@ public class TickInfo implements PlaybackSerializable {
 		}
 	}
 
-	public void recordMouse(int action, double d1, double d2, int i1, boolean isCursorLocked) {
-		this.tickCapture.addMouseAction(action, d1, d2, i1, isCursorLocked);
+	public void recordMouse(int action, double d1, double d2, int i1) {
+		this.tickCapture.addMouseAction(action, d1, d2, i1);
 	}
 
 //	public void recordKeyState(int i, boolean state) {

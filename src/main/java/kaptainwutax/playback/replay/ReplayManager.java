@@ -24,7 +24,7 @@ public class ReplayManager {
 	public boolean isProcessingReplay;
 	public boolean replayingHasFinished;
 	public boolean joined;
-	private boolean paused = true;
+	private boolean paused;
 
 	public boolean isReplaying() {
 		return recording != null && this.isReplaying;
@@ -63,18 +63,22 @@ public class ReplayManager {
 
 		if(this.isRecording()) {
 			this.recording.getCurrentTickInfo().recordDebug();
-			recording.tickRecord(++tickCounter);
+			this.recording.tickRecord(++this.tickCounter);
 		} else {
-			if(tickCounter > recording.getEnd()) {
-				if (!replayingHasFinished) {
-					//commented out because it seems to cause problems with switching views and screens when replay finished
-					replayingHasFinished = true;
-					replayPlayer.onReplayFinished();
+			if(this.tickCounter > this.recording.getEnd()) {
+				if (!this.replayingHasFinished) {
+					this.replayingHasFinished = true;
+					this.replayPlayer.onReplayFinished();
 				}
 			} else {
-				recording.playTick(tickCounter++);
+				this.recording.playTick(this.tickCounter++);
 			}
 		}
+	}
+
+	public void tickFrame(boolean paused, float tickDelta) {
+		if(!this.isReplaying() || paused)return;
+		this.recording.playFrame(this.tickCounter, tickDelta);
 	}
 
 	public boolean isOnlyAcceptingReplayedInputs() {
@@ -144,7 +148,7 @@ public class ReplayManager {
 		this.currentAppliedPlayer = null;
 		this.joined = false;
 		this.recording = recording;
-		this.paused = true;
+		this.paused = false;
 	}
 
 	public void startRecording(GameJoinS2CPacket packet) {
@@ -174,4 +178,5 @@ public class ReplayManager {
 		}
 		recording = null;
 	}
+
 }

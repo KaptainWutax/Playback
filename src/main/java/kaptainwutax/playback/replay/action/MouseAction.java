@@ -2,7 +2,7 @@ package kaptainwutax.playback.replay.action;
 
 import net.minecraft.util.PacketByteBuf;
 
-public class MouseAction extends Action {
+public class MouseAction extends FrameAction {
 
 	private int action;
 	private double d1;
@@ -11,7 +11,7 @@ public class MouseAction extends Action {
 
 	public MouseAction() {}
 
-	public MouseAction(int action, double d1, double d2, int i1, boolean isCursorLocked) {
+	public MouseAction(int action, double d1, double d2, int i1) {
 		this.action = action;
 		this.d1 = d1;
 		this.d2 = d2;
@@ -25,6 +25,8 @@ public class MouseAction extends Action {
 
 	@Override
 	public void read(PacketByteBuf buf) {
+		super.read(buf);
+
 		action = buf.readVarInt();
 		if (action != 3) {
 			d1 = buf.readDouble();
@@ -37,6 +39,8 @@ public class MouseAction extends Action {
 
 	@Override
 	public void write(PacketByteBuf buf) {
+		super.write(buf);
+
 		buf.writeVarInt(action);
 		if (action != 3) {
 			buf.writeDouble(d1);

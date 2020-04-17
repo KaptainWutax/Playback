@@ -8,6 +8,7 @@ import net.minecraft.client.Mouse;
 import net.minecraft.client.util.InputUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -19,10 +20,9 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 	@Shadow protected abstract void onMouseButton(long window, int button, int action, int mods);
 	@Shadow protected abstract void onMouseScroll(long window, double d, double e);
 	@Shadow public abstract void updateMouse();
-	@Shadow private boolean isCursorLocked;
 
-	private int recursionDepth;
-	private int debug_numNonRecordedRecursiveCalls;
+	@Unique private int recursionDepth;
+	@Unique private int debug_numNonRecordedRecursiveCalls;
 
 	@Inject(method = "onCursorPos", at = @At("HEAD"), cancellable = true)
 	private void onCursorPos(long window, double x, double y, CallbackInfo ci) {
@@ -35,7 +35,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				Playback.getManager().recording.getCurrentTickInfo().recordMouse(0, x, y, 0, this.isCursorLocked);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(0, x, y, 0);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}
@@ -61,7 +61,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				Playback.getManager().recording.getCurrentTickInfo().recordMouse(1, button, action, mods, this.isCursorLocked);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(1, button, action, mods);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}
@@ -87,7 +87,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				Playback.getManager().recording.getCurrentTickInfo().recordMouse(2, d, e, 0, this.isCursorLocked);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(2, d, e, 0);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}
@@ -109,7 +109,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				Playback.getManager().recording.getCurrentTickInfo().recordMouse(3, 0, 0, 0, this.isCursorLocked);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(3, 0, 0, 0);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}

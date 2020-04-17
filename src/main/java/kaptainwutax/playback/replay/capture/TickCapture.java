@@ -1,6 +1,5 @@
 package kaptainwutax.playback.replay.capture;
 
-import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.action.*;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.network.Packet;
@@ -12,19 +11,38 @@ import java.util.*;
 
 public class TickCapture implements PlaybackSerializable {
 
-	private List<Action> actions = new ArrayList<>();
-	//protected Set<Integer> keyStates = new HashSet<>();
+	private List<Action> tickActions = new ArrayList<>();
+	private List<FrameAction> frameActions = new ArrayList<>();
+	private int frameProgress = 0;
 
 	public TickCapture() {
 
 	}
 
-	public void play() {
-		this.actions.forEach(Action::play);
+	public void playTick() {
+		for(; this.frameProgress < this.frameActions.size(); this.frameProgress++) {
+			FrameAction frameAction = this.frameActions.get(this.frameProgress);
+			frameAction.play();
+		}
+
+		this.tickActions.forEach(Action::play);
+		this.frameProgress = 0;
+	}
+
+	public void playFrame(float tickDelta) {
+		for(; this.frameProgress < this.frameActions.size(); this.frameProgress++) {
+			FrameAction frameAction = this.frameActions.get(this.frameProgress);
+			if(frameAction.getTickDelta() >= tickDelta)break;
+			frameAction.play();
+		}
 	}
 
 	protected void addAction(Action action) {
-		this.actions.add(action);
+		if(action instanceof FrameAction) {
+			this.frameActions.add((FrameAction)action);
+		}
+
+		this.tickActions.add(action);
 	}
 
 	public void addPacketAction(Packet<ClientPlayPacketListener> packet) {
@@ -39,8 +57,8 @@ public class TickCapture implements PlaybackSerializable {
 		this.addAction(new KeyAction(action, key, scanCode, i, j));
 	}
 
-	public void addMouseAction(int action, double d1, double d2, int i1, boolean isCursorLocked) {
-		this.addAction(new MouseAction(action, d1, d2, i1, isCursorLocked));
+	public void addMouseAction(int action, double d1, double d2, int i1) {
+		this.addAction(new MouseAction(action, d1, d2, i1));
 	}
 
     public void addWindowFocusAction(boolean focused) {
@@ -50,44 +68,28 @@ public class TickCapture implements PlaybackSerializable {
     public void addClipboardReadAction(String clipboard) {
 		//Insert the clipboard action one action earlier so it is applied just before it is used. This is necessary
 		//as otherwise this action would need to be played while the one that uses the clipboard is played
-		int index = this.actions.size() >= 2 ? this.actions.size() - 2 : 0;
-		this.actions.add(index, new ClipboardReadAction(clipboard));
+		int index = this.tickActions.size() >= 2 ? this.tickActions.size() - 2 : 0;
+		this.tickActions.add(index, new ClipboardReadAction(clipboard));
 	}
 
-//	public void addKeyState(int i, boolean state) {
-//		if (this.getKeyState(i) != state) {
-//			System.out.println("Lost data for key " + i + " on tick " + Playback.getManager().recording.currentTick + " . Data was not recorded!");
-//		}
-//		//this.keyStates.put(i, state);
-//	}
-
-//	public boolean getKeyState(int i) {
-//		return Playback.getManager().recording.getKeyState(i);
-//		//return this.keyStates.get(i);
-//	}
-
 	public boolean isEmpty() {
-		return this.actions.isEmpty(); //&& this.keyStates.isEmpty();
+		return this.tickActions.isEmpty();
 	}
 
 	@Override
 	public void write(PacketByteBuf buf) throws IOException {
-//		buf.writeInt(this.keyStates.size());
-//		this.keyStates.forEach(buf::writeInt);
-		for (Action action : actions)Action.writeAction(buf, action);
+		for(Action action : this.tickActions)Action.writeAction(buf, action);
+		for(Action action : this.frameActions)Action.writeAction(buf, action);
 	}
 
 	@Override
 	public void read(PacketByteBuf buf) throws IOException {
-//		int keyStatesSize = buf.readInt();
-//
-//		for(int i = 0; i < keyStatesSize; i++) {
-//			this.keyStates.add(buf.readInt());
-//		}
+		this.frameActions.clear();
+		this.tickActions.clear();
 
-		actions.clear();
-		while (buf.readableBytes() > 0) {
-			actions.add(Action.readAction(buf));
+		while(buf.readableBytes() > 0) {
+			this.addAction(Action.readAction(buf));
 		}
 	}
+
 }

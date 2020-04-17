@@ -67,6 +67,8 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Shadow private float pausedTickDelta;
 
+	@Shadow public abstract float getTickDelta();
+
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.getManager().isReplaying()) {
 			Playback.getManager().updateView(Playback.getManager().getView());
@@ -89,6 +91,13 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			this.paused = true;
 			this.pausedTickDelta = 0;
 		}
+	}
+
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderTickCounter;beginRenderTick(J)V", shift = At.Shift.AFTER), cancellable = true)
+	private void renderRunTasks(boolean tick, CallbackInfo ci) {
+		applyReplayPlayerIfNecessary();
+		Playback.getManager().tickFrame(this.paused, this.getTickDelta());
+		applyCameraPlayerIfNecessary();
 	}
 
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)

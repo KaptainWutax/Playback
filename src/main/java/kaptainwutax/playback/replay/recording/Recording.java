@@ -194,7 +194,13 @@ public class Recording implements AutoCloseable {
 	public void playTick(long tick) {
 		this.currentTick = tick;
 		this.currentTickInfo = this.recording.getOrDefault(tick, TickInfo.EMPTY);
-		this.currentTickInfo.play(Playback.getManager().getView());
+		this.currentTickInfo.playTick();
+	}
+
+	public void playFrame(long tick, float tickDelta) {
+		this.currentTick = tick;
+		this.currentTickInfo = this.recording.getOrDefault(tick, TickInfo.EMPTY);
+		this.currentTickInfo.playFrame(tickDelta);
 	}
 
 	public TickInfo getCurrentTickInfo() {
