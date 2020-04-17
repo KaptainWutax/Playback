@@ -25,6 +25,7 @@ public class ReplayManager {
 	public boolean isProcessingReplay;
 	public boolean replayingHasFinished;
 	public boolean joined;
+	private boolean paused = true;
 
 
 	public RenderManager renderManager = new RenderManager();
@@ -35,7 +36,15 @@ public class ReplayManager {
 	}
 
 	public boolean isRecording() {
-		return recording != null && !this.isReplaying();
+		return recording != null && !this.isReplaying;
+	}
+
+	public boolean isOrWasReplaying() {
+		return this.isReplaying;
+	}
+
+	public boolean isPaused() {
+		return this.paused;
 	}
 
 	public void setReplaying(boolean flag) {
@@ -75,7 +84,7 @@ public class ReplayManager {
 
 	public boolean isOnlyAcceptingReplayedInputs() {
 		if (this.currentAppliedPlayer == null) {
-			if (this.isReplaying) {
+			if (this.isReplaying()) {
 				System.out.println("Input permission request with no player frame! Allowing ...");
 			}
 			return false;
@@ -85,7 +94,7 @@ public class ReplayManager {
 
 	public boolean isCurrentlyAcceptingInputs() {
 		if (this.currentAppliedPlayer == null) {
-			if (this.isReplaying) {
+			if (this.isReplaying()) {
 				System.out.println("Inputs with no player frame! Allowing them...");
 			}
 			return true;
@@ -123,7 +132,11 @@ public class ReplayManager {
 		MinecraftClient.getInstance().player.sendMessage(new LiteralText("Switched to " + Formatting.GREEN + this.view + Formatting.WHITE + "."));
 	}
 
-	public void restart() { //restart the replay (intended to have to reload the world right now as well)
+	public void togglePause() {
+		this.paused = !this.paused;
+	}
+
+	public void restart(Recording recording) {
 		if(cameraPlayer != null) {
 			cameraPlayer.options.apply();
 		}
@@ -135,7 +148,8 @@ public class ReplayManager {
 		this.replayPlayer = null;
 		this.currentAppliedPlayer = null;
 		this.joined = false;
-		this.isReplaying = false;
+		this.recording = recording;
+		this.paused = true;
 	}
 
 	public void startRecording(GameJoinS2CPacket packet) {

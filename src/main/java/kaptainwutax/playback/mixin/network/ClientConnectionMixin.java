@@ -10,6 +10,7 @@ import net.minecraft.network.NetworkSide;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
 import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
+import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.network.packet.c2s.play.ClientStatusC2SPacket;
 import net.minecraft.network.packet.c2s.play.RequestCommandCompletionsC2SPacket;
 import net.minecraft.network.packet.s2c.play.*;
@@ -31,7 +32,7 @@ public abstract class ClientConnectionMixin {
 	private static Set<Class<? extends Packet<?>>> SEND_WHITELIST = ImmutableSet.of(
 			HandshakeC2SPacket.class, LoginHelloC2SPacket.class,
 			RequestCommandCompletionsC2SPacket.class, ClientStatusC2SPacket.class,
-			ChatMessageS2CPacket.class
+			ChatMessageC2SPacket.class
 	);
 
 	private static Set<Class<? extends Packet<?>>> RECEIVE_BLACKLIST = ImmutableSet.of(

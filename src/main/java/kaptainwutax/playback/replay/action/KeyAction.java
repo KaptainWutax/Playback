@@ -31,11 +31,6 @@ public class KeyAction extends Action {
 	}
 
 	@Override
-	public Type getType() {
-		return Type.KEY;
-	}
-
-	@Override
 	public void read(PacketByteBuf buf) {
 		action = buf.readVarInt();
 		if (action != 1) {

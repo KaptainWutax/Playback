@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Action implements PlaybackSerializable {
 	private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
@@ -17,10 +19,8 @@ public abstract class Action implements PlaybackSerializable {
 
 	public abstract void play();
 
-	public abstract Type getType();
-
 	public static void writeAction(PacketByteBuf buf, Action action) throws IOException {
-		buf.writeVarInt(action.getType().ordinal());
+		buf.writeVarInt(Type.of(action).ordinal());
 		PacketByteBuf tmp = new PacketByteBuf(Unpooled.buffer());
 		action.write(tmp);
 		buf.writeVarInt(tmp.writerIndex());
@@ -47,6 +47,11 @@ public abstract class Action implements PlaybackSerializable {
 		CLIPBOARD_READ(ClipboardReadAction.class);
 
 		static final Type[] values = values();
+		private static final Map<Class<?>, Type> classToTypeMap = new HashMap<>();
+
+		static {
+			for (Type t : values) classToTypeMap.put(t.cls, t);
+		}
 
 		public final Class<? extends Action> cls;
 		private final MethodHandle constr;
@@ -67,6 +72,12 @@ public abstract class Action implements PlaybackSerializable {
 			} catch (Throwable throwable) {
 				throw new RuntimeException(throwable);
 			}
+		}
+
+		public static Type of(Action action) {
+			Type t = classToTypeMap.get(action.getClass());
+			if (t == null) throw new IllegalStateException("Invalid action " + action + " has no corresponding type");
+			return t;
 		}
 	}
 }

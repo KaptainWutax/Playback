@@ -61,11 +61,6 @@ public class DebugAction extends Action {
 	}
 
 	@Override
-	public Type getType() {
-		return Type.DEBUG;
-	}
-
-	@Override
 	public void read(PacketByteBuf buf) {
 		values.read(buf);
 	}

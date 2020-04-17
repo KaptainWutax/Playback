@@ -23,11 +23,6 @@ public class ClipboardReadAction extends Action {
 	}
 
 	@Override
-	public Type getType() {
-		return Type.CLIPBOARD_READ;
-	}
-
-	@Override
 	public void read(PacketByteBuf buf) throws IOException {
 		this.clipboard = buf.readString();
 	}

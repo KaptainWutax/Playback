@@ -29,11 +29,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
 			manager.startRecording(packet);
 		} else if(!manager.joined) {
 			manager.joined = true;
-			manager.recording.getStartStateAction().getJoinPacketAction().play();
+			manager.recording.getStartState().getJoinPacketAction().play();
 
 			ReplayView oldView = manager.getView();
 			manager.updateView(ReplayView.FIRST_PERSON);
-			manager.recording.getStartStateAction().play();
+			manager.recording.getStartState().play();
 			manager.updateView(oldView);
 
 			this.client.openScreen(null);

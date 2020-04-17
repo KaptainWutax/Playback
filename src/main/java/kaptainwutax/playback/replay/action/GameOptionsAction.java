@@ -23,11 +23,6 @@ public class GameOptionsAction extends Action {
 	}
 
 	@Override
-	public Type getType() {
-		return Type.GAME_OPTIONS;
-	}
-
-	@Override
 	public void read(PacketByteBuf buf) {
 		this.contents = buf.readString();
 	}
