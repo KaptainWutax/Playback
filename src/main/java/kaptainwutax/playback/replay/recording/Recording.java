@@ -3,7 +3,6 @@ package kaptainwutax.playback.replay.recording;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.capture.StartState;
 import kaptainwutax.playback.replay.capture.TickInfo;
 import kaptainwutax.playback.util.SerializationUtil;

@@ -1,6 +1,5 @@
 package kaptainwutax.playback.replay.capture;
 
-import kaptainwutax.playback.replay.action.GameOptionsAction;
 import kaptainwutax.playback.replay.action.PacketAction;
 import kaptainwutax.playback.replay.action.WindowFocusAction;
 import kaptainwutax.playback.util.PlaybackSerializable;
@@ -19,7 +18,7 @@ public class StartState implements PlaybackSerializable {
 	private int perspective;
 	private int isSinglePlayer = -1;
 	private WindowFocusAction windowFocus = new WindowFocusAction(true);
-	private GameOptionsAction gameOptionsAction = new GameOptionsAction();
+	private String gameOptions;
 
 	public StartState() {}
 
@@ -40,13 +39,13 @@ public class StartState implements PlaybackSerializable {
 	}
 
 	public void addGameOptions(GameOptions options) {
-		this.gameOptionsAction = new GameOptionsAction(options);
+		this.gameOptions = PlayGameOptions.getContents(options);
 	}
 
 	public void play() {
 		MinecraftClient.getInstance().options.perspective = this.perspective;
 		this.windowFocus.play();
-		this.gameOptionsAction.play();
+		PlayGameOptions.loadContents(MinecraftClient.getInstance().options, this.gameOptions);
 	}
 
 	@Override
@@ -56,7 +55,7 @@ public class StartState implements PlaybackSerializable {
 		this.joinPacket.read(buf);
 		this.windowFocus = new WindowFocusAction(true);
 		this.windowFocus.read(buf);
-		this.gameOptionsAction.read(buf);
+		this.gameOptions = buf.readString();
 	}
 
 	@Override
@@ -65,7 +64,7 @@ public class StartState implements PlaybackSerializable {
 		buf.writeBoolean(this.isSinglePlayer());
 		this.joinPacket.write(buf);
 		this.windowFocus.write(buf);
-		this.gameOptionsAction.write(buf);
+		buf.writeString(this.gameOptions);
 	}
 
 	public int getPerspective() {

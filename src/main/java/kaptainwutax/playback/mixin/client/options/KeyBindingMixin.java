@@ -2,7 +2,6 @@ package kaptainwutax.playback.mixin.client.options;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import kaptainwutax.playback.replay.action.GameOptionsAction;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
