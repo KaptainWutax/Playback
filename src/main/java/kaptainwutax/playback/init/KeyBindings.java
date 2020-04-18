@@ -6,24 +6,13 @@ import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class KeyBindings {
-
-	public static Set<FabricKeyBinding> KEYS = new HashSet<>();
 
 	public static String PLAYBACK_CATEGORY = createCategory("playback");
 
 	public static FabricKeyBinding TOGGLE_VIEW = FabricKeyBinding.Builder.create(Playback.createIdentifier("toggle_view"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_O, PLAYBACK_CATEGORY).build();
 	public static FabricKeyBinding TOGGLE_PAUSE = FabricKeyBinding.Builder.create(Playback.createIdentifier("toggle_pause"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_P, PLAYBACK_CATEGORY).build();
 	public static FabricKeyBinding PLAY_CAMERA_PATH = FabricKeyBinding.Builder.create(Playback.createIdentifier("play_camera_path"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_I, PLAYBACK_CATEGORY).build();
-
-	static {
-		KEYS.add(TOGGLE_VIEW);
-		KEYS.add(TOGGLE_PAUSE);
-		KEYS.add(PLAY_CAMERA_PATH);
-	}
 
 	public static String createCategory(String name) {
 		return "key.categories." + name;
@@ -38,6 +27,5 @@ public class KeyBindings {
 		KeyBindingRegistry.INSTANCE.register(TOGGLE_PAUSE);
 		KeyBindingRegistry.INSTANCE.register(PLAY_CAMERA_PATH);
 	}
-
 
 }
