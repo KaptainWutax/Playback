@@ -19,11 +19,11 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	// modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	// We just need the keybindings
+	modCompile "net.fabricmc.fabric-api:fabric-api-base:${project.fabric_api_base_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-keybindings-v0:${project.fabric_keybindings_v0_version}"
 
-	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-	// You may need to force-disable transitiveness on them.
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 }
 
