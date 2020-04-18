@@ -71,17 +71,17 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.getManager().isReplaying()) {
-			Playback.getManager().updateView(Playback.getManager().getView());
+			Playback.getManager().updateView(Playback.getManager().getView(), true);
 		}
 	}
 
 	private void applyReplayPlayerIfNecessary() {
 		if(this.world != null && Playback.getManager().isReplaying()) {
 			if(Playback.getManager().replayPlayer == null) {
-				Playback.getManager().updateView(Playback.getManager().getView());
+				Playback.getManager().updateView(Playback.getManager().getView(), true);
 			}
 
-			Playback.getManager().replayPlayer.apply();
+			Playback.getManager().replayPlayer.apply(true);
 		}
 	}
 
@@ -148,7 +148,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			if(Playback.getManager().getView() == ReplayView.THIRD_PERSON) {
 				this.world.tickEntity(Playback.getManager().cameraPlayer.getPlayer());
 			}
-
+			//todo why is swapping here necessary
 			Playback.getManager().cameraPlayer.options.apply();
 
 			boolean shouldToggleView = false;

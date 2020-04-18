@@ -51,15 +51,15 @@ public class ReplayManager {
 		this.isReplaying = flag;
 	}
 
-	public void updateView(ReplayView view) {
+	public void updateView(ReplayView view, boolean setCallbacks) {
 		this.view = view;
 		if(this.cameraPlayer == null)this.cameraPlayer = PlayerFrame.createNew();
 		if(this.replayPlayer == null)this.replayPlayer = PlayerFrame.createFromExisting();
 
 		if(view == ReplayView.FIRST_PERSON) {
-			this.replayPlayer.apply();
+			this.replayPlayer.apply(setCallbacks);
 		} else if(view == ReplayView.THIRD_PERSON) {
-			this.cameraPlayer.apply();
+			this.cameraPlayer.apply(setCallbacks);
 		}
 	}
 
@@ -119,7 +119,7 @@ public class ReplayManager {
 	}
 
 	public void toggleView() {
-		this.updateView(ReplayView.values()[(this.view.ordinal() + 1) % ReplayView.values().length]);
+		this.updateView(ReplayView.values()[(this.view.ordinal() + 1) % ReplayView.values().length], true);
 
 		//TODO: Maybe swapping the toast manager is better.
 		MinecraftClient.getInstance().getToastManager().clear();

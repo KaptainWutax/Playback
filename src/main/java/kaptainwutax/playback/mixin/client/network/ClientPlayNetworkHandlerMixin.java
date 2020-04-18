@@ -32,9 +32,9 @@ public abstract class ClientPlayNetworkHandlerMixin {
 			manager.recording.getStartState().getJoinPacketAction().play();
 
 			ReplayView oldView = manager.getView();
-			manager.updateView(ReplayView.FIRST_PERSON);
+			manager.updateView(ReplayView.FIRST_PERSON, true);
 			manager.recording.getStartState().play();
-			manager.updateView(oldView);
+			manager.updateView(oldView, true);
 
 			this.client.openScreen(null);
 			ci.cancel();

@@ -34,12 +34,12 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 				return;
 			}
 			//user input, so send to camera player (e.g. toggle replay)
-            Playback.getManager().cameraPlayer.options.apply(); //todo also need to swap screens etc, just not mouse grabbed state
+            Playback.getManager().cameraPlayer.apply(false);
 
             Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
 
             if(Playback.getManager().view == ReplayView.FIRST_PERSON) {
-                Playback.getManager().replayPlayer.options.apply();
+                Playback.getManager().replayPlayer.apply(false);
             }
 			//user input, not allowed to reach replayPlayer
 			if (Playback.getManager().currentAppliedPlayer == Playback.getManager().replayPlayer && !Playback.getManager().replayingHasFinished) {

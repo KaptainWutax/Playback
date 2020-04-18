@@ -59,7 +59,7 @@ public class PlayerFrame {
 
 	}
 
-	public void apply() {
+	public void apply(boolean allowSetCallback) {
 		PlayerFrame prevFrame = Playback.getManager().currentAppliedPlayer;
 		//commented out for now because the code after has to run at least once
 		if(this == prevFrame) {
@@ -76,8 +76,7 @@ public class PlayerFrame {
 			client.player = this.player;
 			client.interactionManager = this.interactionManager;
 			this.options.apply();
-			//boolean withCallback = this == Playback.getManager().cameraPlayer || (Playback.getManager().getView() == ReplayView.FIRST_PERSON && Playback.getManager().isCurrentlyAcceptingInputs());
-			boolean withCallback = !Playback.getManager().isOnlyAcceptingReplayedInputs();
+			boolean withCallback = allowSetCallback && !Playback.getManager().isOnlyAcceptingReplayedInputs();
 			withCallback = withCallback && this == Playback.getManager().getPlayerFrameForView(Playback.getManager().view);
 			((IClientCaller)client).setMouse(this.mouse, withCallback);
 			((IClientCaller)client).setKeyboard(this.keyboard, withCallback);
