@@ -3,6 +3,8 @@ package kaptainwutax.playback.replay.capture;
 import io.netty.buffer.Unpooled;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.action.DebugAction;
+import kaptainwutax.playback.replay.action.KeyAction;
+import kaptainwutax.playback.replay.action.MouseAction;
 import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.client.MinecraftClient;
@@ -45,24 +47,17 @@ public class TickInfo implements PlaybackSerializable {
 		this.tickCapture.addPacketAction(packet);
 	}
 
-	public void recordKey(int action, int key, int scanCode, int i, int j) {
+	public void recordKey(KeyAction.ActionType action, int key, int scanCode, int i, int j) {
 		this.tickCapture.addKeyAction(action, key, scanCode, i, j);
-		if (i != GLFW.GLFW_REPEAT) {
+
+		if(i != GLFW.GLFW_REPEAT) {
 			Playback.getManager().recording.setKeyState(key, i == GLFW.GLFW_PRESS);
 		}
 	}
 
-	public void recordMouse(int action, double d1, double d2, int i1) {
+	public void recordMouse(MouseAction.ActionType action, double d1, double d2, int i1) {
 		this.tickCapture.addMouseAction(action, d1, d2, i1);
 	}
-
-//	public void recordKeyState(int i, boolean state) {
-//		this.tickCapture.addKeyState(i, state);
-//	}
-
-//	public boolean getKeyState(int i) {
-//		return this.tickCapture.getKeyState(i);
-//	}
 
     public void recordWindowFocus(boolean windowFocus) {
         this.tickCapture.addWindowFocusAction(windowFocus);

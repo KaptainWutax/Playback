@@ -25,7 +25,7 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 		if(MinecraftClient.getInstance().player == null) return;
 
 		if(Playback.getManager().isRecording()) {
-			Playback.getManager().recording.getCurrentTickInfo().recordKey(0, key, scanCode, i, j);
+			Playback.getManager().recording.getCurrentTickInfo().recordKey(KeyAction.ActionType.KEY, key, scanCode, i, j);
 			return;
 		}
 		//code duplicated to onChar Inject
@@ -53,7 +53,7 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 		if(MinecraftClient.getInstance().player == null) return;
 
 		if(Playback.getManager().isRecording()) {
-			Playback.getManager().recording.getCurrentTickInfo().recordKey(1, 0, 0, i, j);
+			Playback.getManager().recording.getCurrentTickInfo().recordKey(KeyAction.ActionType.CHAR, 0, 0, i, j);
 		}
 		//duplicated code from Inject into onKey
 		if(Playback.getManager().isReplaying()) {
@@ -76,10 +76,10 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 	}
 
 	@Override
-	public void execute(int action, int key, int scanCode, int i, int j) {
-		if(action == 0) {
+	public void execute(KeyAction.ActionType action, int key, int scanCode, int i, int j) {
+		if(action == KeyAction.ActionType.KEY) {
 			this.onKey(MinecraftClient.getInstance().getWindow().getHandle(), key, scanCode, i, j);
-		} else if(action == 1) {
+		} else if(action == KeyAction.ActionType.CHAR) {
 			this.onChar(MinecraftClient.getInstance().getWindow().getHandle(), i, j);
 		}
 	}

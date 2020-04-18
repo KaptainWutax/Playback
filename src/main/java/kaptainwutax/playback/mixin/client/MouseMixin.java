@@ -35,7 +35,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				Playback.getManager().recording.getCurrentTickInfo().recordMouse(0, x, y, 0);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.POS, x, y, 0);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}
@@ -61,7 +61,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				Playback.getManager().recording.getCurrentTickInfo().recordMouse(1, button, action, mods);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.BUTTON, button, action, mods);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}
@@ -87,7 +87,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				Playback.getManager().recording.getCurrentTickInfo().recordMouse(2, d, e, 0);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.SCROLL, d, e, 0);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}
@@ -109,7 +109,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				Playback.getManager().recording.getCurrentTickInfo().recordMouse(3, 0, 0, 0);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.UPDATE, 0, 0, 0);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}
@@ -142,14 +142,14 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 	}
 
 	@Override
-	public void execute(int action, double d1, double d2, int i1) {
-		if(action == 0) {
+	public void execute(MouseAction.ActionType action, double d1, double d2, int i1) {
+		if(action == MouseAction.ActionType.POS) {
 			this.onCursorPos(MinecraftClient.getInstance().getWindow().getHandle(), d1, d2);
-		} else if(action == 1) {
+		} else if(action == MouseAction.ActionType.BUTTON) {
 			this.onMouseButton(MinecraftClient.getInstance().getWindow().getHandle(), (int) d1, (int) d2, i1);
-		} else if(action == 2) {
+		} else if(action == MouseAction.ActionType.SCROLL) {
 			this.onMouseScroll(MinecraftClient.getInstance().getWindow().getHandle(), d1, d2);
-		} else if(action == 3) {
+		} else if(action == MouseAction.ActionType.UPDATE) {
 			this.updateMouse();
 		}
 	}

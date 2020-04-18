@@ -6,7 +6,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class KeyAction extends Action {
 
-	private int action;
+	private ActionType action;
 	private int key;
 	private int scanCode;
 	private int i;
@@ -16,7 +16,7 @@ public class KeyAction extends Action {
 		super(false);
 	}
 
-	public KeyAction(int action, int key, int scanCode, int i, int j) {
+	public KeyAction(ActionType action, int key, int scanCode, int i, int j) {
 		this();
 		this.action = action;
 		this.key = key;
@@ -27,36 +27,45 @@ public class KeyAction extends Action {
 
 	@Override
 	public void play() {
-		if (this.i == GLFW.GLFW_PRESS || i == GLFW.GLFW_RELEASE) {
+		if(this.i == GLFW.GLFW_PRESS || i == GLFW.GLFW_RELEASE) {
 			Playback.getManager().recording.setKeyState(this.key, this.i == GLFW.GLFW_PRESS);
 		}
+
 		((IKeyboardCaller)client.keyboard).execute(this.action, this.key, this.scanCode, this.i, this.j);
 	}
 
 	@Override
 	public void read(PacketByteBuf buf) {
-		action = buf.readVarInt();
-		if (action != 1) {
-			key = buf.readVarInt();
-			scanCode = buf.readVarInt();
+		this.action = ActionType.values()[buf.readVarInt()];
+
+		if (this.action == ActionType.KEY) {
+			this.key = buf.readVarInt();
+			this.scanCode = buf.readVarInt();
 		}
-		i = buf.readVarInt();
-		j = buf.readVarInt();
+
+		this.i = buf.readVarInt();
+		this.j = buf.readVarInt();
 	}
 
 	@Override
 	public void write(PacketByteBuf buf) {
-		buf.writeVarInt(action);
-		if (action != 1) {
-			buf.writeVarInt(key);
-			buf.writeVarInt(scanCode);
+		buf.writeVarInt(this.action.ordinal());
+
+		if(this.action == ActionType.KEY) {
+			buf.writeVarInt(this.key);
+			buf.writeVarInt(this.scanCode);
 		}
-		buf.writeVarInt(i);
-		buf.writeVarInt(j);
+
+		buf.writeVarInt(this.i);
+		buf.writeVarInt(this.j);
+	}
+
+	public enum ActionType {
+		KEY, CHAR
 	}
 
 	public interface IKeyboardCaller {
-		void execute(int action, int key, int scanCode, int i, int j);
+		void execute(ActionType action, int key, int scanCode, int i, int j);
 	}
 
 }
