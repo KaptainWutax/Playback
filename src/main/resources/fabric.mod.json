@@ -1,17 +1,18 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "playback",
   "version": "${version}",
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Playback",
+  "description": "A mod for recording and playing back in-game actions",
   "authors": [
-    "Me!"
+    "KaptainWutax",
+    "2No2Name",
+    "skyrising"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/KaptainWutax/Playback"
   },
-  "license": "CC0-1.0",
+  "license": "MIT",
   "icon": "assets/modid/icon.png",
   "environment": "client",
   "entrypoints": {
@@ -20,7 +21,7 @@
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "playback.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.7.2",
