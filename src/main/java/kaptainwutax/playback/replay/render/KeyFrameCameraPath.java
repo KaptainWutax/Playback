@@ -45,6 +45,9 @@ public class KeyFrameCameraPath implements CameraPath {
     public Vector3f getCameraRotationAtTime(long tick, float tickDelta) {
         //maybe do some caching or at least binary search in the array list
 
+        //there are several different ways to interpolate rotation vectors "linearly"
+        //this here is not moving the vector along the shortest path on the unit sphere
+
         int i = this.getLowerIndexForTimestamp(tick, tickDelta);
         if (i < 0) return null;
 
@@ -56,8 +59,8 @@ public class KeyFrameCameraPath implements CameraPath {
             return prev.getRotationVec();
         }
         //Linear interpolation
-        float delta = ((tick + (float)tickDelta) - prev.tick - prev.tickDelta) /
-                (next.tick + (float)next.tickDelta - prev.tick - prev.tickDelta);
+        float delta = ((tick + tickDelta) - prev.tick - prev.tickDelta) /
+                (next.tick + next.tickDelta - prev.tick - prev.tickDelta);
         return new Vector3f(MathHelper.lerp(delta, prev.roll, next.roll),
                 MathHelper.lerp(delta, prev.pitch, next.pitch),
                 MathHelper.lerp(delta, prev.yaw, next.yaw));

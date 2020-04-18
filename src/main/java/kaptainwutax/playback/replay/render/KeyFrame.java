@@ -20,8 +20,8 @@ public class KeyFrame {
         this.tickDelta = tickDelta;
     }
 
-    public CameraPath.GameTimeStamp getTimeStamp() {
-        return new CameraPath.GameTimeStamp(this.tick, this.tickDelta);
+    public GameTimeStamp getTimeStamp() {
+        return new GameTimeStamp(this.tick, this.tickDelta);
     }
 
     public Vec3d getPositionVec() {
