@@ -18,9 +18,12 @@ public class PacketAction extends Action {
 
 	private Packet<ClientPlayPacketListener> packet;
 
-	public PacketAction() {}
+	public PacketAction() {
+		super(false);
+	}
 
 	public PacketAction(Packet<ClientPlayPacketListener> packet) {
+		this();
 		this.packet = packet;
 	}
 

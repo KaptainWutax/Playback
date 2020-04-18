@@ -10,10 +10,11 @@ public class ClipboardReadAction extends Action {
 	private String clipboard;
 
 	public ClipboardReadAction() {
-
+		super(false);
 	}
 
 	public ClipboardReadAction(String clipboard) {
+		this();
 		this.clipboard = clipboard;
 	}
 

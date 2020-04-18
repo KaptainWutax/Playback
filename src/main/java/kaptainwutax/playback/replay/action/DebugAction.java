@@ -16,10 +16,12 @@ public class DebugAction extends Action {
 	private Debugs values;
 
 	public DebugAction() {
+		super(false);
 		values = new Debugs();
 	}
 
 	public DebugAction(ClientPlayerEntity player) {
+		this();
 		values = new Debugs(player);
 	}
 

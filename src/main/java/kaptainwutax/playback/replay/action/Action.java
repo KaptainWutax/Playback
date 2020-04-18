@@ -17,11 +17,36 @@ public abstract class Action implements PlaybackSerializable {
 
 	protected static MinecraftClient client = MinecraftClient.getInstance();
 
-	public Action() {
+	private boolean isFramePerfect;
+	private float tickDelta;
 
+	public Action(boolean isFramePerfect) {
+		this.isFramePerfect = isFramePerfect;
+
+		if(this.isFramePerfect) {
+			this.tickDelta = client.getTickDelta();
+		}
+	}
+
+	public float getTickDelta() {
+		return tickDelta;
 	}
 
 	public abstract void play();
+
+	@Override
+	public void write(PacketByteBuf buf) throws IOException {
+		if(this.isFramePerfect) {
+			buf.writeFloat(this.tickDelta);
+		}
+	}
+
+	@Override
+	public void read(PacketByteBuf buf) throws IOException {
+		if(this.isFramePerfect) {
+			this.tickDelta = buf.readFloat();
+		}
+	}
 
 	public static void writeAction(PacketByteBuf buf, Action action) throws IOException {
 		buf.writeVarInt(Type.of(action).ordinal());

@@ -10,10 +10,11 @@ public class GameOptionsAction extends Action {
 	private String contents;
 
 	public GameOptionsAction() {
-
+		super(false);
 	}
 
 	public GameOptionsAction(GameOptions options) {
+		this();
 		this.contents = PlayGameOptions.getContents(options);
 	}
 

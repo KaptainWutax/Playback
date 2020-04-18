@@ -2,7 +2,6 @@ package kaptainwutax.playback.replay.capture;
 
 import io.netty.buffer.Unpooled;
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.DebugAction;
 import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.util.PlaybackSerializable;
@@ -28,7 +27,7 @@ public class TickInfo implements PlaybackSerializable {
 
 	public void playTick() {
 		Playback.getManager().isProcessingReplay = true;
-		this.tickCapture.playTick();
+		this.tickCapture.finishTick();
 		Playback.getManager().isProcessingReplay = false;
 	}
 

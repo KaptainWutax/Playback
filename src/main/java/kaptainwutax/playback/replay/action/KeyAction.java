@@ -12,9 +12,12 @@ public class KeyAction extends Action {
 	private int i;
 	private int j;
 
-	public KeyAction() {}
+	public KeyAction() {
+		super(false);
+	}
 
 	public KeyAction(int action, int key, int scanCode, int i, int j) {
+		this();
 		this.action = action;
 		this.key = key;
 		this.scanCode = scanCode;

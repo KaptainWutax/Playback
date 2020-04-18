@@ -2,16 +2,21 @@ package kaptainwutax.playback.replay.action;
 
 import net.minecraft.util.PacketByteBuf;
 
-public class MouseAction extends FrameAction {
+import java.io.IOException;
+
+public class MouseAction extends Action {
 
 	private int action;
 	private double d1;
 	private double d2;
 	private int i1;
 
-	public MouseAction() {}
+	public MouseAction() {
+		super(true);
+	}
 
 	public MouseAction(int action, double d1, double d2, int i1) {
+		this();
 		this.action = action;
 		this.d1 = d1;
 		this.d2 = d2;
@@ -24,7 +29,7 @@ public class MouseAction extends FrameAction {
 	}
 
 	@Override
-	public void read(PacketByteBuf buf) {
+	public void read(PacketByteBuf buf) throws IOException {
 		super.read(buf);
 
 		action = buf.readVarInt();
@@ -38,7 +43,7 @@ public class MouseAction extends FrameAction {
 	}
 
 	@Override
-	public void write(PacketByteBuf buf) {
+	public void write(PacketByteBuf buf) throws IOException {
 		super.write(buf);
 
 		buf.writeVarInt(action);

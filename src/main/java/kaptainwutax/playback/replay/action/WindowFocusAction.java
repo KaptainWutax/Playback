@@ -7,9 +7,12 @@ public class WindowFocusAction extends Action {
 
 	private boolean windowFocused;
 
-	public WindowFocusAction() {}
+	public WindowFocusAction() {
+		super(false);
+	}
 
 	public WindowFocusAction(boolean focused) {
+		this();
 		this.windowFocused = focused;
 	}
 

@@ -11,38 +11,28 @@ import java.util.*;
 
 public class TickCapture implements PlaybackSerializable {
 
-	private List<Action> tickActions = new ArrayList<>();
-	private List<FrameAction> frameActions = new ArrayList<>();
+	private List<Action> actions = new ArrayList<>();
 	private int frameProgress = 0;
 
 	public TickCapture() {
 
 	}
 
-	public void playTick() {
-		for(; this.frameProgress < this.frameActions.size(); this.frameProgress++) {
-			FrameAction frameAction = this.frameActions.get(this.frameProgress);
+	public void playFrame(float tickDelta) {
+		for(; this.frameProgress < this.actions.size(); this.frameProgress++) {
+			Action frameAction = this.actions.get(this.frameProgress);
+			if(frameAction.getTickDelta() > tickDelta)break;
 			frameAction.play();
 		}
+	}
 
-		this.tickActions.forEach(Action::play);
+	public void finishTick() {
+		this.playFrame(1.0F);
 		this.frameProgress = 0;
 	}
 
-	public void playFrame(float tickDelta) {
-		for(; this.frameProgress < this.frameActions.size(); this.frameProgress++) {
-			FrameAction frameAction = this.frameActions.get(this.frameProgress);
-			if(frameAction.getTickDelta() >= tickDelta)break;
-			frameAction.play();
-		}
-	}
-
 	protected void addAction(Action action) {
-		if(action instanceof FrameAction) {
-			this.frameActions.add((FrameAction)action);
-		}
-
-		this.tickActions.add(action);
+		this.actions.add(action);
 	}
 
 	public void addPacketAction(Packet<ClientPlayPacketListener> packet) {
@@ -68,24 +58,24 @@ public class TickCapture implements PlaybackSerializable {
     public void addClipboardReadAction(String clipboard) {
 		//Insert the clipboard action one action earlier so it is applied just before it is used. This is necessary
 		//as otherwise this action would need to be played while the one that uses the clipboard is played
-		int index = this.tickActions.size() >= 2 ? this.tickActions.size() - 2 : 0;
-		this.tickActions.add(index, new ClipboardReadAction(clipboard));
+		int index = this.actions.size() >= 2 ? this.actions.size() - 2 : 0;
+		this.actions.add(index, new ClipboardReadAction(clipboard));
 	}
 
 	public boolean isEmpty() {
-		return this.tickActions.isEmpty();
+		return this.actions.isEmpty();
 	}
 
 	@Override
 	public void write(PacketByteBuf buf) throws IOException {
-		for(Action action : this.tickActions)Action.writeAction(buf, action);
-		for(Action action : this.frameActions)Action.writeAction(buf, action);
+		for(Action action : this.actions) {
+			Action.writeAction(buf, action);
+		}
 	}
 
 	@Override
 	public void read(PacketByteBuf buf) throws IOException {
-		this.frameActions.clear();
-		this.tickActions.clear();
+		this.actions.clear();
 
 		while(buf.readableBytes() > 0) {
 			this.addAction(Action.readAction(buf));
