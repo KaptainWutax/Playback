@@ -2,6 +2,7 @@ package kaptainwutax.playback.replay;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.recording.Recording;
+import kaptainwutax.playback.replay.render.RenderManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.text.LiteralText;
@@ -25,6 +26,10 @@ public class ReplayManager {
 	public boolean replayingHasFinished;
 	public boolean joined;
 	private boolean paused;
+
+
+	public RenderManager renderManager = new RenderManager();
+
 
 	public boolean isReplaying() {
 		return recording != null && this.isReplaying;

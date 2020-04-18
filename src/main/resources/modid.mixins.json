@@ -26,6 +26,8 @@
     "client.MinecraftClientMixin",
     "client.MouseMixin",
     "client.gui.screen.TitleScreenMixin",
+    "client.render.CameraMixin",
+    "client.render.GameRendererMixin",
     "client.render.MinecraftClient_Render_Mixin",
     "client.render.RenderTickCounterMixin",
     "client.render.WorldRendererMixin",
