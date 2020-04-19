@@ -55,8 +55,8 @@ public class TickInfo implements PlaybackSerializable {
 		}
 	}
 
-	public void recordMouse(MouseAction.ActionType action, double d1, double d2, int i1) {
-		this.tickCapture.addMouseAction(action, d1, d2, i1);
+	public MouseAction recordMouse(MouseAction.ActionType action, double d1, double d2, int i1) {
+		return this.tickCapture.addMouseAction(action, d1, d2, i1);
 	}
 
     public void recordWindowFocus(boolean windowFocus) {

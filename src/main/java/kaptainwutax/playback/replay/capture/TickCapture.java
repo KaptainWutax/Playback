@@ -48,8 +48,10 @@ public class TickCapture implements PlaybackSerializable {
 		this.addAction(new KeyAction(action, key, scanCode, i, j));
 	}
 
-	public void addMouseAction(MouseAction.ActionType action, double d1, double d2, int i1) {
-		this.addAction(new MouseAction(action, d1, d2, i1));
+	public MouseAction addMouseAction(MouseAction.ActionType action, double d1, double d2, int i1) {
+		MouseAction mouseAction = new MouseAction(action, d1, d2, i1);
+		this.addAction(mouseAction);
+		return mouseAction;
 	}
 
     public void addWindowFocusAction(boolean focused) {

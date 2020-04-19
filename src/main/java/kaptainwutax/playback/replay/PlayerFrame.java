@@ -154,7 +154,7 @@ public class PlayerFrame {
 		if (this == Playback.getManager().currentAppliedPlayer) {
 			return MinecraftClient.getInstance().currentScreen;
 		}
-		return currentScreen;
+		return this.currentScreen;
 	}
 
 	public void onReplayFinished() {

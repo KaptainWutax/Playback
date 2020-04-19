@@ -4,6 +4,7 @@ import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.replay.render.RenderManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
@@ -21,7 +22,8 @@ public class ReplayManager {
 
 	public ReplayView view = ReplayView.THIRD_PERSON;
 
-	private boolean isReplaying;
+	public enum PlaybackState {NO_REPLAY,REPLAYING,RECORDING}
+	private PlaybackState replayingState;
 	public boolean isProcessingReplay;
 	public boolean replayingHasFinished;
 	public boolean joined;
@@ -32,23 +34,25 @@ public class ReplayManager {
 
 
 	public boolean isReplaying() {
-		return recording != null && this.isReplaying;
+		return recording != null && this.replayingState == PlaybackState.REPLAYING;
 	}
 
 	public boolean isRecording() {
-		return recording != null && !this.isReplaying;
+		return recording != null && this.replayingState  == PlaybackState.RECORDING;
 	}
 
 	public boolean isOrWasReplaying() {
-		return this.isReplaying;
+		//todo what is this method supposed to do, why is ignoring recording == null required?
+		return this.replayingState  == PlaybackState.REPLAYING;
 	}
 
 	public boolean isPaused() {
-		return this.paused;
+		Screen screen;
+		return this.paused || (this.cameraPlayer != null && (screen  = this.cameraPlayer.getCurrentScreen()) != null && screen.isPauseScreen());
 	}
 
-	public void setReplaying(boolean flag) {
-		this.isReplaying = flag;
+	public void setReplaying(PlaybackState state) {
+		this.replayingState = state;
 	}
 
 	public void updateView(ReplayView view, boolean setCallbacks) {
@@ -64,7 +68,7 @@ public class ReplayManager {
 	}
 
 	public void tick(boolean paused) {
-		if(this.isReplaying() && this.paused) return;
+		if(this.isReplaying() && this.isPaused()) return;
 
 		if(this.isRecording()) {
 			this.recording.getCurrentTickInfo().recordDebug();
@@ -82,7 +86,7 @@ public class ReplayManager {
 	}
 
 	public void tickFrame(boolean paused, float tickDelta) {
-		if(!this.isReplaying() || paused)return;
+		if(!this.isReplaying() || paused) return;
 		this.recording.playFrame(this.tickCounter, tickDelta);
 	}
 
@@ -93,7 +97,7 @@ public class ReplayManager {
 			}
 			return false;
 		}
-		return this.isReplaying && this.currentAppliedPlayer == replayPlayer && !this.replayingHasFinished;
+		return this.replayingState == PlaybackState.REPLAYING && this.currentAppliedPlayer == replayPlayer && !this.replayingHasFinished;
 	}
 
 	public boolean isCurrentlyAcceptingInputs() {
@@ -163,6 +167,7 @@ public class ReplayManager {
 		}
 		try {
 			recording = new Recording(Playback.getNewRecordingFile(), "rw");
+			this.setReplaying(PlaybackState.RECORDING);
 			recording.recordJoinPacket(packet);
 			recording.recordPerspective(MinecraftClient.getInstance().options.perspective);
 			recording.recordPhysicalSide(MinecraftClient.getInstance().isInSingleplayer());

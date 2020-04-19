@@ -2,6 +2,7 @@ package kaptainwutax.playback.replay.recording;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.gui.LoadingScreen;
+import kaptainwutax.playback.replay.ReplayManager;
 import kaptainwutax.playback.replay.capture.StartState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
@@ -63,7 +64,7 @@ public class RecordingSummary {
     private static void load(Recording recording) {
         MinecraftClient.getInstance().send(() -> {
             Playback.getManager().restart(recording);
-            Playback.getManager().setReplaying(true);
+            Playback.getManager().setReplaying(ReplayManager.PlaybackState.REPLAYING);
             MinecraftClient.getInstance().startIntegratedServer(".replay", "Replay", new LevelInfo(0, GameMode.SPECTATOR, false, false, LevelGeneratorType.DEFAULT));
             MinecraftClient.getInstance().getServer().getPlayerManager().setCheatsAllowed(true);
         });

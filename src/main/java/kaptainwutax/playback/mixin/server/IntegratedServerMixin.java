@@ -5,6 +5,7 @@ import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.datafixers.DataFixer;
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.replay.ReplayManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
@@ -33,6 +34,6 @@ public abstract class IntegratedServerMixin extends MinecraftServer {
 
     @Inject(method = "shutdown", at = @At("RETURN"))
     private void onShutdown(CallbackInfo ci) {
-        Playback.getManager().setReplaying(false);
+        Playback.getManager().setReplaying(ReplayManager.PlaybackState.NO_REPLAY);
     }
 }

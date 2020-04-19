@@ -11,6 +11,9 @@ public class MouseAction extends Action {
 	private double d2;
 	private int i1;
 
+	private int screenPositionsMaxIndex;
+	private double[] screenCoordinates;
+
 	public MouseAction() {
 		super(true);
 	}
@@ -21,11 +24,32 @@ public class MouseAction extends Action {
 		this.d1 = d1;
 		this.d2 = d2;
 		this.i1 = i1;
+		this.screenPositionsMaxIndex = -1;
+	}
+
+	public void addScreenPositionData(double screenCoord, int index) {
+		if (this.screenCoordinates == null) {
+			this.screenCoordinates = new double[]{Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY};
+		}
+		if (this.screenCoordinates[index] != Double.NEGATIVE_INFINITY) {
+			throw new IllegalStateException("Dataloss while recording mouse action. Can only save coordinate for index " + index + " once!");
+		}
+		this.screenCoordinates[index] = screenCoord;
+		if (this.screenPositionsMaxIndex < index) {
+			this.screenPositionsMaxIndex = index;
+		}
+	}
+
+	public double getScreenPositionData(int index) {
+		if (index > this.screenPositionsMaxIndex) {
+			throw new IndexOutOfBoundsException("Reading screen position index " + index + ". Can only read coordinate at index from 0 up to " + this.screenPositionsMaxIndex + "!");
+		}
+		return this.screenCoordinates[index];
 	}
 
 	@Override
 	public void play() {
-		((IMouseCaller)client.mouse).execute(this.action, this.d1, this.d2, this.i1);
+		((IMouseCaller)client.mouse).execute(this.action, this, this.d1, this.d2, this.i1);
 	}
 
 	@Override
@@ -34,13 +58,26 @@ public class MouseAction extends Action {
 
 		this.action = ActionType.values()[buf.readVarInt()];
 
-		if (this.action != ActionType.UPDATE) {
-			this.d1 = buf.readDouble();
-			this.d2 = buf.readDouble();
+		switch (this.action) {
+			case BUTTON:
+				this.i1 = buf.readVarInt();
+				//fallthrough
+			case POS:
+			case SCROLL:
+				this.d1 = buf.readDouble();
+				this.d2 = buf.readDouble();
 
-			if(this.action == ActionType.BUTTON) {
-				i1 = buf.readVarInt();
-			}
+				this.screenPositionsMaxIndex = buf.readVarInt();
+				if (this.screenPositionsMaxIndex >= 0) {
+					this.screenCoordinates = new double[this.screenPositionsMaxIndex + 1];
+					for (int i = 0; i <= this.screenPositionsMaxIndex; i++) {
+						this.screenCoordinates[i] = buf.readDouble();
+					}
+				}
+				break;
+			case RESOLUTION_CHANGED:
+			case UPDATE:
+				break;
 		}
 	}
 
@@ -49,23 +86,36 @@ public class MouseAction extends Action {
 		super.write(buf);
 
 		buf.writeVarInt(this.action.ordinal());
-
-		if(action != ActionType.UPDATE) {
-			buf.writeDouble(this.d1);
-			buf.writeDouble(this.d2);
-
-			if(this.action == ActionType.BUTTON) {
+		switch (this.action) {
+			case BUTTON:
 				buf.writeVarInt(this.i1);
-			}
+				//fallthrough
+			case POS:
+			case SCROLL:
+				buf.writeDouble(this.d1);
+				buf.writeDouble(this.d2);
+
+				buf.writeVarInt(this.screenPositionsMaxIndex);
+				for (int i = 0; i <= this.screenPositionsMaxIndex; i++) {
+					if (this.screenCoordinates[i] == Double.NEGATIVE_INFINITY) {
+						System.err.println("Writing noninitialized values for MouseAction!");
+					}
+					buf.writeDouble(this.screenCoordinates[i]);
+				}
+				break;
+
+			case RESOLUTION_CHANGED:
+			case UPDATE:
+				break;
 		}
 	}
 
 	public enum ActionType {
-		POS, BUTTON, SCROLL, UPDATE
+		POS, BUTTON, SCROLL, UPDATE, RESOLUTION_CHANGED
 	}
 
 	public interface IMouseCaller {
-		void execute(ActionType action, double d1, double d2, int mods);
+		void execute(ActionType actionType, MouseAction action, double d1, double d2, int mods);
 	}
 
 }
