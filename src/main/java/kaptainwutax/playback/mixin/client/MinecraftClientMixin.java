@@ -138,6 +138,13 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		this.runEndTickLogic();
 	}
 
+	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Mouse;updateMouse()V"))
+	private void cancelExtraUpdateMouse(Mouse mouse) {
+		if (Playback.getManager().isInReplay() && (Playback.getManager().replayPlayer != null && Playback.getManager().replayPlayer.isActive()))
+			return; //don't execute because updateMouse is already being replayed
+		mouse.updateMouse();
+	}
+
 	protected void runEndTickLogic() {
 		if(this.world != null) {
 			applyCameraPlayerIfNecessary();
