@@ -16,6 +16,7 @@ public class MouseAction extends Action {
 
 	public MouseAction() {
 		super(true);
+		this.screenPositionsMaxIndex = -1;
 	}
 
 	public MouseAction(ActionType action, double d1, double d2, int i1) {
@@ -24,7 +25,6 @@ public class MouseAction extends Action {
 		this.d1 = d1;
 		this.d2 = d2;
 		this.i1 = i1;
-		this.screenPositionsMaxIndex = -1;
 	}
 
 	public void addScreenPositionData(double screenCoord, int index) {
@@ -44,7 +44,11 @@ public class MouseAction extends Action {
 		if (index > this.screenPositionsMaxIndex) {
 			throw new IndexOutOfBoundsException("Reading screen position index " + index + ". Can only read coordinate at index from 0 up to " + this.screenPositionsMaxIndex + "!");
 		}
-		return this.screenCoordinates[index];
+		double ret = this.screenCoordinates[index];
+		if (ret == Double.POSITIVE_INFINITY) //Positive infinity is a flag for already read
+			throw new IndexOutOfBoundsException("Mouse action " + this.action.name() + " should only read value at index "+index+" once! This is unexpected");
+		this.screenCoordinates[index] = Double.POSITIVE_INFINITY;
+		return ret;
 	}
 
 	@Override

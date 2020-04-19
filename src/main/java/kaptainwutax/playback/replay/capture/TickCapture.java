@@ -65,6 +65,10 @@ public class TickCapture implements PlaybackSerializable {
 		this.actions.add(index, new ClipboardReadAction(clipboard));
 	}
 
+	public void addLostFocusPauseAction() {
+		this.addAction(new LostFocusPauseAction());
+	}
+
 	public boolean isEmpty() {
 		return this.actions.isEmpty();
 	}

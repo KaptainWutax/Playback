@@ -168,6 +168,8 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 			this.latestMouseAction.addScreenPositionData(coord, index);
 			return coord;
 		} else if (Playback.getManager().isInReplay() && Playback.getManager().isProcessingReplay) {
+			if (this.recursionDepth != 1)
+				System.out.println("Unexpected recursion depth in mousemixin, probably causes wrong behavior");
 			return this.latestMouseAction.getScreenPositionData(index);
 		}
 		return coord;
