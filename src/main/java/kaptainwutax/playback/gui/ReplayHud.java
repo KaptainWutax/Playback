@@ -4,7 +4,7 @@ import net.minecraft.client.gui.hud.InGameHud;
 
 public class ReplayHud {
 
-    private void renderReplayHud(InGameHud caller) {
+    public void renderReplayHud(InGameHud caller) {
         //Todo
     }
 }
