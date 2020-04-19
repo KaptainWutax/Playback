@@ -29,7 +29,7 @@ public abstract class IntegratedServerMixin extends MinecraftServer {
 
     @Redirect(method = "loadWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;prepareStartRegion(Lnet/minecraft/server/WorldGenerationProgressListener;)V"))
     private void dontLoadStartRegion(IntegratedServer integratedServer, WorldGenerationProgressListener worldGenerationProgressListener) {
-        if (!Playback.getManager().isReplaying()) prepareStartRegion(worldGenerationProgressListener);
+        if (!Playback.getManager().isInReplay()) prepareStartRegion(worldGenerationProgressListener);
     }
 
     @Inject(method = "shutdown", at = @At("RETURN"))

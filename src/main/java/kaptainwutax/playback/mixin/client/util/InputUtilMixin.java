@@ -17,7 +17,7 @@ public abstract class InputUtilMixin {
 			int pressedState = GLFW.glfwGetKey(handle, i);
 			Playback.getManager().recording.setKeyState(i, pressedState == GLFW.GLFW_PRESS);
 			ci.setReturnValue(pressedState == GLFW.GLFW_PRESS);
-		} else if (Playback.getManager().isReplaying() && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
+		} else if (Playback.getManager().isInReplay() && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
 			boolean b = Playback.getManager().recording.getKeyState(i);
 			ci.setReturnValue(b);
 		}

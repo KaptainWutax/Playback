@@ -30,6 +30,6 @@ public class WorldSaveHandlerMixin {
 
     @Inject(method = "loadPlayerData", at = @At("HEAD"), cancellable = true)
     private void noLoad(PlayerEntity playerEntity, CallbackInfoReturnable<CompoundTag> cir) {
-        if (Playback.getManager().isReplaying()) cir.setReturnValue(null);
+        if (Playback.getManager().isInReplay()) cir.setReturnValue(null);
     }
 }

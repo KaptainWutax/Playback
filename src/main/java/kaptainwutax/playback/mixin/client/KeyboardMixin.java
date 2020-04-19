@@ -29,7 +29,7 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 			return;
 		}
 		//code duplicated to onChar Inject
-		if(Playback.getManager().isReplaying()) {
+		if(Playback.getManager().isInReplay()) {
 			if (Playback.getManager().isProcessingReplay || Playback.getManager().cameraPlayer.options.getOptions() == MinecraftClient.getInstance().options) {
 				return;
 			}
@@ -56,7 +56,7 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 			Playback.getManager().recording.getCurrentTickInfo().recordKey(KeyAction.ActionType.CHAR, 0, 0, i, j);
 		}
 		//duplicated code from Inject into onKey
-		if(Playback.getManager().isReplaying()) {
+		if(Playback.getManager().isInReplay()) {
 			if (Playback.getManager().isProcessingReplay) {
 				return;
 			}

@@ -19,7 +19,7 @@ public class ClipboardMixin {
 
     @Inject(method = "getClipboard", at = @At(value = "HEAD"), cancellable = true)
     private void getClipboardFromRecording(long window, GLFWErrorCallbackI gLFWErrorCallbackI, CallbackInfoReturnable<String> cir) {
-        if (Playback.getManager().isReplaying() && Playback.getManager().isProcessingReplay)
+        if (Playback.getManager().isInReplay() && Playback.getManager().isProcessingReplay)
             cir.setReturnValue(Playback.getManager().recording.getClipboardNow());
     }
 

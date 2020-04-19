@@ -141,7 +141,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 	@Redirect(method = "lockCursor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/InputUtil;setCursorParameters(JIDD)V"))
 	private void setCursorParameters1(long l, int i, double d, double e) {
-		if (!Playback.getManager().isReplaying()) {
+		if (!Playback.getManager().isInReplay()) {
 			InputUtil.setCursorParameters(l, i, d, e);
 			return;
 		}
@@ -167,7 +167,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 		if (Playback.getManager().isRecording()) {
 			this.latestMouseAction.addScreenPositionData(coord, index);
 			return coord;
-		} else if (Playback.getManager().isReplaying() && Playback.getManager().isProcessingReplay) {
+		} else if (Playback.getManager().isInReplay() && Playback.getManager().isProcessingReplay) {
 			return this.latestMouseAction.getScreenPositionData(index);
 		}
 		return coord;

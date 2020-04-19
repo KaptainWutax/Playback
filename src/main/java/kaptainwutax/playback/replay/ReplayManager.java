@@ -33,7 +33,7 @@ public class ReplayManager {
 	public RenderManager renderManager = new RenderManager();
 
 
-	public boolean isReplaying() {
+	public boolean isInReplay() {
 		return recording != null && this.replayingState == PlaybackState.REPLAYING;
 	}
 
@@ -68,7 +68,7 @@ public class ReplayManager {
 	}
 
 	public void tick(boolean paused) {
-		if(this.isReplaying() && this.isPaused()) return;
+		if(this.isInReplay() && this.isPaused()) return;
 
 		if(this.isRecording()) {
 			this.recording.getCurrentTickInfo().recordDebug();
@@ -86,13 +86,13 @@ public class ReplayManager {
 	}
 
 	public void tickFrame(boolean paused, float tickDelta) {
-		if(!this.isReplaying() || paused) return;
+		if(!this.isInReplay() || paused) return;
 		this.recording.playFrame(this.tickCounter, tickDelta);
 	}
 
 	public boolean isOnlyAcceptingReplayedInputs() {
 		if (this.currentAppliedPlayer == null) {
-			if (this.isReplaying()) {
+			if (this.isInReplay()) {
 				System.out.println("Input permission request with no player frame! Allowing ...");
 			}
 			return false;
@@ -102,7 +102,7 @@ public class ReplayManager {
 
 	public boolean isCurrentlyAcceptingInputs() {
 		if (this.currentAppliedPlayer == null) {
-			if (this.isReplaying()) {
+			if (this.isInReplay()) {
 				System.out.println("Inputs with no player frame! Allowing them...");
 			}
 			return true;

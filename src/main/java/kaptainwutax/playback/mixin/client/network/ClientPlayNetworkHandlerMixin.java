@@ -25,7 +25,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	@Inject(method = "onGameJoin", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V", shift = At.Shift.AFTER), cancellable = true)
 	private void onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
 		ReplayManager manager = Playback.getManager();
-		if (!manager.isReplaying()) {
+		if (!manager.isInReplay()) {
 			manager.startRecording(packet);
 		} else if(!manager.joined) {
 			manager.joined = true;
@@ -46,7 +46,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	 */
 	@Inject(method = "onPlayerRespawn", at = @At("TAIL"))
 	public void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
-		if(Playback.getManager().isReplaying()) {
+		if(Playback.getManager().isInReplay()) {
 			if (Playback.getManager().isProcessingReplay) {
 				//Handling the replayed respawn packet
 				Playback.getManager().replayPlayer.updatePlayerFrameOnRespawnOrDimensionChange(client.player);

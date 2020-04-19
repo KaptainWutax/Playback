@@ -46,7 +46,7 @@ public class RenderManager {
      * Use 0 to play the path for rendering the video, use the (current time - CameraPath.getStartTime) to preview the path.
      */
     public void startPlayingCameraPath(long startTick, float startTickDelta) {
-        if (Playback.getManager().isReplaying()) {
+        if (Playback.getManager().isInReplay()) {
             this.playingCameraPath = exampleCameraPath;
             this.playingCameraPathOffset = startTick;
             this.playingCameraPathOffsetDelta = startTickDelta;
@@ -60,7 +60,7 @@ public class RenderManager {
      * This method should be a replacement for the camera's update code when a camera path is played
      */
     public void updateCameraForCameraPath(long tick, float tickDelta) {
-        if (!Playback.getManager().isReplaying()) return;
+        if (!Playback.getManager().isInReplay()) return;
 
         if (this.playingCameraPath != null && this.playingCameraPath.getStartTime().compareTo(tick, tickDelta) <= 0) {
             if (this.playingCameraPath.getEndTime().compareTo(tick, tickDelta) < 0) {

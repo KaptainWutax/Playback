@@ -70,13 +70,13 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Shadow public abstract float getTickDelta();
 
 	private void applyCameraPlayerIfNecessary() {
-		if(this.world != null && Playback.getManager().isReplaying()) {
+		if(this.world != null && Playback.getManager().isInReplay()) {
 			Playback.getManager().updateView(Playback.getManager().getView(), true);
 		}
 	}
 
 	private void applyReplayPlayerIfNecessary() {
-		if(this.world != null && Playback.getManager().isReplaying()) {
+		if(this.world != null && Playback.getManager().isInReplay()) {
 			if(Playback.getManager().replayPlayer == null) {
 				Playback.getManager().updateView(Playback.getManager().getView(), true);
 			}
@@ -87,7 +87,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private void render(boolean tick, CallbackInfo ci) {
-		if(Playback.getManager().isReplaying() && Playback.getManager().isPaused()) {
+		if(Playback.getManager().isInReplay() && Playback.getManager().isPaused()) {
 			this.paused = true;
 			this.pausedTickDelta = 0;
 		}
@@ -105,7 +105,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		if(this.world != null) {
 			applyReplayPlayerIfNecessary();
 
-			if(Playback.getManager().isReplaying() && Playback.getManager().isPaused()) {
+			if(Playback.getManager().isInReplay() && Playback.getManager().isPaused()) {
 				this.runEndTickLogic();
 				ci.cancel();
 				return;
@@ -141,7 +141,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	protected void runEndTickLogic() {
 		if(this.world != null) {
 			applyCameraPlayerIfNecessary();
-			if (!Playback.getManager().isReplaying()) {
+			if (!Playback.getManager().isInReplay()) {
 				return;
 			}
 
@@ -191,7 +191,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			return;
 		}
 
-		if (Playback.getManager().isReplaying()) {
+		if (Playback.getManager().isInReplay()) {
 			ci.cancel();
 			if (Playback.getManager().cameraPlayer != null) {
 				Playback.getManager().cameraPlayer.setWindowFocus(focused);
@@ -215,14 +215,14 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Inject(method = "openPauseMenu", at = @At("HEAD"), cancellable = true)
 	public void openPauseMenu(CallbackInfo ci) {
-		if(Playback.getManager().isReplaying() && Playback.getManager().isProcessingReplay) {
+		if(Playback.getManager().isInReplay() && Playback.getManager().isProcessingReplay) {
 			//ci.cancel();
 		}
 	}
 
 	@Redirect(method = "doItemUse", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;resetEquipProgress(Lnet/minecraft/util/Hand;)V"))
 	private void resetEquipProgressIfPlayerIsCamera(HeldItemRenderer heldItemRenderer, Hand hand) {
-		if (!Playback.getManager().isReplaying() || (Playback.getManager().getView() == ReplayView.FIRST_PERSON)
+		if (!Playback.getManager().isInReplay() || (Playback.getManager().getView() == ReplayView.FIRST_PERSON)
 				|| ((Playback.getManager().cameraPlayer != null) && (this.player == Playback.getManager().cameraPlayer.getPlayer()))) {
 			heldItemRenderer.resetEquipProgress(hand);
 		}
@@ -230,12 +230,12 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Redirect(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
 	private void noLoadingScreen(MinecraftClient client, Screen screen) {
-		if (!Playback.getManager().isReplaying()) client.openScreen(screen);
+		if (!Playback.getManager().isInReplay()) client.openScreen(screen);
 	}
 
 	@Redirect(method = "reset", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
 	private void noLoadingScreen2(MinecraftClient client, Screen screen) {
-		if (!Playback.getManager().isReplaying()) client.openScreen(screen);
+		if (!Playback.getManager().isInReplay()) client.openScreen(screen);
 	}
 
 	@Override
