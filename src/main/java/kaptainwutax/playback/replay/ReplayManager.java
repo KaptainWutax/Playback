@@ -76,9 +76,7 @@ public class ReplayManager {
 		} else {
 			if(this.tickCounter > this.recording.getEnd()) {
 				if (!this.replayingHasFinished) {
-					//commented as the feature of moving the replay player using user inputs is flawed as long as we also have to redirect the user input
-					//to the camera player to check for switch view keybinding
-					//this.replayingHasFinished = true;
+					this.replayingHasFinished = true;
 					this.replayPlayer.onReplayFinished();
 				}
 			} else {
