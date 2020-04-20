@@ -3,9 +3,9 @@ package kaptainwutax.playback.replay.action;
 import kaptainwutax.playback.Playback;
 import net.minecraft.client.MinecraftClient;
 
-public class LostFocusPauseAction extends Action {
+public class LostFocusPauseScreenAction extends Action {
 
-	public LostFocusPauseAction() {
+	public LostFocusPauseScreenAction() {
 		super(true);
 	}
 

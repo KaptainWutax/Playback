@@ -66,7 +66,11 @@ public class TickCapture implements PlaybackSerializable {
 	}
 
 	public void addLostFocusPauseAction() {
-		this.addAction(new LostFocusPauseAction());
+		this.addAction(new LostFocusPauseScreenAction());
+	}
+
+	public void addPauseChangedAction(boolean paused) {
+		this.addAction(new SetPausedAction(paused));
 	}
 
 	public boolean isEmpty() {
@@ -88,5 +92,4 @@ public class TickCapture implements PlaybackSerializable {
 			this.addAction(Action.readAction(buf));
 		}
 	}
-
 }

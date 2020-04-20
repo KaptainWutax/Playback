@@ -7,6 +7,7 @@ import kaptainwutax.playback.init.KeyBindings;
 import kaptainwutax.playback.replay.PlayerFrame;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.PacketAction;
+import kaptainwutax.playback.replay.action.SetPausedAction;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
@@ -19,6 +20,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Final;
@@ -28,10 +30,15 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import javax.annotation.Nullable;
 
 @Mixin(MinecraftClient.class)
-public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller, PlayerFrame.IClientCaller, PlayGameOptions.IClientCaller {
+public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller, PlayerFrame.IClientCaller, PlayGameOptions.IClientCaller, SetPausedAction.ClientSetPause {
 
 	private Keyboard callbackKeyboard;
 	private Mouse callbackMouse;
@@ -71,6 +78,8 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Shadow public abstract float getTickDelta();
 
+	@Shadow @Nullable private IntegratedServer server;
+
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.getManager().isInReplay()) {
 			Playback.getManager().updateView(Playback.getManager().getView(), true);
@@ -89,7 +98,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private void render(boolean tick, CallbackInfo ci) {
-		if(Playback.getManager().isInReplay() && Playback.getManager().isPaused()) {
+		if(Playback.getManager().isInReplay() && (Playback.getManager().isPaused() || !Playback.getManager().replayingHasFinished && Playback.getManager().recording.isTickPaused())) {
 			this.paused = true;
 			this.pausedTickDelta = 0;
 		}
@@ -101,6 +110,21 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		Playback.getManager().tickFrame(this.paused, this.getTickDelta());
 		applyCameraPlayerIfNecessary();
 	}
+
+	@Inject(method = "isIntegratedServerRunning", at = @At(value = "HEAD"), cancellable = true)
+	private void replayIntegratedServerRunning(CallbackInfoReturnable<Boolean> cir) {
+		if (Playback.getManager().isInReplay()) {
+			cir.setReturnValue(!Playback.getManager().recording.isSinglePlayerRecording() && this.server != null);
+		}
+	}
+
+	@Inject(method = "isInSingleplayer", at = @At(value = "HEAD"), cancellable = true)
+	private void replayIsInSingleplayer(CallbackInfoReturnable<Boolean> cir) {
+		if (Playback.getManager().isInReplay()) {
+			cir.setReturnValue(Playback.getManager().recording.isSinglePlayerRecording());
+		}
+	}
+	//todo check special cases for open to lan
 
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	private void tickStart(CallbackInfo ci) {
@@ -225,7 +249,15 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			}
 		}
 	}
-
+	//Record this.paused changing
+	@Inject(method = "render", slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;isPauseScreen()Z")),
+			at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;paused:Z", ordinal = 1, shift = At.Shift.BEFORE),
+			locals = LocalCapture.CAPTURE_FAILHARD)
+	private void recordPauseChanged(boolean tick, CallbackInfo ci, boolean bl) {
+		if (Playback.getManager().isRecording()) {
+			Playback.getManager().recording.getCurrentTickInfo().recordPauseChanged(bl);
+		}
+	}
 
 
 
@@ -310,5 +342,10 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Override
 	public void setWindowFocusNoInjects(boolean windowFocused) {
 		this.windowFocused = windowFocused;
+	}
+
+	@Override
+	public void setPaused(boolean paused) {
+		this.paused = paused;
 	}
 }

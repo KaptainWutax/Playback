@@ -39,6 +39,7 @@ public class Recording implements AutoCloseable {
 
 	transient protected Set<Integer> currentKeyStates = new HashSet<>(); //todo clear this at recording start etc
 	transient protected String clipboard;
+	transient protected boolean paused;
 
 
 	public static final ThreadLocal<Recording> currentlyReading = new ThreadLocal<>();
@@ -219,6 +220,10 @@ public class Recording implements AutoCloseable {
 		if (randomAccessFile != null) randomAccessFile.close();
 	}
 
+	public void setPaused(boolean paused) {
+		this.paused = paused;
+	}
+
 	public void setKeyState(int key, boolean pressed) {
 		if (pressed) {
 			this.currentKeyStates.add(key);
@@ -240,4 +245,7 @@ public class Recording implements AutoCloseable {
 		this.clipboard = clipboard == null ? "" : clipboard;
 	}
 
+	public boolean isTickPaused() {
+		return this.paused;
+	}
 }

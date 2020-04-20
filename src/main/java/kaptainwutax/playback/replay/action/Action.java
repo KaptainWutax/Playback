@@ -73,7 +73,8 @@ public abstract class Action implements PlaybackSerializable {
 		MOUSE(MouseAction.class),
 		WINDOW_FOCUS(WindowFocusAction.class),
 		CLIPBOARD_READ(ClipboardReadAction.class),
-		LOST_FOCUS_PAUSE(LostFocusPauseAction.class);
+		LOST_FOCUS_PAUSE_SCREEN(LostFocusPauseScreenAction.class),
+		PAUSED_STATE(SetPausedAction.class);
 
 		static final Type[] values = values();
 		private static final Map<Class<?>, Type> classToTypeMap = new HashMap<>();

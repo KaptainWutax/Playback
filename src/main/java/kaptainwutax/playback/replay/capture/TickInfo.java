@@ -107,4 +107,8 @@ public class TickInfo implements PlaybackSerializable {
 	public void recordLostFocusPause() {
 		this.tickCapture.addLostFocusPauseAction();
 	}
+
+	public void recordPauseChanged(boolean paused) {
+		this.tickCapture.addPauseChangedAction(paused);
+	}
 }
