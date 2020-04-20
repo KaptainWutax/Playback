@@ -2,6 +2,7 @@ package kaptainwutax.playback.mixin.client;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
+import kaptainwutax.playback.gui.ReplayHudScreen;
 import kaptainwutax.playback.init.KeyBindings;
 import kaptainwutax.playback.replay.PlayerFrame;
 import kaptainwutax.playback.replay.ReplayView;
@@ -18,6 +19,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -160,6 +162,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 			boolean shouldToggleView = false;
 			boolean shouldTogglePause = false;
+			boolean shouldOpenHudScreen =  false;
 
 			if(KeyBindings.TOGGLE_VIEW.isPressed()) {
 				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {
@@ -173,6 +176,12 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 				}
 			}
 
+			if(KeyBindings.OPEN_REPLAY_HUD.isPressed()) {
+				while(KeyBindings.OPEN_REPLAY_HUD.wasPressed()) {
+					shouldOpenHudScreen = true;
+				}
+			}
+
 			if(Playback.getManager().view == ReplayView.FIRST_PERSON) {
 				Playback.getManager().replayPlayer.options.apply();
 			}
@@ -183,6 +192,14 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 			if(shouldTogglePause) {
 				Playback.getManager().togglePause();
+			}
+
+			//open for the camera player, not replay player
+			if (shouldOpenHudScreen && !Playback.getManager().isOnlyAcceptingReplayedInputs()) {
+				if (MinecraftClient.getInstance().currentScreen instanceof ReplayHudScreen)
+					MinecraftClient.getInstance().openScreen(null);
+				else
+					MinecraftClient.getInstance().openScreen(new ReplayHudScreen(new LiteralText("Replay HUD")));
 			}
 		}
 	}
@@ -208,6 +225,8 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			}
 		}
 	}
+
+
 
 
 	@Override

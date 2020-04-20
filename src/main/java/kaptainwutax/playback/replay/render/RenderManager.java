@@ -1,6 +1,7 @@
 package kaptainwutax.playback.replay.render;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.gui.ReplayHud;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Vec3d;
@@ -13,6 +14,8 @@ public class RenderManager {
 
     private final MinecraftClient client;
     private CameraPath exampleCameraPath;
+
+    public final ReplayHud replayHud;
 
     private Collection<CameraPath> cameraPaths = new ArrayList<>();
     private CameraPath selectedCameraPath;
@@ -32,6 +35,7 @@ public class RenderManager {
         this.playingCameraPath = null;
 
         this.cameraPaths.add(this.exampleCameraPath);
+        this.replayHud = new ReplayHud();
     }
 
     public void saveCameraPaths() {
