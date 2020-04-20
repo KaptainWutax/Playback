@@ -213,22 +213,18 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 	@Override
 	public void execute(MouseAction.ActionType actionType, MouseAction action, double d1, double d2, int i1) {
 		this.latestMouseAction = action;
-		switch (actionType) {
-			case POS:
-				this.onCursorPos(MinecraftClient.getInstance().getWindow().getHandle(), d1, d2);
-				break;
-			case BUTTON:
-				this.onMouseButton(MinecraftClient.getInstance().getWindow().getHandle(), (int) d1, (int) d2, i1);
-				break;
-			case SCROLL:
-				this.onMouseScroll(MinecraftClient.getInstance().getWindow().getHandle(), d1, d2);
-				break;
-			case UPDATE:
-				this.updateMouse();
-				break;
-			case RESOLUTION_CHANGED:
-				this.onResolutionChanged();
-				break;
+		if (actionType == MouseAction.ActionType.POS) {
+			this.onCursorPos(MinecraftClient.getInstance().getWindow().getHandle(), d1, d2);
+		} else if (actionType == MouseAction.ActionType.BUTTON) {
+			this.onMouseButton(MinecraftClient.getInstance().getWindow().getHandle(), (int) d1, (int) d2, i1);
+		} else if (actionType == MouseAction.ActionType.SCROLL) {
+			this.onMouseScroll(MinecraftClient.getInstance().getWindow().getHandle(), d1, d2);
+		} else if (actionType == MouseAction.ActionType.UPDATE) {
+			this.updateMouse();
+		} else if (actionType == MouseAction.ActionType.RESOLUTION_CHANGED) {
+			this.onResolutionChanged();
+		} else {
+			throw new IllegalStateException("Unexpected value: " + actionType);
 		}
 		this.latestMouseAction = null;
 	}
