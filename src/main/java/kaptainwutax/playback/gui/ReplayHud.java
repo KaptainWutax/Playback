@@ -11,7 +11,9 @@ import net.minecraft.text.LiteralText;
  */
 public class ReplayHud {
 
-    private ReplayHudScreen replayHudScreen;
+    //Store the state in ReplayHud and not ReplayHudScreen
+    //This replay hud screen is only one of several instances, opening a ReplayHudScreen will create a new one!
+    private final ReplayHudScreen replayHudScreen;
 
     public ReplayHud() {
         this.replayHudScreen = new ReplayHudScreen(new LiteralText("Replay HUD"));
@@ -20,7 +22,8 @@ public class ReplayHud {
 
     public void renderReplayHud(InGameHud caller, float tickDelta) {
         MinecraftClient client = MinecraftClient.getInstance();
-        if (Playback.getManager().isInReplay() && !client.options.hudHidden) {
+        //                      don't render when another replay hud screen is already visible
+        if (this.isVisible() && !(MinecraftClient.getInstance().currentScreen instanceof ReplayHudScreen)) {
             Mouse mouse = Playback.getManager().cameraPlayer.mouse;
             double x = mouse.getX() * (double)client.getWindow().getScaledWidth() / (double)client.getWindow().getWidth();
             double y = mouse.getY() * (double)client.getWindow().getScaledHeight() / (double)client.getWindow().getHeight();
