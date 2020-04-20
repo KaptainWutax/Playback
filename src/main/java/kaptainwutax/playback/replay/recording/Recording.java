@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.DoubleConsumer;
 
 public class Recording implements AutoCloseable {
-	public static final int FORMAT_VERSION = 10;
+	public static final int FORMAT_VERSION = 11;
 	private static final int HEADER_SIZE = 16;
 
 	protected StartState startState = new StartState();
