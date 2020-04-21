@@ -223,7 +223,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 				if (MinecraftClient.getInstance().currentScreen instanceof ReplayHudScreen)
 					MinecraftClient.getInstance().openScreen(null);
 				else
-					MinecraftClient.getInstance().openScreen(new ReplayHudScreen(new LiteralText("Replay HUD")));
+					MinecraftClient.getInstance().openScreen(Playback.getManager().renderManager.replayHud.getScreen());
 			}
 		}
 	}

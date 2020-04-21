@@ -17,6 +17,7 @@
     "client.MinecraftClientMixin",
     "client.MouseMixin",
     "client.gui.hud.InGameHudMixin",
+    "client.gui.MinecraftClientMixin",
     "client.gui.screen.TitleScreenMixin",
     "client.input.KeyboardInputMixin",
     "client.network.ClientPlayerEntityMixin",

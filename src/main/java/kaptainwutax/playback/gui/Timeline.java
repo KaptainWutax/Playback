@@ -22,8 +22,9 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	public void render(int mouseX, int mouseY, float delta) {
 		int xAdd = this.width / 2;
 		int yAdd = this.height / 2;
-		this.fillGradient(this.y - yAdd,this.x - xAdd, this.x + xAdd, this.y + yAdd, -2130706433, -2130706433);
-		//this.fillGradient(0, 0, 100, 200, -2130706433, -2130706433);
+
+		//Parameters have the wrong name in fillGradient: order is LEFT,TOP,RIGHT,BOTTOM
+		this.fillGradient(this.x - xAdd, this.y - yAdd, this.x + xAdd, this.y + yAdd, -2130706433, -2130706433);
 	}
 
 	private void onClick(double mouseX, double mouseY) {
