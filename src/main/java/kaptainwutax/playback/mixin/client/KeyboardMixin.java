@@ -33,17 +33,18 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 			if (Playback.getManager().isProcessingReplay || Playback.getManager().cameraPlayer.options.getOptions() == MinecraftClient.getInstance().options) {
 				return;
 			}
-			//user input, so send to camera player (e.g. toggle replay)
-            Playback.getManager().cameraPlayer.apply(false);
+			//user input but replayPlayer applied
+			if (Playback.getManager().currentAppliedPlayer == Playback.getManager().replayPlayer) {
+				//user input, so send to camera player (e.g. toggle replay)
+				//moving this into the !replayingHasFinished would be desireable but this would break switching to the camera player,
+				//as only the camera player has the custom hotkeys
+				Playback.getManager().cameraPlayer.apply(false);
+				Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
+				Playback.getManager().replayPlayer.apply(false);
 
-            Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
-
-            if(Playback.getManager().view == ReplayView.FIRST_PERSON) {
-                Playback.getManager().replayPlayer.apply(false);
-            }
-			//user input, not allowed to reach replayPlayer
-			if (Playback.getManager().currentAppliedPlayer == Playback.getManager().replayPlayer && !Playback.getManager().replayingHasFinished) {
-				ci.cancel();
+				if (!Playback.getManager().replayingHasFinished) {
+					ci.cancel();
+				}
 			}
 		}
 	}
