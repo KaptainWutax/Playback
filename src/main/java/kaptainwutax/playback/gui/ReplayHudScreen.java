@@ -27,16 +27,16 @@ public class ReplayHudScreen extends Screen {
     protected void init() {
         super.init();
         this.drawables.clear();
-        this.drawables.add(this.timeline = new Timeline(this.width / 2, 40, this.width / 2, this.height/6));
-        this.addButton(new ButtonWidget(10, 10, 100, 20, "ButtonTest", b -> {
+        this.drawables.add(this.timeline = new Timeline((int)(this.width * 0.0125f), (int)(this.height * 0.025f), (int)(this.width * 0.975f), this.height/6));
+        this.addButton(new ButtonWidget(10, 10, this.width / 5, 20, "ButtonTest", b -> {
             System.out.println("Button Test!");
         }));
     }
 
     @Override
     public void render(int mouseX, int mouseY, float delta) {
-        super.render(mouseX, mouseY, delta);
         this.drawables.forEach(e -> e.render(mouseX, mouseY, delta));
+        super.render(mouseX, mouseY, delta);
         //Parameters have the wrong name in fillGradient: order is LEFT,TOP,RIGHT,BOTTOM
         //top left corner
         this.fillGradient(0, 0, 20, 20, 0x8000ffff, 0x80ff00ff);
