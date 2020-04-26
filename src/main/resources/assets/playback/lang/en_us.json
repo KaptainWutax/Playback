@@ -1,4 +1,7 @@
 {
   "key.categories.playback": "Playback",
-  "key.playback.toggle_view": "Toggle View"
+  "key.playback.toggle_view": "Toggle View",
+  "key.playback.toggle_pause": "Toggle Pause",
+  "key.playback.open_replay_hud": "Open Replay HUD",
+  "key.playback.play_camera_path": "Play Camera Path"
 }

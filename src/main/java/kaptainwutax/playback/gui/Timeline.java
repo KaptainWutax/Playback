@@ -22,10 +22,9 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	private static int TEXTURE_Y_OFFSET = 46;
 	public static int TEXTURE_HEIGHT = 20;
 
-	private static Identifier KEYFRAME_TEXTURE = new Identifier("playback","textures/hud/keyframe.png");
+	private static Identifier KEYFRAME_TEXTURE = Playback.createIdentifier("textures/hud/keyframe.png");
 	private static int KEYFRAME_TEXTURE_SIZE_X = 7;
 	private static int KEYFRAME_TEXTURE_SIZE_Y = 7;
-
 
 	protected int x;
 	protected int y;

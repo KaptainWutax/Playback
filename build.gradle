@@ -23,6 +23,7 @@ dependencies {
 	// We just need the keybindings
 	modCompile "net.fabricmc.fabric-api:fabric-api-base:${project.fabric_api_base_version}"
 	modCompile "net.fabricmc.fabric-api:fabric-keybindings-v0:${project.fabric_keybindings_v0_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
 
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 }
