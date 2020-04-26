@@ -8,6 +8,7 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 
 public class RenderManager {
     private static final int TPS = 20;
@@ -24,18 +25,23 @@ public class RenderManager {
     //Offset is supposed to be used when playing the path as a preview without caring about n, not when rendering the video
     private long playingCameraPathOffset;
     private float playingCameraPathOffsetDelta;
+    protected Random random;
 
     public RenderManager() {
         this.client = MinecraftClient.getInstance();
         this.cameraPaths = new ArrayList<>();
         this.exampleCameraPath = new KeyFrameCameraPath().add(
                 new KeyFrame(0, 70, 0, 0, 80, -45, 0, 0)).add(
-                new KeyFrame(30, 70, 0, 0, 50, 45, 100, 0.3f));
+                new KeyFrame(30, 70, 0, 0, 50, 45, 100, 0.3f)).add(
+                new KeyFrame(45, 90, 0, 0, 0, 45, 150, 0.3f));
         this.selectedCameraPath = this.exampleCameraPath;
         this.playingCameraPath = null;
 
         this.cameraPaths.add(this.exampleCameraPath);
         this.replayHud = new ReplayHud();
+
+        this.random = new Random();
+
     }
 
     public void saveCameraPaths() {
@@ -43,6 +49,10 @@ public class RenderManager {
     }
     public void loadCameraPaths() {
 
+    }
+
+    public Collection<CameraPath> getCameraPaths() {
+        return this.cameraPaths;
     }
 
     /**

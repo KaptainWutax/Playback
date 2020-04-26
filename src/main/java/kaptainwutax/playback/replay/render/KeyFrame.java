@@ -24,6 +24,10 @@ public class KeyFrame {
         return new GameTimeStamp(this.tick, this.tickDelta);
     }
 
+    public double getTimeStampAsDouble() {
+        return (double)this.tick + this.tickDelta;
+    }
+
     public Vec3d getPositionVec() {
         return new Vec3d(x,y,z);
     }

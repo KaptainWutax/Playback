@@ -27,10 +27,10 @@ public class ReplayHudScreen extends Screen {
     protected void init() {
         super.init();
         this.drawables.clear();
-        this.drawables.add(this.timeline = new Timeline((int)(this.width * 0.0125f), (int)(this.height * 0.025f), (int)(this.width * 0.975f), this.height/6));
-        this.addButton(new ButtonWidget(10, 10, this.width / 5, 20, "ButtonTest", b -> {
-            System.out.println("Button Test!");
-        }));
+        this.drawables.add(this.timeline = new Timeline((int)(this.width * 0.0125f), (int)(this.height * 0.025f), (int)(this.width * 0.975f), Timeline.TEXTURE_HEIGHT));
+//        this.addButton(new ButtonWidget(10, 10, this.width / 5, 20, "ButtonTest", b -> {
+//            System.out.println("Button Test!");
+//        }));
     }
 
     @Override
@@ -39,9 +39,9 @@ public class ReplayHudScreen extends Screen {
         super.render(mouseX, mouseY, delta);
         //Parameters have the wrong name in fillGradient: order is LEFT,TOP,RIGHT,BOTTOM
         //top left corner
-        this.fillGradient(0, 0, 20, 20, 0x8000ffff, 0x80ff00ff);
+        //this.fillGradient(0, 0, 20, 20, 0x8000ffff, 0x80ff00ff);
         //bottom right corner
-        this.fillGradient(this.width-20, this.height-20, this.width, this.height, 0x800000ff, 0x80ff00ff);
+        //this.fillGradient(this.width-20, this.height-20, this.width, this.height, 0x800000ff, 0x80ff00ff);
     }
 
     public boolean isPauseScreen() {

@@ -1,5 +1,6 @@
 package kaptainwutax.playback.replay.render;
 
+import kaptainwutax.playback.gui.Timeline;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -74,6 +75,10 @@ public class KeyFrameCameraPath implements CameraPath {
     @Override
     public GameTimeStamp getEndTime() {
         return this.keyFrames.isEmpty() ? null : this.keyFrames.get(this.keyFrames.size()-1).getTimeStamp();
+    }
+
+    public List<KeyFrame> getKeyFrames() {
+        return keyFrames;
     }
 
     private int getLowerIndexForTimestamp(long tick, float tickDelta) {

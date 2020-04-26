@@ -10,5 +10,4 @@ public interface CameraPath {
 
     GameTimeStamp getStartTime();
     GameTimeStamp getEndTime();
-
 }

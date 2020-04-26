@@ -1,16 +1,26 @@
 package kaptainwutax.playback.replay.render;
 
 public class GameTimeStamp implements Comparable<GameTimeStamp>{
-    final long tick;
-    final float tickDelta;
+    public final long tick;
+    public final float tickDelta;
     public GameTimeStamp(long tick, float tickDelta) {
         this.tick = tick;
         this.tickDelta = tickDelta;
     }
 
+    public boolean isBefore(GameTimeStamp other) {
+        return other == null ? false : this.compareTo(other) < 0;
+    }
+    public boolean isAfter(GameTimeStamp other) {
+        return other == null ? false : this.compareTo(other) > 0;
+    }
 
     public int compareTo(GameTimeStamp other) {
         return compareTo(this.tick, this.tickDelta, other.tick, other.tickDelta);
+    }
+
+    public double asDouble() {
+        return (double)this.tick + this.tickDelta;
     }
 
     /**
