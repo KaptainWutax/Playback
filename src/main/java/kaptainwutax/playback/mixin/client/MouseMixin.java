@@ -174,35 +174,35 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 		}
 		return coord;
 	}
-	@ModifyVariable(method = "onMouseButton", name = "d", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 0, shift = At.Shift.BY, by = 3))
+	@ModifyVariable(ordinal = 0, method = "onMouseButton"/*, name = "d"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 0, shift = At.Shift.BY, by = 4))
 	private double recordOrReplayScreenCoordinateButton_d(double d) {
 		return recordOrReplayScreenCoordinate(d, 0);
 	}
-	@ModifyVariable(method = "onMouseButton", name = "e", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 0, shift = At.Shift.BY, by = 3))
+	@ModifyVariable(ordinal = 1, method = "onMouseButton"/*, name = "e"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 0, shift = At.Shift.BY, by = 4))
 	private double recordOrReplayScreenCoordinateButton_e(double e) {
 		return recordOrReplayScreenCoordinate(e, 1);
 	}
-	@ModifyVariable(method = "onMouseScroll", name = "g", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 0, shift = At.Shift.BY, by = 3))
+	@ModifyVariable(ordinal = 3, method = "onMouseScroll"/*, name = "g"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 0, shift = At.Shift.BY, by = 4))
 	private double recordOrReplayScreenCoordinateScroll_g(double g) {
 		return recordOrReplayScreenCoordinate(g, 0);
 	}
-	@ModifyVariable(method = "onMouseScroll", name = "h", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 0, shift = At.Shift.BY, by = 3))
+	@ModifyVariable(ordinal = 4, method = "onMouseScroll"/*, name = "h"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 0, shift = At.Shift.BY, by = 4))
 	private double recordOrReplayScreenCoordinateScroll_h(double h) {
 		return recordOrReplayScreenCoordinate(h, 1);
 	}
-	@ModifyVariable(method = "onCursorPos", name = "d", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 0, shift = At.Shift.BY, by = 3))
+	@ModifyVariable(ordinal = 2, method = "onCursorPos"/*, name = "d"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 0, shift = At.Shift.BY, by = 4))
 	private double recordOrReplayScreenCoordinatePos_d(double d) {
 		return recordOrReplayScreenCoordinate(d, 0);
 	}
-	@ModifyVariable(method = "onCursorPos", name = "e", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 0, shift = At.Shift.BY, by = 3))
+	@ModifyVariable(ordinal = 3, method = "onCursorPos"/*, name = "e"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 0, shift = At.Shift.BY, by = 4))
 	private double recordOrReplayScreenCoordinatePos_e(double e) {
 		return recordOrReplayScreenCoordinate(e, 1);
 	}
-	@ModifyVariable(method = "onCursorPos", name = "f", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 1, shift = At.Shift.BY, by = 3))
+	@ModifyVariable(ordinal = 4, method = "onCursorPos"/*, name = "f"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 1, shift = At.Shift.BY, by = 4))
 	private double recordOrReplayScreenCoordinatePos_f(double f) {
 		return recordOrReplayScreenCoordinate(f, 2);
 	}
-	@ModifyVariable(method = "onCursorPos", name = "g", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 1, shift = At.Shift.BY, by = 3))
+	@ModifyVariable(ordinal = 5, method = "onCursorPos"/*, name = "g"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 1, shift = At.Shift.BY, by = 4))
 	private double recordOrReplayScreenCoordinatePos_g(double g) {
 		return recordOrReplayScreenCoordinate(g, 3);
 	}
