@@ -15,6 +15,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -74,7 +75,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 
 
 		this.blit(this.x - 1, this.y + 2, 0,
-				TEXTURE_HEIGHT + 2, (int)(TEXTURE_WIDTH * Playback.getManager().recording.currentTick / this.duration), TEXTURE_HEIGHT);
+				TEXTURE_HEIGHT + 2, (int)(TEXTURE_WIDTH * MathHelper.clamp(Playback.getManager().recording.currentTick / this.duration, 0, 1)), TEXTURE_HEIGHT);
 		
 		Collection<CameraPath> paths = Playback.getManager().renderManager.getCameraPaths();
 		for (CameraPath path : paths) {

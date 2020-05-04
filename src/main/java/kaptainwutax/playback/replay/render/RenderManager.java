@@ -76,6 +76,11 @@ public class RenderManager {
     public void updateCameraForCameraPath(long tick, float tickDelta) {
         if (!Playback.getManager().isInReplay()) return;
 
+        float sumTickDelta = (tickDelta - this.playingCameraPathOffsetDelta) % 1;
+        if (sumTickDelta < 0) sumTickDelta += 1;
+        tick -= this.playingCameraPathOffset + (long)(tickDelta - this.playingCameraPathOffsetDelta);
+        tickDelta = sumTickDelta;
+
         if (this.playingCameraPath != null && this.playingCameraPath.getStartTime().compareTo(tick, tickDelta) <= 0) {
             if (this.playingCameraPath.getEndTime().compareTo(tick, tickDelta) < 0) {
                 this.playingCameraPath = null;

@@ -77,6 +77,7 @@ public class ReplayManager {
 					this.replayingHasFinished = true;
 					this.replayPlayer.onReplayFinished();
 				}
+				this.tickCounter++;
 			} else {
 				this.recording.playTick(this.tickCounter++);
 			}

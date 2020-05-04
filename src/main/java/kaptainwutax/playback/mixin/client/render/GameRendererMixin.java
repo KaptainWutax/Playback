@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GameRendererMixin {
     @Inject(method = "renderWorld", at = @At(value ="INVOKE", target = "Lnet/minecraft/client/render/Camera;update(Lnet/minecraft/world/BlockView;Lnet/minecraft/entity/Entity;ZZF)V", shift = At.Shift.AFTER))
     private void updateCameraPath(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
-        Playback.getManager().renderManager.updateCameraForCameraPath(Playback.getManager().recording.currentTick, tickDelta);
+        Playback.getManager().renderManager.updateCameraForCameraPath(Playback.getManager().tickCounter, tickDelta);
     }
 
     //Fix pauseOnLostFocus messing up the replay player by not being played or having different timing
