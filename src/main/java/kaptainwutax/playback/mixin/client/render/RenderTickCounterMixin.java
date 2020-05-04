@@ -1,8 +1,11 @@
 package kaptainwutax.playback.mixin.client.render;
 
+import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.render.RenderManager;
 import net.minecraft.client.render.RenderTickCounter;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,6 +18,8 @@ public class RenderTickCounterMixin implements RenderManager.ISetForcedFrameRate
     @Shadow private long prevTimeMillis;
     @Shadow public int ticksThisFrame;
 
+    @Mutable
+    @Shadow @Final private float tickTime;
     private boolean useFixedFramerate;
     private float fixedTicksPerFrame;
 
@@ -28,12 +33,13 @@ public class RenderTickCounterMixin implements RenderManager.ISetForcedFrameRate
 
     @Inject(method = "beginRenderTick", at = @At("HEAD"), cancellable = true)
     private void adjustForFixedFramerate(long timeMillis, CallbackInfo ci) {
-        if (!this.useFixedFramerate) return;
-        ci.cancel();
-        this.lastFrameDuration = this.fixedTicksPerFrame;
-        this.prevTimeMillis = timeMillis;
-        this.tickDelta += this.lastFrameDuration;
-        this.ticksThisFrame = (int)this.tickDelta;
-        this.tickDelta -= (float)this.ticksThisFrame;
+        if(this.useFixedFramerate) { //Video rendering.
+            this.lastFrameDuration = this.fixedTicksPerFrame;
+            this.prevTimeMillis = timeMillis;
+            this.tickDelta += this.lastFrameDuration;
+            this.ticksThisFrame = (int) this.tickDelta;
+            this.tickDelta -= (float) this.ticksThisFrame;
+            ci.cancel();
+        }
     }
 }

@@ -181,7 +181,8 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			if(Playback.getManager().getView() == ReplayView.THIRD_PERSON) {
 				this.world.tickEntity(Playback.getManager().cameraPlayer.getPlayer());
 			}
-			//todo why is swapping here necessary
+
+			//Swapping is required here so it queries the camera player's keys.
 			Playback.getManager().cameraPlayer.options.apply();
 
 			boolean shouldToggleView = false;

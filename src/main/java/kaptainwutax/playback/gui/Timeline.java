@@ -10,17 +10,26 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class Timeline extends DrawableHelper implements Drawable, Element {
 
 	//some random texture until we have our own or a better one
-	private static Identifier TEXTURE = new Identifier("textures/gui/widgets.png");
-	private static int TEXTURE_Y_OFFSET = 46;
+	private static Identifier TEXTURE = Playback.createIdentifier("textures/hud/timeline.png");
+	private static int TEXTURE_Y_OFFSET = 0;
 	public static int TEXTURE_HEIGHT = 20;
+	public static int TEXTURE_WIDTH = 254;
 
 	private static Identifier KEYFRAME_TEXTURE = Playback.createIdentifier("textures/hud/keyframe.png");
 	private static int KEYFRAME_TEXTURE_SIZE_X = 7;
@@ -38,8 +47,8 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	public Timeline(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
-		this.width = width;
-		this.height = height;
+		this.width = TEXTURE_WIDTH;
+		this.height = TEXTURE_HEIGHT;
 	}
 
 	public void init() {
@@ -61,14 +70,19 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 		//BlitOffset is a z value, more positive renders on top
 		this.setBlitOffset(-10);
 		//args: on screen x1 (left), on screen y1 (top), in texture x1, in texture y1, width Dx, height Dy
-		this.blit(this.x, this.y, 0, TEXTURE_Y_OFFSET, this.width, this.height);
+		this.blit(this.x, this.y, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
+
+		this.blit(this.x - 1, this.y + 2, 0,
+				TEXTURE_HEIGHT + 2, (int)(TEXTURE_WIDTH * Playback.getManager().recording.currentTick / this.duration), TEXTURE_HEIGHT);
+		
 		Collection<CameraPath> paths = Playback.getManager().renderManager.getCameraPaths();
 		for (CameraPath path : paths) {
 			if(this.endTime.isAfter(path.getStartTime()) && this.startTime.isBefore(path.getEndTime())) {
-				this.renderCameraPathBox(path);
-				if (path instanceof KeyFrameCameraPath)
-					this.renderCameraPathKeyFrames((KeyFrameCameraPath) path);
+				//this.renderCameraPathBox(path);
+				if (path instanceof KeyFrameCameraPath) {
+					//this.renderCameraPathKeyFrames((KeyFrameCameraPath) path);
+				}
 			}
 		}
 
@@ -79,7 +93,22 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 		//int yAdd = this.height / 2;
 		//Parameters have the wrong name in fillGradient: order is LEFT,TOP,RIGHT,BOTTOM
 		//this.fillGradient(this.x - xAdd, this.y - yAdd, this.x + xAdd, this.y + yAdd, -2130706433, -2130706433);
+
+		if(this.isInBoundsOf(mouseX, mouseY)) {
+			DateFormat format = new SimpleDateFormat("mm:ss.SS");
+			int tick = (int)((mouseX - this.x) / (double)this.width * this.duration);
+
+			Date date = new Date(tick * 50 - (1000 * 60 * 60 * 19));
+			String time = format.format(date);
+
+			date = new Date(Math.abs(tick - Playback.getManager().tickCounter) * 50 - (1000 * 60 * 60 * 19));
+			String addend = format.format(date);
+
+			this.renderTooltip(mouseX, mouseY, time + "  "
+					+ (tick < Playback.getManager().tickCounter ? "-" : "+") + addend);
+		}
 	}
+
 
 	private void renderCameraPathKeyFrames(KeyFrameCameraPath path) {
 		MinecraftClient.getInstance().getTextureManager().bindTexture(KEYFRAME_TEXTURE);
@@ -104,7 +133,8 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	}
 
 	private void onLeftClick(double mouseX, double mouseY) {
-
+		int tick = (int)((mouseX - this.x) / (double)this.width * this.duration);
+		MinecraftClient.getInstance().execute(() -> Playback.getManager().recording.playUpTo(Playback.getManager().tickCounter, tick));
 	}
 
 	@Override
@@ -120,7 +150,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	}
 
 	private boolean isInBoundsOf(double mouseX, double mouseY) {
-		return mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+		return mouseX > this.x && mouseY > this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 	}
 
 	public GameTimeStamp getStartTime() {
@@ -146,4 +176,71 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	public int getY() {
 		return y;
 	}
+
+	public void renderTooltip(int x, int y, String... text) {
+		if (text.length != 0) {
+			RenderSystem.disableRescaleNormal();
+			RenderSystem.disableDepthTest();
+			int i = 0;
+
+			for(String s : text) {
+				int j = MinecraftClient.getInstance().textRenderer.getStringWidth(s);
+				if (j > i) {
+					i = j;
+				}
+			}
+
+			int k = x + 12;
+			int l = y - 12;
+			int n = 8;
+			if (text.length > 1) {
+				n += 2 + (text.length - 1) * 10;
+			}
+
+			if (k + i > this.width) {
+				k -= 28 + i;
+			}
+
+			if (l + n + 6 > this.height) {
+				l = this.height - n - 6;
+			}
+
+			this.setBlitOffset(300);
+
+			int o = -267386864;
+			this.fillGradient(k - 3, l - 4, k + i + 3, l - 3, -267386864, -267386864);
+			this.fillGradient(k - 3, l + n + 3, k + i + 3, l + n + 4, -267386864, -267386864);
+			this.fillGradient(k - 3, l - 3, k + i + 3, l + n + 3, -267386864, -267386864);
+			this.fillGradient(k - 4, l - 3, k - 3, l + n + 3, -267386864, -267386864);
+			this.fillGradient(k + i + 3, l - 3, k + i + 4, l + n + 3, -267386864, -267386864);
+			int p = 1347420415;
+			int q = 1344798847;
+			this.fillGradient(k - 3, l - 3 + 1, k - 3 + 1, l + n + 3 - 1, 1347420415, 1344798847);
+			this.fillGradient(k + i + 2, l - 3 + 1, k + i + 3, l + n + 3 - 1, 1347420415, 1344798847);
+			this.fillGradient(k - 3, l - 3, k + i + 3, l - 3 + 1, 1347420415, 1347420415);
+			this.fillGradient(k - 3, l + n + 2, k + i + 3, l + n + 3, 1344798847, 1344798847);
+			MatrixStack matrixStack = new MatrixStack();
+			VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+			Matrix4f matrix4f = matrixStack.peek().getModel();
+
+			for(int r = 0; r < text.length; ++r) {
+				String string2 = text[r];
+				if (string2 != null) {
+					MinecraftClient.getInstance().textRenderer.draw(string2, (float)k, (float)l, -1, true, matrix4f, immediate, false, 0, 15728880);
+				}
+
+				if (r == 0) {
+					l += 2;
+				}
+
+				l += 10;
+			}
+
+			immediate.draw();
+			this.setBlitOffset(0);
+			RenderSystem.enableDepthTest();
+			RenderSystem.enableRescaleNormal();
+		}
+	}
+
 }

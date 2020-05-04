@@ -29,9 +29,7 @@ public class ReplayManager {
 	public boolean joined;
 	private boolean paused;
 
-
 	public RenderManager renderManager = new RenderManager();
-
 
 	public boolean isInReplay() {
 		return recording != null && this.replayingState == PlaybackState.REPLAYING;
@@ -43,7 +41,7 @@ public class ReplayManager {
 
 	public boolean isOrWasReplaying() {
 		//todo what is this method supposed to do, why is ignoring recording == null required?
-		return this.replayingState  == PlaybackState.REPLAYING;
+		return this.replayingState == PlaybackState.REPLAYING;
 	}
 
 	public boolean isPaused() {

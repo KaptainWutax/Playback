@@ -3,9 +3,11 @@ package kaptainwutax.playback.replay.recording;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.capture.StartState;
 import kaptainwutax.playback.replay.capture.TickInfo;
 import kaptainwutax.playback.util.SerializationUtil;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -248,4 +250,21 @@ public class Recording implements AutoCloseable {
 	public boolean isTickPaused() {
 		return this.paused;
 	}
+
+	public void playUpTo(long tickCounter, int tick) {
+		if(tick > tickCounter) {
+			if(Playback.getManager().isPaused()) {
+				Playback.getManager().togglePause();
+			}
+
+			for(; tickCounter < tick; tickCounter++) {
+				MinecraftClient.getInstance().tick();
+			}
+
+			Playback.getManager().togglePause();
+		}
+
+		System.out.println("die");
+	}
+
 }
