@@ -31,8 +31,8 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	private static int TEXTURE_Y_OFFSET = 0;
 	public static int TEXTURE_HEIGHT = 20;
 	public static int TEXTURE_WIDTH = 254;
+	public static int BORDER_HEIGHT = 2;
 
-	private static Identifier KEYFRAME_TEXTURE = Playback.createIdentifier("textures/hud/keyframe.png");
 	private static int KEYFRAME_TEXTURE_SIZE_X = 7;
 	private static int KEYFRAME_TEXTURE_SIZE_Y = 7;
 
@@ -82,9 +82,14 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 			if(this.endTime.isAfter(path.getStartTime()) && this.startTime.isBefore(path.getEndTime())) {
 				//this.renderCameraPathBox(path);
 				if (path instanceof KeyFrameCameraPath) {
-					//this.renderCameraPathKeyFrames((KeyFrameCameraPath) path);
+					this.renderCameraPathKeyFrames((KeyFrameCameraPath) path);
 				}
 			}
+		}
+		//camera path progress
+		if (Playback.getManager().renderManager.getCameraPathProgress() >= 0) {
+			int x1 = (int)(this.width * Playback.getManager().renderManager.getCameraPathProgress() / this.duration);
+			this.blit(this.x + x1 - 1, this.y + BORDER_HEIGHT, 0, 64, 3, TEXTURE_HEIGHT);
 		}
 
 		this.setBlitOffset(prevBlitOffset);
@@ -102,23 +107,20 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 			Date date = new Date(tick * 50 - (1000 * 60 * 60 * 19));
 			String time = format.format(date);
 
-			date = new Date(Math.abs(tick - Playback.getManager().tickCounter) * 50 - (1000 * 60 * 60 * 19));
+			date = new Date(Math.abs(tick - Playback.getManager().recording.currentTick) * 50 - (1000 * 60 * 60 * 19));
 			String addend = format.format(date);
 
 			this.renderTooltip(mouseX, mouseY, time + "  "
-					+ (tick < Playback.getManager().tickCounter ? "-" : "+") + addend);
+					+ (tick < Playback.getManager().recording.currentTick ? "-" : "+") + addend);
 		}
 	}
 
 
 	private void renderCameraPathKeyFrames(KeyFrameCameraPath path) {
-		MinecraftClient.getInstance().getTextureManager().bindTexture(KEYFRAME_TEXTURE);
-		this.setBlitOffset(-8);
-
 		List<KeyFrame> keyFrames = path.getKeyFrames();
 		for (KeyFrame keyFrame : keyFrames) {
 			int x1 = this.x + (int)(this.width * keyFrame.getTimeStampAsDouble() / this.duration);
-			this.blit(x1 - KEYFRAME_TEXTURE_SIZE_X / 2, this.y + this.height / 2 - KEYFRAME_TEXTURE_SIZE_Y / 2, 0, 0, KEYFRAME_TEXTURE_SIZE_X, KEYFRAME_TEXTURE_SIZE_Y);
+			this.blit(x1 - KEYFRAME_TEXTURE_SIZE_X / 2, this.y + this.height / 2 - KEYFRAME_TEXTURE_SIZE_Y / 2, 0, 56, KEYFRAME_TEXTURE_SIZE_X, KEYFRAME_TEXTURE_SIZE_Y);
 		}
 	}
 
@@ -135,7 +137,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 
 	private void onLeftClick(double mouseX, double mouseY) {
 		int tick = (int)((mouseX - this.x) / (double)this.width * this.duration);
-		MinecraftClient.getInstance().execute(() -> Playback.getManager().recording.playUpTo(Playback.getManager().tickCounter, tick));
+		MinecraftClient.getInstance().execute(() -> Playback.getManager().recording.playUpTo(Playback.getManager().recording.currentTick, tick));
 	}
 
 	@Override

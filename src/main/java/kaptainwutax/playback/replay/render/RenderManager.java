@@ -26,6 +26,7 @@ public class RenderManager {
     private long playingCameraPathOffset;
     private float playingCameraPathOffsetDelta;
     protected Random random;
+    private double cameraPathProgress;
 
     public RenderManager() {
         this.client = MinecraftClient.getInstance();
@@ -61,12 +62,24 @@ public class RenderManager {
      */
     public void startPlayingCameraPath(long startTick, float startTickDelta) {
         if (Playback.getManager().isInReplay()) {
+            if (this.playingCameraPath != null) {
+                this.playingCameraPath = null;
+                this.playingCameraPathOffset = 0;
+                this.playingCameraPathOffsetDelta = 0;
+                return;
+            }
+
             this.playingCameraPath = exampleCameraPath;
             this.playingCameraPathOffset = startTick;
             this.playingCameraPathOffsetDelta = startTickDelta;
         } else {
             throw new IllegalStateException("Only start playing camera paths while replaying!");
         }
+    }
+
+    public double getCameraPathProgress() {
+        if (!Playback.getManager().isInReplay()) return -1D;
+        return this.cameraPathProgress;
     }
 
     /**
@@ -84,11 +97,15 @@ public class RenderManager {
         if (this.playingCameraPath != null && this.playingCameraPath.getStartTime().compareTo(tick, tickDelta) <= 0) {
             if (this.playingCameraPath.getEndTime().compareTo(tick, tickDelta) < 0) {
                 this.playingCameraPath = null;
+                this.cameraPathProgress = -1D;
             } else {
+                this.cameraPathProgress = tick + (double)tickDelta;
                 this.adjustCameraPositionAndRotation(this.playingCameraPath.getCameraPositionAtTime(tick,tickDelta),
                         this.playingCameraPath.getCameraRotationAtTime(tick,tickDelta));
                 return;
             }
+        } else {
+            this.cameraPathProgress = -1D;
         }
     }
 

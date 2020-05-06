@@ -85,7 +85,7 @@ public class ReplayManager {
 	}
 
 	public void tickFrame(boolean paused, float tickDelta) {
-		if(!this.isInReplay() || paused) return;
+		if(!this.isInReplay() || paused || this.replayingHasFinished) return;
 		this.recording.playFrame(this.tickCounter, tickDelta);
 	}
 

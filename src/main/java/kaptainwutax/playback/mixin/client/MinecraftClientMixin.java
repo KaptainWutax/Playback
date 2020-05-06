@@ -227,7 +227,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			}
 
 			if(shouldPlayCameraPath) {
-				Playback.getManager().renderManager.startPlayingCameraPath(Playback.getManager().recording.currentTick, MinecraftClient.getInstance().getTickDelta());
+				Playback.getManager().renderManager.startPlayingCameraPath(Playback.getManager().tickCounter, MinecraftClient.getInstance().getTickDelta());
 			}
 
 			//open only when player is under user control
