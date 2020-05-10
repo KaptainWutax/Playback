@@ -3,8 +3,10 @@ package kaptainwutax.playback.replay;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.replay.render.RenderManager;
+import kaptainwutax.playback.replay.render.ReplayCamera;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.Camera;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
@@ -85,6 +87,12 @@ public class ReplayManager {
 	}
 
 	public void tickFrame(boolean paused, float tickDelta) {
+		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
+		if (renderManager.isPlayingCameraPath()) {
+			if (!(camera instanceof ReplayCamera)) renderManager.useReplayCamera();
+		} else {
+			if (camera instanceof ReplayCamera) renderManager.useVanillaCamera();
+		}
 		if(!this.isInReplay() || paused || this.replayingHasFinished) return;
 		this.recording.playFrame(this.tickCounter, tickDelta);
 	}

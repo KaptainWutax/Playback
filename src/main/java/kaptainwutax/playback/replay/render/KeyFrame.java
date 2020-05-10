@@ -1,15 +1,11 @@
 package kaptainwutax.playback.replay.render;
 
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.math.Vec3d;
-
-public class KeyFrame {
-    public final double x,y,z;
-    public final float roll,pitch,yaw;
+public class KeyFrame extends CameraState {
+    // TODO: position keyframes at certain frame numbers and use these for the replay timestamp
     public final long tick;
     public final float tickDelta;
 
-    public KeyFrame(double x, double y, double z, float roll, float pitch, float yaw, long tick, float tickDelta) {
+    public KeyFrame(double x, double y, double z, double yaw, double pitch, double roll, long tick, float tickDelta) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -26,13 +22,5 @@ public class KeyFrame {
 
     public double getTimeStampAsDouble() {
         return (double)this.tick + this.tickDelta;
-    }
-
-    public Vec3d getPositionVec() {
-        return new Vec3d(x,y,z);
-    }
-
-    public Vector3f getRotationVec() {
-        return new Vector3f(roll,pitch,yaw);
     }
 }

@@ -1,14 +1,14 @@
 package kaptainwutax.playback.replay.render;
 
-import kaptainwutax.playback.gui.Timeline;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import kaptainwutax.playback.replay.render.interpolation.ComponentKey;
+import kaptainwutax.playback.replay.render.interpolation.HierarchyInterpolator;
+import kaptainwutax.playback.replay.render.interpolation.Interpolator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class KeyFrameCameraPath implements CameraPath {
+    private static final Interpolator defaultInterpolator = new HierarchyInterpolator();
 
     private List<KeyFrame> keyFrames = new ArrayList<>();
 
@@ -21,50 +21,29 @@ public class KeyFrameCameraPath implements CameraPath {
     }
 
     @Override
-    public Vec3d getCameraPositionAtTime(long tick, float tickDelta) {
-        //maybe do some caching or at least binary search in the array list
-
+    public CameraState getCameraStateAtTime(long tick, float tickDelta) {
         int i = this.getLowerIndexForTimestamp(tick, tickDelta);
         if (i < 0) return null;
 
         KeyFrame prev = this.keyFrames.get(i);
-        KeyFrame next;
-        if (i+1 < this.keyFrames.size()) {
-            next = this.keyFrames.get(i+1);
-        } else {
-            return prev.getPositionVec();
+        if (i + 1 >= this.keyFrames.size()) {
+            return prev;
         }
-        //Linear interpolation
-        double delta = ((tick + (double)tickDelta) - prev.tick - prev.tickDelta) /
-                (next.tick + (double)next.tickDelta - prev.tick - prev.tickDelta);
-        return new Vec3d(MathHelper.lerp(delta, prev.x, next.x),
-                MathHelper.lerp(delta, prev.y, next.y),
-                MathHelper.lerp(delta, prev.z, next.z));
+        KeyFrame next = this.keyFrames.get(i+1);
+        CameraState.Mutable state = new CameraState.Mutable();
+        float delta = calculateDelta(prev.tick, prev.tickDelta, tick, tickDelta) / calculateDelta(prev, next);
+        defaultInterpolator.interpolate(ComponentKey.KEY_FRAME, keyFrames, i, i + 1, delta, state);
+        return state;
     }
 
-    @Override
-    public Vector3f getCameraRotationAtTime(long tick, float tickDelta) {
-        //maybe do some caching or at least binary search in the array list
+    private static float calculateDelta(KeyFrame a, KeyFrame b) {
+        return calculateDelta(a.tick, a.tickDelta, b.tick, b.tickDelta);
+    }
 
-        //there are several different ways to interpolate rotation vectors "linearly"
-        //this here is not moving the vector along the shortest path on the unit sphere
-
-        int i = this.getLowerIndexForTimestamp(tick, tickDelta);
-        if (i < 0) return null;
-
-        KeyFrame prev = this.keyFrames.get(i);
-        KeyFrame next;
-        if (i+1 < this.keyFrames.size()) {
-            next = this.keyFrames.get(i+1);
-        } else {
-            return prev.getRotationVec();
-        }
-        //Linear interpolation
-        float delta = ((tick + tickDelta) - prev.tick - prev.tickDelta) /
-                (next.tick + next.tickDelta - prev.tick - prev.tickDelta);
-        return new Vector3f(MathHelper.lerp(delta, prev.roll, next.roll),
-                MathHelper.lerp(delta, prev.pitch, next.pitch),
-                MathHelper.lerp(delta, prev.yaw, next.yaw));
+    private static float calculateDelta(long tickA, float tickDeltaA, long tickB, float tickDeltaB) {
+        long ticks = tickB - tickA;
+        float tickDeltas = tickDeltaB - tickDeltaA;
+        return ticks + tickDeltas;
     }
 
     @Override

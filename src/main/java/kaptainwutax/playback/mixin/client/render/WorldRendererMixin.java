@@ -4,11 +4,17 @@ import com.google.common.collect.Iterables;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.ReplayView;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,4 +58,8 @@ public abstract class WorldRendererMixin {
 		}
 	}
 
+	@Inject(method = "render", at = @At("RETURN"))
+	private void afterRender(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
+		Playback.getManager().renderManager.render(matrices, tickDelta, camera, matrix4f);
+	}
 }

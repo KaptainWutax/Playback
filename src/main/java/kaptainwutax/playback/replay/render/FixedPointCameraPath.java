@@ -1,13 +1,9 @@
 package kaptainwutax.playback.replay.render;
 
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.math.Vec3d;
-
 public class FixedPointCameraPath implements CameraPath {
-
-    private KeyFrame keyFrame;
-    private GameTimeStamp startTime;
-    private GameTimeStamp endTime;
+    private final KeyFrame keyFrame;
+    private final GameTimeStamp startTime;
+    private final GameTimeStamp endTime;
 
     public FixedPointCameraPath(KeyFrame keyFrame, GameTimeStamp startTime, GameTimeStamp endTime) {
         this.keyFrame = keyFrame;
@@ -16,22 +12,8 @@ public class FixedPointCameraPath implements CameraPath {
     }
 
     @Override
-    public Vec3d getCameraPositionAtTime(long tick, float tickDelta) {
-        if ((this.startTime.tick > tick) || ((this.startTime.tick == tick) && (this.startTime.tickDelta > tickDelta)) ||
-                (this.endTime.tick < tick) || ((this.endTime.tick == tick) && (this.endTime.tickDelta < tickDelta))) {
-            return null;
-        }
-
-        return new Vec3d(this.keyFrame.x, this.keyFrame.y, this.keyFrame.z);
-    }
-
-    @Override
-    public Vector3f getCameraRotationAtTime(long tick, float tickDelta) {
-        if ((this.startTime.tick > tick) || ((this.startTime.tick == tick) && (this.startTime.tickDelta > tickDelta)) ||
-                (this.endTime.tick < tick) || ((this.endTime.tick == tick) && (this.endTime.tickDelta < tickDelta))) {
-            return null;
-        }
-        return new Vector3f(this.keyFrame.roll, this.keyFrame.pitch, this.keyFrame.yaw);
+    public CameraState getCameraStateAtTime(long tick, float tickDelta) {
+        return keyFrame;
     }
 
     @Override
