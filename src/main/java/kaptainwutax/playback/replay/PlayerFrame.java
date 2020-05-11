@@ -6,11 +6,14 @@ import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
+import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.render.debug.DebugRenderer;
+import net.minecraft.client.toast.ToastManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.HitResult;
 
@@ -23,6 +26,9 @@ public class PlayerFrame {
 	public PlayGameOptions options;
 	public Mouse mouse;
 	public Keyboard keyboard;
+	public ToastManager toastManager;
+	public DebugRenderer debugRenderer;
+	public InGameHud inGameHud;
 
 	private boolean cameraOnly;
 	public boolean wasTeleported;
@@ -35,14 +41,16 @@ public class PlayerFrame {
 	private int itemUseCooldown;
 	private boolean windowFocus;
 
-	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager, PlayGameOptions options, Mouse mouse, Keyboard keyboard, boolean windowFocus) {
+	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager, PlayGameOptions options, Mouse mouse, Keyboard keyboard, ToastManager toastManager, DebugRenderer debugRenderer, InGameHud inGameHud, boolean windowFocus) {
 		this.player = player;
 		this.interactionManager = interactionManager;
 		this.options = options;
 		this.mouse = mouse;
 		this.keyboard = keyboard;
+		this.toastManager = toastManager;
+		this.debugRenderer = debugRenderer;
+		this.inGameHud = inGameHud;
 		this.windowFocus = windowFocus;
-
 		this.wasTeleported = false;
 	}
 
@@ -98,10 +106,13 @@ public class PlayerFrame {
 	public void applyState() {
 		client.currentScreen = this.currentScreen;
 		((IClientCaller)client).setAttackCooldown(this.attackCooldown);
-		((IClientCaller) client).setItemUseCooldown(this.itemUseCooldown);
+		((IClientCaller)client).setItemUseCooldown(this.itemUseCooldown);
 		client.crosshairTarget = this.crosshairTarget;
 		client.targetedEntity = this.targetedEntity;
-		((IClientCaller) client).setWindowFocusNoInjects(this.windowFocus);
+		((IClientCaller)client).setWindowFocusNoInjects(this.windowFocus);
+		((IClientCaller)client).setToastManager(this.toastManager);
+		((IClientCaller)client).setDebugRenderer(this.debugRenderer);
+		((IClientCaller)client).setInGameHud(this.inGameHud);
 	}
 
 	public static PlayerFrame createFromExisting() {
@@ -109,7 +120,7 @@ public class PlayerFrame {
 		PlayGameOptions options = new PlayGameOptions();
 		((IKeyboardInputCaller)client.player.input).setOptions(options.getOptions());
 		Mouse mouse = new Mouse(client);
-		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client), Playback.getManager().recording.getStartState().getWindowFocus());
+		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client), client.getToastManager(), client.debugRenderer, client.inGameHud, Playback.getManager().recording.getStartState().getWindowFocus());
 	}
 
 	public static PlayerFrame createNew() {
@@ -117,7 +128,10 @@ public class PlayerFrame {
 		PlayGameOptions options = new PlayGameOptions(MinecraftClient.getInstance().options);
 		FakePlayer player = new FakePlayer(client, client.world, client.getNetworkHandler(), interactionManager, options, new KeyboardInput(options.getOptions()));
 		Mouse mouse = new Mouse(client);
-		return new PlayerFrame(player, interactionManager, options, mouse, new Keyboard(client), MinecraftClient.getInstance().isWindowFocused());
+		ToastManager toast = new ToastManager(client);
+		DebugRenderer renderer = new DebugRenderer(client);
+		InGameHud hud = new InGameHud(client);
+		return new PlayerFrame(player, interactionManager, options, mouse, new Keyboard(client), toast, renderer, hud, MinecraftClient.getInstance().isWindowFocused());
 	}
 
 
@@ -187,6 +201,9 @@ public class PlayerFrame {
 		void setAttackCooldown(int attackCooldown);
 		void setItemUseCooldown(int itemUseCooldown);
 		void setWindowFocusNoInjects(boolean windowFocus);
+		void setToastManager(ToastManager toastManager);
+		void setDebugRenderer(DebugRenderer debugRenderer);
+		void setInGameHud(InGameHud inGameHud);
 	}
 
 	public interface IKeyboardInputCaller {

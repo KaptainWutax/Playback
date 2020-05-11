@@ -12,10 +12,13 @@ import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
+import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.render.item.HeldItemRenderer;
+import net.minecraft.client.toast.ToastManager;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
@@ -79,6 +82,15 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Shadow public abstract float getTickDelta();
 
 	@Shadow @Nullable private IntegratedServer server;
+
+	@Mutable
+	@Shadow @Final private ToastManager toastManager;
+
+	@Mutable
+	@Shadow @Final public DebugRenderer debugRenderer;
+
+	@Mutable
+	@Shadow @Final public InGameHud inGameHud;
 
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.getManager().isInReplay()) {
@@ -340,6 +352,21 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			keyboard.setup(this.window.getHandle());
 		}
 		this.keyboard = keyboard;
+	}
+
+	@Override
+	public void setToastManager(ToastManager toastManager) {
+		this.toastManager = toastManager;
+	}
+
+	@Override
+	public void setDebugRenderer(DebugRenderer debugRenderer) {
+		this.debugRenderer = debugRenderer;
+	}
+
+	@Override
+	public void setInGameHud(InGameHud inGameHud) {
+		this.inGameHud = inGameHud;
 	}
 
 	@Override

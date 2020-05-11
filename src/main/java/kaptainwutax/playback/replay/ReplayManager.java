@@ -132,9 +132,6 @@ public class ReplayManager {
 	public void toggleView() {
 		this.updateView(ReplayView.values()[(this.view.ordinal() + 1) % ReplayView.values().length], true);
 
-		//TODO: Maybe swapping the toast manager is better.
-		MinecraftClient.getInstance().getToastManager().clear();
-
 		//Teleport the camera player to the replay player.
 		this.cameraPlayer.getPlayer().updatePositionAndAngles(
 				this.replayPlayer.getPlayer().getX(),
@@ -144,7 +141,7 @@ public class ReplayManager {
 				this.replayPlayer.getPlayer().pitch
 		);
 
-		MinecraftClient.getInstance().player.sendMessage(new LiteralText("Switched to " + Formatting.GREEN + this.view + Formatting.WHITE + "."));
+		MinecraftClient.getInstance().player.addChatMessage(new LiteralText("Switched to " + Formatting.GREEN + this.view + Formatting.WHITE + ".").formatted(Formatting.BOLD), true);
 	}
 
 	public void togglePause() {
