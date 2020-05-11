@@ -10,10 +10,16 @@ import java.util.*;
 
 public class HierarchyInterpolator extends TreeMap<ComponentKey<?>, Interpolator> implements Interpolator {
     private final Set<ComponentKey<?>> missing = new LinkedHashSet<>();
+    private Interpolator defaultInterpolator;
 
     public HierarchyInterpolator() {
         super(Comparator.comparingInt(ComponentKey::getDepth));
         missing.addAll(ComponentKey.KEY_FRAME.getLeafComponents());
+    }
+
+    public HierarchyInterpolator(Interpolator defaultInterpolator) {
+        this();
+        this.defaultInterpolator = defaultInterpolator;
     }
 
     public HierarchyInterpolator(Dynamic<?> config) {
@@ -62,6 +68,7 @@ public class HierarchyInterpolator extends TreeMap<ComponentKey<?>, Interpolator
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <K> void interpolate(ComponentKey<K> key, List<? extends CameraState> states, int from, int to, float t, CameraState.Mutable dest) {
         // Set values using configured interpolators from root to leaf
         for (Map.Entry<ComponentKey<?>, Interpolator> interp : entrySet()) {
@@ -75,7 +82,11 @@ public class HierarchyInterpolator extends TreeMap<ComponentKey<?>, Interpolator
                 if (LinearAngleInterpolator.INSTANCE.canInterpolate(k)) {
                     LinearAngleInterpolator.INSTANCE.interpolate((ComponentKey<Double>) k, stateFrom, stateTo, t, dest);
                 } else {
-                    LinearInterpolator.INSTANCE.interpolate((ComponentKey<Double>) k, stateFrom, stateTo, t, dest);
+                    if (defaultInterpolator != null) {
+                        defaultInterpolator.interpolate(k, states, from, to, t, dest);
+                    } else {
+                        LinearInterpolator.INSTANCE.interpolate((ComponentKey<Double>) k, stateFrom, stateTo, t, dest);
+                    }
                 }
             }
         }
