@@ -114,7 +114,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 					+ (tick < Playback.getManager().recording.currentTick ? "-" : "+") + addend);
 		}
 
-		this.fillGradient(this.x, this.y, this.x + this.getWidth(), this.y + this.getHeight(), -2130706433, -2130706433);
+		//this.fillGradient(this.x, this.y, this.x + this.getWidth(), this.y + this.getHeight(), -2130706433, -2130706433);
 	}
 
 
