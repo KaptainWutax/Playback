@@ -44,11 +44,11 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	protected GameTimeStamp endTime;
 	protected double duration;
 
-	public Timeline(int x, int y, int width, int height) {
+	public Timeline(int x, int y) {
 		this.x = x;
 		this.y = y;
-		this.width = TEXTURE_WIDTH;
-		this.height = TEXTURE_HEIGHT;
+		this.width = TEXTURE_WIDTH - 3;
+		this.height = TEXTURE_HEIGHT - 3;
 	}
 
 	public void init() {
@@ -70,12 +70,12 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 		//BlitOffset is a z value, more positive renders on top
 		this.setBlitOffset(-10);
 		//args: on screen x1 (left), on screen y1 (top), in texture x1, in texture y1, width Dx, height Dy
-		this.blit(this.x, this.y, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+		this.blit(this.x - 1, this.y - 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
 
-		this.blit(this.x - 1, this.y + 2, 0,
+		this.blit(this.x - 2, this.y + 1, 0,
 				TEXTURE_HEIGHT + 2, (int)(TEXTURE_WIDTH * MathHelper.clamp(Playback.getManager().recording.currentTick / this.duration, 0, 1)), TEXTURE_HEIGHT);
-		
+
 		Collection<CameraPath> paths = Playback.getManager().renderManager.getCameraPaths();
 		for (CameraPath path : paths) {
 			if(this.endTime.isAfter(path.getStartTime()) && this.startTime.isBefore(path.getEndTime())) {
@@ -113,6 +113,8 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 			this.renderTooltip(mouseX, mouseY, time + "  "
 					+ (tick < Playback.getManager().recording.currentTick ? "-" : "+") + addend);
 		}
+
+		this.fillGradient(this.x, this.y, this.x + this.getWidth(), this.y + this.getHeight(), -2130706433, -2130706433);
 	}
 
 
