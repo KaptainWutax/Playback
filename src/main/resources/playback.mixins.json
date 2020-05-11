@@ -37,6 +37,6 @@
   ],
   "injectors": {
     "defaultRequire": 1,
-    "maxShiftBy": 3
+    "maxShiftBy": 4
   }
 }
