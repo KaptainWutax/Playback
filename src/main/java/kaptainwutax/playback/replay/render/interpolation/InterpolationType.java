@@ -34,4 +34,5 @@ public class InterpolationType<T extends Interpolator> {
     public static final InterpolationType<LinearAngleInterpolator> LINEAR_ANGLE = register("linear_angle", new InterpolationType<>(LinearAngleInterpolator::new));
     public static final InterpolationType<DiscreteInterpolator> DISCRETE = register("discrete", new InterpolationType<>(DiscreteInterpolator::new));
     public static final InterpolationType<HierarchyInterpolator> HIERARCHY = register("hierarchy", new InterpolationType<>(HierarchyInterpolator::new));
+    public static final InterpolationType<CatmullRomSplineInterpolator> CATMULL_ROM_SPLINE = register("catmull_rom_spline", new InterpolationType<>(CatmullRomSplineInterpolator::new));
 }

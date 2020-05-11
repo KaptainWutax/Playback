@@ -3,6 +3,7 @@ package kaptainwutax.playback.replay.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.gui.ReplayHud;
+import kaptainwutax.playback.replay.render.interpolation.CatmullRomSplineInterpolator;
 import kaptainwutax.playback.replay.render.interpolation.ComponentKey;
 import kaptainwutax.playback.replay.render.interpolation.HierarchyInterpolator;
 import kaptainwutax.playback.replay.render.interpolation.LinearInterpolator;
@@ -47,12 +48,14 @@ public class RenderManager {
 
     public RenderManager() {
         this.client = MinecraftClient.getInstance();
-        HierarchyInterpolator interp = new HierarchyInterpolator();
-        interp.put(ComponentKey.YAW, LinearInterpolator.INSTANCE);
+        HierarchyInterpolator interp1 = new HierarchyInterpolator(new CatmullRomSplineInterpolator(0.5));
+        HierarchyInterpolator interp2 = new HierarchyInterpolator(new CatmullRomSplineInterpolator(0.5));
+        interp1.put(ComponentKey.YAW, LinearInterpolator.INSTANCE);
         this.exampleCameraPath = new KeyFrameCameraPath(451)
             .keyFrame(new KeyFrame(0, new GameTimeStamp(0, 0), 0, 70, 0, -45, 80, 0, 90))
-            .interpolate(interp)
+            .interpolate(interp2)
             .keyFrame(new KeyFrame(301, new GameTimeStamp(100, 0.3f), 30, 70, 0, 360 + 45, 50, -20, 50))
+            .interpolate(interp1)
             .keyFrame(new KeyFrame(451, new GameTimeStamp(150, 0.3f), 45, 90, 0, 45, 0, 20, 120));
         /*
         Dynamic<?> config = new Dynamic<>(JsonOps.INSTANCE, JsonHelper.deserialize("{\"type\":\"playback:key_frames\",\"value\":[{\"type\":\"key_frame\",\"value\":{\"position\":[0.0,70.0,0.0],\"rotation\":[-45.0,80.0,0.0],\"fov\":90.0,\"tick\":0,\"tickDelta\":0.0,\"frame\":0}},{\"type\":\"interpolation\",\"value\":{\"playback:yaw\":{\"type\":\"playback:linear\"}}},{\"type\":\"key_frame\",\"value\":{\"position\":[30.0,70.0,0.0],\"rotation\":[405.0,50.0,-20.0],\"fov\":50.0,\"tick\":100,\"tickDelta\":0.3,\"frame\":301}},{\"type\":\"key_frame\",\"value\":{\"position\":[45.0,90.0,0.0],\"rotation\":[45.0,0.0,20.0],\"fov\":120.0,\"tick\":150,\"tickDelta\":0.3,\"frame\":451}}]}"));
