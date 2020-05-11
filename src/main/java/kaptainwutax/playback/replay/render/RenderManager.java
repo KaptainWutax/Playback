@@ -3,6 +3,9 @@ package kaptainwutax.playback.replay.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.gui.ReplayHud;
+import kaptainwutax.playback.replay.render.interpolation.ComponentKey;
+import kaptainwutax.playback.replay.render.interpolation.HierarchyInterpolator;
+import kaptainwutax.playback.replay.render.interpolation.LinearInterpolator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -15,6 +18,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Vec3d;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,23 +38,27 @@ public class RenderManager {
     private Collection<CameraPath> cameraPaths = new ArrayList<>();
     private CameraPath selectedCameraPath;
     private CameraPath playingCameraPath;
-    //Set to the starting time of the playingCameraPath, assuming the camera path starts at 0 internally
-    //Offset is supposed to be used when playing the path as a preview without caring about n, not when rendering the video
-    private long playingCameraPathOffset;
-    private float playingCameraPathOffsetDelta;
+
     protected Random random;
-    private double cameraPathProgress;
+    private int cameraPathProgress;
 
     private Camera vanillaCamera;
     private final ReplayCamera replayCamera = new ReplayCamera();
 
     public RenderManager() {
         this.client = MinecraftClient.getInstance();
-        this.cameraPaths = new ArrayList<>();
-        this.exampleCameraPath = new KeyFrameCameraPath()
-            .add(new KeyFrame( 0, 70, 0, -45, 80, 0, 0, 0))
-            .add(new KeyFrame(30, 70, 0, 360 + 45, 50, -20, 100, 0.3f))
-            .add(new KeyFrame(45, 90, 0, 45, 0, 20, 150, 0.3f));
+        HierarchyInterpolator interp = new HierarchyInterpolator();
+        interp.put(ComponentKey.YAW, LinearInterpolator.INSTANCE);
+        this.exampleCameraPath = new KeyFrameCameraPath(451)
+            .keyFrame(new KeyFrame(0, new GameTimeStamp(0, 0), 0, 70, 0, -45, 80, 0, 90))
+            .interpolate(interp)
+            .keyFrame(new KeyFrame(301, new GameTimeStamp(100, 0.3f), 30, 70, 0, 360 + 45, 50, -20, 50))
+            .keyFrame(new KeyFrame(451, new GameTimeStamp(150, 0.3f), 45, 90, 0, 45, 0, 20, 120));
+        /*
+        Dynamic<?> config = new Dynamic<>(JsonOps.INSTANCE, JsonHelper.deserialize("{\"type\":\"playback:key_frames\",\"value\":[{\"type\":\"key_frame\",\"value\":{\"position\":[0.0,70.0,0.0],\"rotation\":[-45.0,80.0,0.0],\"fov\":90.0,\"tick\":0,\"tickDelta\":0.0,\"frame\":0}},{\"type\":\"interpolation\",\"value\":{\"playback:yaw\":{\"type\":\"playback:linear\"}}},{\"type\":\"key_frame\",\"value\":{\"position\":[30.0,70.0,0.0],\"rotation\":[405.0,50.0,-20.0],\"fov\":50.0,\"tick\":100,\"tickDelta\":0.3,\"frame\":301}},{\"type\":\"key_frame\",\"value\":{\"position\":[45.0,90.0,0.0],\"rotation\":[45.0,0.0,20.0],\"fov\":120.0,\"tick\":150,\"tickDelta\":0.3,\"frame\":451}}]}"));
+        this.exampleCameraPath = CameraPath.deserialize(config);
+        System.out.println(CameraPath.serialize(JsonOps.INSTANCE, exampleCameraPath));
+         */
         this.selectedCameraPath = this.exampleCameraPath;
         this.playingCameraPath = null;
 
@@ -79,17 +87,21 @@ public class RenderManager {
         if (Playback.getManager().isInReplay()) {
             if (this.playingCameraPath != null) {
                 this.playingCameraPath = null;
-                this.playingCameraPathOffset = 0;
-                this.playingCameraPathOffsetDelta = 0;
+                setFrameRate(0);
                 return;
             }
 
+            setFrameRate(60);
             this.playingCameraPath = exampleCameraPath;
-            this.playingCameraPathOffset = startTick;
-            this.playingCameraPathOffsetDelta = startTickDelta;
+            this.cameraPathProgress = 0;
         } else {
             throw new IllegalStateException("Only start playing camera paths while replaying!");
         }
+    }
+
+    @Nullable
+    public CameraPath getPlayingCameraPath() {
+        return this.playingCameraPath;
     }
 
     public double getCameraPathProgress() {
@@ -97,34 +109,32 @@ public class RenderManager {
         return this.cameraPathProgress;
     }
 
+    @Nullable
+    public GameTimeStamp getCurrentCameraPathTime() {
+        if (this.playingCameraPath == null) return null;
+        return this.playingCameraPath.getCameraStateAtTime(this.cameraPathProgress).time;
+    }
+
     /**
      * Update the state of the camera and render manager before every rendered frame.
      * This method should be a replacement for the camera's update code when a camera path is played
      */
-    public void updateCameraForCameraPath(long tick, float tickDelta) {
+    public void updateCameraForCameraPath() {
         if (!Playback.getManager().isInReplay()) return;
 
-        float sumTickDelta = (tickDelta - this.playingCameraPathOffsetDelta) % 1;
-        if (sumTickDelta < 0) sumTickDelta += 1;
-        tick -= this.playingCameraPathOffset + (long)(tickDelta - this.playingCameraPathOffsetDelta);
-        tickDelta = sumTickDelta;
-
-        if (this.playingCameraPath != null && this.playingCameraPath.getStartTime().compareTo(tick, tickDelta) <= 0) {
-            if (this.playingCameraPath.getEndTime().compareTo(tick, tickDelta) < 0) {
+        if (this.playingCameraPath != null) {
+            int frame = this.cameraPathProgress++;
+            if (this.playingCameraPath.getFrames() < frame) {
                 this.playingCameraPath = null;
-                this.cameraPathProgress = -1D;
+                setFrameRate(0);
             } else {
-                this.cameraPathProgress = tick + (double)tickDelta;
-                this.adjustCameraPositionAndRotation(this.playingCameraPath.getCameraStateAtTime(tick,tickDelta));
-                return;
+                this.adjustCameraPositionAndRotation(this.playingCameraPath.getCameraStateAtTime(frame));
             }
-        } else {
-            this.cameraPathProgress = -1D;
         }
     }
 
     public void render(MatrixStack matrices, float tickDelta, Camera camera, Matrix4f matrix4f) {
-        if (playingCameraPath != null) return;
+        if (playingCameraPath != null || selectedCameraPath == null) return;
         matrices.push();
         Vec3d camPos = camera.getPos();
         matrices.translate(-camPos.x, -camPos.y, -camPos.z);
@@ -138,10 +148,8 @@ public class RenderManager {
         RenderSystem.disableCull();
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
-        CameraPath path = exampleCameraPath;
+        CameraPath path = selectedCameraPath;
         float rotationOffset = 0.5f;
-        long start = path.getStartTime().tick;
-        long end = path.getEndTime().tick;
         glPointSize(4.0F);
         RenderSystem.lineWidth(2.0F);
         if (path instanceof KeyFrameCameraPath) {
@@ -173,34 +181,31 @@ public class RenderManager {
                 tess.draw();
             }
         }
-        if (end > start) {
+        int frames = path.getFrames();
+        if (frames > 0) {
             // path
             buf.begin(GL_LINE_STRIP, VertexFormats.POSITION_COLOR);
-            for (long tick = start; tick <= end; tick++) {
-                for (float f = 0; f < 1; f += 0.05) {
-                    CameraState state = path.getCameraStateAtTime(tick, f);
-                    if (state == null) continue;
-                    buf.vertex(matrix, (float) state.getX(), (float) state.getY(), (float) state.getZ())
-                        .color(0, 128, 255, 255)
-                        .next();
-                }
+            for (int frame = 0; frame < frames; frame++) {
+                CameraState state = path.getCameraStateAtTime(frame);
+                if (state == null) continue;
+                buf.vertex(matrix, (float) state.getX(), (float) state.getY(), (float) state.getZ())
+                    .color(0, 128, 255, 255)
+                    .next();
             }
             tess.draw();
             // path offset by rotation vector
             buf.begin(GL_LINE_STRIP, VertexFormats.POSITION_COLOR);
-            for (long tick = start; tick <= end; tick++) {
-                for (float f = 0; f < 1; f += 0.05) {
-                    CameraState state = path.getCameraStateAtTime(tick, f);
-                    if (state == null) continue;
-                    Vector3f forward = new Vector3f(0, 0, rotationOffset);
-                    forward.rotate(state.getRotationQuaternion());
-                    buf.vertex(matrix,
-                            (float) state.getX() + forward.getX(),
-                            (float) state.getY() + forward.getY(),
-                            (float) state.getZ() + forward.getZ())
-                            .color(255, 128, 128, 128)
-                            .next();
-                }
+            for (int frame = 0; frame < frames; frame++) {
+                CameraState state = path.getCameraStateAtTime(frame);
+                if (state == null) continue;
+                Vector3f forward = new Vector3f(0, 0, rotationOffset);
+                forward.rotate(state.getRotationQuaternion());
+                buf.vertex(matrix,
+                        (float) state.getX() + forward.getX(),
+                        (float) state.getY() + forward.getY(),
+                        (float) state.getZ() + forward.getZ())
+                        .color(255, 128, 128, 128)
+                        .next();
             }
             tess.draw();
         }
@@ -216,6 +221,7 @@ public class RenderManager {
      * @param state the state of the camera
      */
     private void adjustCameraPositionAndRotation(CameraState state) {
+        // TODO: play recording up to state.time (optional for preview?)
         replayCamera.setState(state);
     }
 
@@ -242,7 +248,7 @@ public class RenderManager {
      * This is useful to render videos at a fixed framerate without any lag.
      * @param frameRate the framerate we are rendering at
      */
-    public static void setFramesPerTick(float frameRate) {
+    public static void setFrameRate(float frameRate) {
         float framesPerTick = frameRate / TPS;
         ((ISetForcedFrameRate)MinecraftClient.getInstance()).setFixedFrameRateForVideoRender(framesPerTick);
         ((ISetForcedFrameRate)MinecraftClient.getInstance()).setFixedFrameRateForVideoRenderEnabled(framesPerTick > 0);

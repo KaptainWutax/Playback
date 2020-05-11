@@ -69,7 +69,14 @@ public class ComponentKey<T> {
         return ((MutableRegistry<ComponentKey<?>>) REGISTRY).add(new Identifier("playback", key), component);
     }
 
+    public static Identifier getId(ComponentKey<?> key) {
+        Identifier id = REGISTRY.getId(key);
+        if (id == null) throw new IllegalStateException("ComponentKey without id!");
+        return id;
+    }
+
     public static final ComponentKey<CameraState> KEY_FRAME = register("key_frame", new ComponentKey<>(null, CameraState.class, Function.identity(), CameraState.Mutable::set));
+    public static final ComponentKey<Double> TIME = register("time", new ComponentKey<>(KEY_FRAME, Double.class, CameraState::getTimeAsDouble, CameraState.Mutable::setTime));
     public static final ComponentKey<Vec3d> POSITION = register("position", new ComponentKey<>(KEY_FRAME, Vec3d.class, CameraState::getPosition, CameraState.Mutable::setPosition));
     public static final ComponentKey<Double> X = register("x", new ComponentKey<>(POSITION, Double.class, CameraState::getX, CameraState.Mutable::setX));
     public static final ComponentKey<Double> Y = register("y", new ComponentKey<>(POSITION, Double.class, CameraState::getY, CameraState.Mutable::setY));
@@ -78,4 +85,5 @@ public class ComponentKey<T> {
     public static final ComponentKey<Double> YAW = register("yaw", new ComponentKey<>(ROTATION, Double.class, CameraState::getYaw, CameraState.Mutable::setYaw));
     public static final ComponentKey<Double> PITCH = register("pitch", new ComponentKey<>(ROTATION, Double.class, CameraState::getPitch, CameraState.Mutable::setPitch));
     public static final ComponentKey<Double> ROLL = register("roll", new ComponentKey<>(ROTATION, Double.class, CameraState::getRoll, CameraState.Mutable::setRoll));
+    public static final ComponentKey<Double> FOV = register("fov", new ComponentKey<>(KEY_FRAME, Double.class, CameraState::getFov, CameraState.Mutable::setFov));
 }

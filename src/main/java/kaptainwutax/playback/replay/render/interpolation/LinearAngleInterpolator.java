@@ -1,7 +1,12 @@
 package kaptainwutax.playback.replay.render.interpolation;
 
+import com.mojang.datafixers.Dynamic;
+
 public class LinearAngleInterpolator extends LinearInterpolator {
     public static LinearAngleInterpolator INSTANCE = new LinearAngleInterpolator();
+
+    public LinearAngleInterpolator() {}
+    public LinearAngleInterpolator(Dynamic<?> config) {}
 
     @Override
     public boolean canInterpolate(ComponentKey<?> property) {
@@ -12,5 +17,10 @@ public class LinearAngleInterpolator extends LinearInterpolator {
     public Double interpolate(Double a, Double b, float t) {
         double shortest = ((((b - a) % 360) + 540) % 360) - 180;
         return a + (shortest * t) % 360;
+    }
+
+    @Override
+    public InterpolationType<?> getType() {
+        return InterpolationType.LINEAR_ANGLE;
     }
 }

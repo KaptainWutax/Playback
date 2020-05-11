@@ -1,26 +1,23 @@
 package kaptainwutax.playback.replay.render;
 
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.DynamicOps;
+
 public class KeyFrame extends CameraState {
-    // TODO: position keyframes at certain frame numbers and use these for the replay timestamp
-    public final long tick;
-    public final float tickDelta;
+    public final int frame;
 
-    public KeyFrame(double x, double y, double z, double yaw, double pitch, double roll, long tick, float tickDelta) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.roll = roll;
-        this.pitch = pitch;
-        this.yaw = yaw;
-        this.tick = tick;
-        this.tickDelta = tickDelta;
+    public KeyFrame(Dynamic<?> config) {
+        super(config);
+        this.frame = config.get("frame").asInt(0);
     }
 
-    public GameTimeStamp getTimeStamp() {
-        return new GameTimeStamp(this.tick, this.tickDelta);
+    public KeyFrame(int frame, GameTimeStamp time, double x, double y, double z, double yaw, double pitch, double roll, double fov) {
+        super(time, x, y, z, yaw, pitch, roll, fov);
+        this.frame = frame;
     }
 
-    public double getTimeStampAsDouble() {
-        return (double)this.tick + this.tickDelta;
+    public <T> T serialize(DynamicOps<T> ops) {
+        T map = super.serialize(ops);
+        return ops.mergeInto(map, ops.createString("frame"), ops.createInt(frame));
     }
 }

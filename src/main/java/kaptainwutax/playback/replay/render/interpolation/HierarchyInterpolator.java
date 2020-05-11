@@ -1,6 +1,10 @@
 package kaptainwutax.playback.replay.render.interpolation;
 
+import com.mojang.datafixers.DSL;
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.DynamicOps;
 import kaptainwutax.playback.replay.render.CameraState;
+import net.minecraft.util.Identifier;
 
 import java.util.*;
 
@@ -12,6 +16,20 @@ public class HierarchyInterpolator extends TreeMap<ComponentKey<?>, Interpolator
         missing.addAll(ComponentKey.KEY_FRAME.getLeafComponents());
     }
 
+    public HierarchyInterpolator(Dynamic<?> config) {
+        this();
+        this.putAll(config.asMap(
+            k -> ComponentKey.REGISTRY.get(new Identifier(k.asString().orElseThrow(IllegalArgumentException::new))),
+            v -> {
+                Identifier typeId = new Identifier(v.get("type").asString().orElseThrow(IllegalArgumentException::new));
+                InterpolationType<?> type = InterpolationType.REGISTRY.get(typeId);
+                if (type == null) throw new IllegalArgumentException("Unknown interpolation type " + typeId);
+                Dynamic<?> cfg = v.get("config").orElseEmptyMap();
+                return type.create(cfg);
+            }
+        ));
+    }
+
     @Override
     public boolean canInterpolate(ComponentKey<?> property) {
         return property == ComponentKey.KEY_FRAME;
@@ -19,6 +37,7 @@ public class HierarchyInterpolator extends TreeMap<ComponentKey<?>, Interpolator
 
     @Override
     public Interpolator put(ComponentKey<?> key, Interpolator value) {
+        if (!value.canInterpolate(key)) throw new IllegalArgumentException(value.getType() + " cannot interpolate " + key);
         missing.removeAll(key.getLeafComponents());
         return super.put(key, value);
     }
@@ -60,5 +79,26 @@ public class HierarchyInterpolator extends TreeMap<ComponentKey<?>, Interpolator
                 }
             }
         }
+    }
+
+    @Override
+    public InterpolationType<?> getType() {
+        return InterpolationType.HIERARCHY;
+    }
+
+    @Override
+    public <T> T serialize(DynamicOps<T> ops) {
+        Map<T, T> map = new LinkedHashMap<>();
+        for (Map.Entry<ComponentKey<?>, Interpolator> e : entrySet()) {
+            Map<T, T> eMap = new LinkedHashMap<>();
+            InterpolationType<?> type = e.getValue().getType();
+            eMap.put(ops.createString("type"), ops.createString(InterpolationType.getId(type).toString()));
+            T config = e.getValue().serialize(ops);
+            if (ops.getType(config) != DSL.nilType()) {
+                eMap.put(ops.createString("config"), config);
+            }
+            map.put(ops.createString(ComponentKey.getId(e.getKey()).toString()), ops.createMap(eMap));
+        }
+        return ops.createMap(map);
     }
 }

@@ -1,11 +1,28 @@
 package kaptainwutax.playback.replay.render;
 
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.DynamicOps;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class GameTimeStamp implements Comparable<GameTimeStamp>{
     public final long tick;
     public final float tickDelta;
+
+    public GameTimeStamp(Dynamic<?> d) {
+        this.tick = d.get("tick").asLong(0);
+        this.tickDelta = d.get("tickDelta").asFloat(0);
+    }
+
     public GameTimeStamp(long tick, float tickDelta) {
         this.tick = tick;
         this.tickDelta = tickDelta;
+    }
+
+    public GameTimeStamp(double time) {
+        this.tick = (long) time;
+        this.tickDelta = (float) (time - this.tick);
     }
 
     public boolean isBefore(GameTimeStamp other) {
@@ -41,5 +58,12 @@ public class GameTimeStamp implements Comparable<GameTimeStamp>{
         if (tick1 > tick2) return 1;
         if (tick1 < tick2) return -1;
         return Float.compare(tickDelta1, tickDelta2);
+    }
+
+    public <T> T serialize(DynamicOps<T> ops) {
+        Map<T, T> map = new LinkedHashMap<>();
+        map.put(ops.createString("tick"), ops.createLong(tick));
+        map.put(ops.createString("tickDelta"), ops.createFloat(tickDelta));
+        return ops.createMap(map);
     }
 }

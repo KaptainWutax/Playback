@@ -1,75 +1,130 @@
 package kaptainwutax.playback.replay.render;
 
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.DynamicOps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import kaptainwutax.playback.replay.render.interpolation.ComponentKey;
 import kaptainwutax.playback.replay.render.interpolation.HierarchyInterpolator;
-import kaptainwutax.playback.replay.render.interpolation.Interpolator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class KeyFrameCameraPath implements CameraPath {
-    private static final Interpolator defaultInterpolator = new HierarchyInterpolator();
+public class KeyFrameCameraPath extends AbstractCameraPath {
+    private static final HierarchyInterpolator DEFAULT_INTERPOLATOR = new HierarchyInterpolator();
 
-    private List<KeyFrame> keyFrames = new ArrayList<>();
+    private final List<KeyFrame> keyFrames = new ArrayList<>();
+    private final Int2ObjectMap<HierarchyInterpolator> interpolators = new Int2ObjectOpenHashMap<>();
 
-    public KeyFrameCameraPath() {
-
+    {
+        interpolators.defaultReturnValue(DEFAULT_INTERPOLATOR);
     }
-    public KeyFrameCameraPath add(KeyFrame kf) {
-        keyFrames.add(kf);
+
+    private HierarchyInterpolator nextInterp;
+
+    public <T> KeyFrameCameraPath(Dynamic<T> config) {
+        super(config);
+        List<Object> list = config.asList(e -> {
+            String type = e.get("type").asString(null);
+            if (type == null) return null;
+            Optional<Dynamic<T>> value = e.get("value").get();
+            if (!value.isPresent()) return null;
+            switch (type) {
+                case "key_frame": return new KeyFrame(value.get());
+                case "interpolation": return new HierarchyInterpolator(value.get());
+            }
+            return null;
+        });
+        for (Object o : list) {
+            if (o instanceof HierarchyInterpolator) interpolate(((HierarchyInterpolator) o));
+            else if (o instanceof KeyFrame) {
+                KeyFrame kf = (KeyFrame) o;
+                keyFrame(kf);
+                frames = Math.max(frames, kf.frame);
+            }
+        }
+    }
+
+    public KeyFrameCameraPath(int frames) {
+        super(frames);
+    }
+
+    public KeyFrameCameraPath keyFrame(KeyFrame kf) {
+        // find previous index and insert there to keep the list sorted
+        int index = getLowerIndexForFrame(kf.frame) + 1;
+        if (nextInterp != null && index > 0) {
+            interpolators.put(index - 1, nextInterp);
+            nextInterp = null;
+        }
+        keyFrames.add(index, kf);
+        return this;
+    }
+
+    public KeyFrameCameraPath interpolate(HierarchyInterpolator interp) {
+        nextInterp = interp;
         return this;
     }
 
     @Override
-    public CameraState getCameraStateAtTime(long tick, float tickDelta) {
-        int i = this.getLowerIndexForTimestamp(tick, tickDelta);
-        if (i < 0) return null;
+    public CameraState getCameraStateAtTime(int frame) {
+        int i = this.getLowerIndexForFrame(frame);
+        if (i < 0) return keyFrames.get(0);
 
         KeyFrame prev = this.keyFrames.get(i);
-        if (i + 1 >= this.keyFrames.size()) {
+        if (prev.frame > frame || i + 1 >= this.keyFrames.size()) {
             return prev;
         }
         KeyFrame next = this.keyFrames.get(i+1);
         CameraState.Mutable state = new CameraState.Mutable();
-        float delta = calculateDelta(prev.tick, prev.tickDelta, tick, tickDelta) / calculateDelta(prev, next);
-        defaultInterpolator.interpolate(ComponentKey.KEY_FRAME, keyFrames, i, i + 1, delta, state);
+        float delta = (float) (frame - prev.frame) / (next.frame - prev.frame);
+        interpolators.get(i).interpolate(ComponentKey.KEY_FRAME, keyFrames, i, i + 1, delta, state);
         return state;
-    }
-
-    private static float calculateDelta(KeyFrame a, KeyFrame b) {
-        return calculateDelta(a.tick, a.tickDelta, b.tick, b.tickDelta);
-    }
-
-    private static float calculateDelta(long tickA, float tickDeltaA, long tickB, float tickDeltaB) {
-        long ticks = tickB - tickA;
-        float tickDeltas = tickDeltaB - tickDeltaA;
-        return ticks + tickDeltas;
-    }
-
-    @Override
-    public GameTimeStamp getStartTime() {
-        return this.keyFrames.isEmpty() ? null : this.keyFrames.get(0).getTimeStamp();
-    }
-
-    @Override
-    public GameTimeStamp getEndTime() {
-        return this.keyFrames.isEmpty() ? null : this.keyFrames.get(this.keyFrames.size()-1).getTimeStamp();
     }
 
     public List<KeyFrame> getKeyFrames() {
         return keyFrames;
     }
 
-    private int getLowerIndexForTimestamp(long tick, float tickDelta) {
-        //naive implementation
-        for (int i = 0; i < this.keyFrames.size(); i++) {
-            KeyFrame keyFrame = this.keyFrames.get(i);
-            int cmp;
-            if ((cmp = GameTimeStamp.compareTo(keyFrame.tick, keyFrame.tickDelta, tick, tickDelta)) != -1) {
-                //i-1 if we passed the timestamp, if we are the timestamp, return without -1
-                return i - cmp;
+    private int getLowerIndexForFrame(int frame) {
+        if (keyFrames.isEmpty()) return -1;
+        // binary search for the matching key frame
+        int start = 0;
+        int end = keyFrames.size() - 1;
+        while (start <= end) {
+            int mid = (start + end) >>> 1;
+            int midVal = keyFrames.get(mid).frame;
+
+            if (midVal < frame) {
+                start = mid + 1;
+            } else if (midVal > frame) {
+                end = mid - 1;
+            } else {
+                return mid; // exact match
             }
         }
-        return -1;
+        // no exact match (common) -> return the previous index
+        return start - 1;
+    }
+
+    @Override
+    public CameraPathType<?> getType() {
+        return CameraPathType.KEY_FRAMES;
+    }
+
+    @Override
+    public <T> T serialize(DynamicOps<T> ops) {
+        int size = keyFrames.size();
+        List<T> list = new ArrayList<>(size + interpolators.size());
+        for (int i = 0; i < size; i++) {
+            Map<T, T> map = new LinkedHashMap<>();
+            map.put(ops.createString("type"), ops.createString("key_frame"));
+            map.put(ops.createString("value"), keyFrames.get(i).serialize(ops));
+            list.add(ops.createMap(map));
+            if (i < size - 1 && interpolators.containsKey(i)) {
+                map.put(ops.createString("type"), ops.createString("interpolation"));
+                map.put(ops.createString("value"), interpolators.get(i).serialize(ops));
+                list.add(ops.createMap(map));
+            }
+        }
+        return ops.createList(list.stream());
     }
 }

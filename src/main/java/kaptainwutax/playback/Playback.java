@@ -46,4 +46,7 @@ public class Playback implements ModInitializer {
 		return new File(getRecordingsFolder(), FILE_NAME_FORMAT.format(new Date()) + FILE_EXTENSION);
 	}
 
+	public static Identifier id(String id) {
+		return new Identifier(MOD_ID, id);
+	}
 }

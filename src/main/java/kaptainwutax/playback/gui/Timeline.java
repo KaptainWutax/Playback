@@ -21,7 +21,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 public class Timeline extends DrawableHelper implements Drawable, Element {
@@ -87,8 +86,9 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 			}
 		}
 		//camera path progress
-		if (Playback.getManager().renderManager.getCameraPathProgress() >= 0) {
-			int x1 = (int)(this.width * Playback.getManager().renderManager.getCameraPathProgress() / this.duration);
+		GameTimeStamp progressTime = Playback.getManager().renderManager.getCurrentCameraPathTime();
+		if (progressTime != null) {
+			int x1 = (int)(this.width * progressTime.asDouble() / this.duration);
 			this.blit(this.x + x1 - 1, this.y + BORDER_HEIGHT, 0, 64, 3, TEXTURE_HEIGHT);
 		}
 
@@ -119,7 +119,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	private void renderCameraPathKeyFrames(KeyFrameCameraPath path) {
 		List<KeyFrame> keyFrames = path.getKeyFrames();
 		for (KeyFrame keyFrame : keyFrames) {
-			int x1 = this.x + (int)(this.width * keyFrame.getTimeStampAsDouble() / this.duration);
+			int x1 = this.x + (int)(this.width * keyFrame.getTimeAsDouble() / this.duration);
 			this.blit(x1 - KEYFRAME_TEXTURE_SIZE_X / 2, this.y + this.height / 2 - KEYFRAME_TEXTURE_SIZE_Y / 2, 0, 56, KEYFRAME_TEXTURE_SIZE_X, KEYFRAME_TEXTURE_SIZE_Y);
 		}
 	}

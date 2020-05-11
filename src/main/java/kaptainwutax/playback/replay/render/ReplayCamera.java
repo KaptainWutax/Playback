@@ -12,7 +12,7 @@ public class ReplayCamera extends Camera {
     private final MinecraftClient client = MinecraftClient.getInstance();
 
     public Matrix4f getBasicProjectionMatrix(float tickDelta, boolean world) {
-        float fov = 90;
+        double fov = state.getFov();
         float aspectRatio = (float)this.client.getWindow().getFramebufferWidth() / (float)this.client.getWindow().getFramebufferHeight();
         return Matrix4f.viewboxMatrix(fov, aspectRatio, 0.05F, this.client.gameRenderer.getViewDistance() * 4.0F);
     }

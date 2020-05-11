@@ -1,27 +1,58 @@
 package kaptainwutax.playback.replay.render;
 
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.DynamicOps;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 public class CameraState {
+    protected GameTimeStamp time;
     protected double x, y, z;
     protected double yaw, pitch, roll;
+    protected double fov;
 
     public CameraState() {}
 
-    public CameraState(double x, double y, double z, double yaw, double pitch, double roll) {
+    public CameraState(Dynamic<?> config) {
+        Optional<List<Double>> posOpt = config.get("position").asListOpt(d -> d.asDouble(0));
+        if (posOpt.isPresent() && posOpt.get().size() == 3) {
+            List<Double> pos = posOpt.get();
+            this.x = pos.get(0);
+            this.y = pos.get(1);
+            this.z = pos.get(2);
+        }
+        Optional<List<Double>> rotOpt = config.get("rotation").asListOpt(d -> d.asDouble(0));
+        if (rotOpt.isPresent() && rotOpt.get().size() == 3) {
+            List<Double> rot = rotOpt.get();
+            this.yaw = rot.get(0);
+            this.pitch = rot.get(1);
+            this.roll = rot.get(2);
+        }
+        this.fov = config.get("fov").asDouble(90);
+        this.time = new GameTimeStamp(config);
+    }
+
+    public CameraState(GameTimeStamp time, double x, double y, double z, double yaw, double pitch, double roll, double fov) {
+        this.time = time;
         this.x = x;
         this.y = y;
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
         this.roll = roll;
+        this.fov = fov;
     }
 
     public CameraState(CameraState state) {
-        this(state.x, state.y, state.z, state.yaw, state.pitch, state.roll);
+        this(state.time, state.x, state.y, state.z, state.yaw, state.pitch, state.roll, state.fov);
     }
 
     public double getX() {
@@ -64,11 +95,35 @@ public class CameraState {
         return rotation;
     }
 
+    public double getFov() {
+        return fov;
+    }
+
+    public GameTimeStamp getTime() {
+        return time;
+    }
+
+    public double getTimeAsDouble() {
+        return time.asDouble();
+    }
+
+    public <T> T serialize(DynamicOps<T> ops) {
+        Map<T, T> map = new LinkedHashMap<>();
+        map.put(ops.createString("position"), ops.createList(Stream.of(
+                ops.createDouble(x), ops.createDouble(y), ops.createDouble(z)
+        )));
+        map.put(ops.createString("rotation"), ops.createList(Stream.of(
+                ops.createDouble(yaw), ops.createDouble(pitch), ops.createDouble(roll)
+        )));
+        map.put(ops.createString("fov"), ops.createDouble(fov));
+        return ops.mergeInto(ops.createMap(map), time.serialize(ops));
+    }
+
     public static class Mutable extends CameraState {
         public Mutable() {}
 
-        public Mutable(double x, double y, double z, double yaw, double pitch, double roll) {
-            super(x, y, z, yaw, pitch, roll);
+        public Mutable(GameTimeStamp time, double x, double y, double z, double yaw, double pitch, double roll, double fov) {
+            super(time, x, y, z, yaw, pitch, roll, fov);
         }
 
         public Mutable(CameraState state) {
@@ -111,6 +166,18 @@ public class CameraState {
             this.roll = rot.z;
         }
 
+        public void setFov(double fov) {
+            this.fov = fov;
+        }
+
+        public void setTime(GameTimeStamp time) {
+            this.time = time;
+        }
+
+        public void setTime(double time) {
+            this.time = new GameTimeStamp(time);
+        }
+
         public void set(CameraState state) {
             this.x = state.x;
             this.y = state.y;
@@ -118,6 +185,7 @@ public class CameraState {
             this.yaw = state.yaw;
             this.pitch = state.pitch;
             this.roll = state.roll;
+            this.fov = state.fov;
         }
     }
 

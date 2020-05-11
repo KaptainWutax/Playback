@@ -1,8 +1,39 @@
 package kaptainwutax.playback.replay.render;
 
-public interface CameraPath {
-    CameraState getCameraStateAtTime(long tick, float tickDelta);
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.DynamicOps;
+import net.minecraft.util.Identifier;
 
-    GameTimeStamp getStartTime();
-    GameTimeStamp getEndTime();
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public interface CameraPath {
+    CameraState getCameraStateAtTime(int frame);
+
+    int getFrames();
+
+    default GameTimeStamp getStartTime() {
+        return getCameraStateAtTime(0).time;
+    }
+
+    default GameTimeStamp getEndTime() {
+        return getCameraStateAtTime(getFrames() - 1).time;
+    }
+
+    CameraPathType<?> getType();
+    <T> T serialize(DynamicOps<T> ops);
+
+    static CameraPath deserialize(Dynamic<?> config) {
+        Identifier typeId = new Identifier(config.get("type").asString().orElseThrow(IllegalArgumentException::new));
+        CameraPathType<?> type = CameraPathType.REGISTRY.get(typeId);
+        if (type == null) throw new IllegalArgumentException("Unknown camera path type " + typeId);
+        return type.create(config.get("value").get().orElseThrow(IllegalArgumentException::new));
+    }
+
+    static <T> T serialize(DynamicOps<T> ops, CameraPath path) {
+        Map<T, T> map = new LinkedHashMap<>();
+        map.put(ops.createString("type"), ops.createString(CameraPathType.getId(path.getType()).toString()));
+        map.put(ops.createString("value"), path.serialize(ops));
+        return ops.createMap(map);
+    }
 }
