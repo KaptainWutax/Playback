@@ -12,7 +12,6 @@ import java.util.List;
  * ReplayHudScreen contains the clickable hud that the user can use to control keyframes, camerapaths and other
  * playback features. It is a Screen, because it needs to be clickable.
  *
- * Currently the ReplayHudScreen is not clickable, because it never becomes client.currentScreen.
  */
 public class ReplayHudScreen extends Screen {
 
