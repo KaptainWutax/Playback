@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
-public class KeyBindings {
+public class PKeyBindings {
 
 	public static String PLAYBACK_CATEGORY = createCategory("playback");
 
@@ -14,7 +14,6 @@ public class KeyBindings {
 	public static FabricKeyBinding TOGGLE_PAUSE = FabricKeyBinding.Builder.create(Playback.createIdentifier("toggle_pause"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_P, PLAYBACK_CATEGORY).build();
 	public static FabricKeyBinding PLAY_CAMERA_PATH = FabricKeyBinding.Builder.create(Playback.createIdentifier("play_camera_path"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_I, PLAYBACK_CATEGORY).build();
 	public static FabricKeyBinding OPEN_REPLAY_HUD = FabricKeyBinding.Builder.create(Playback.createIdentifier("open_replay_hud"), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, PLAYBACK_CATEGORY).build();
-
 
 	public static String createCategory(String name) {
 		return "key.categories." + name;

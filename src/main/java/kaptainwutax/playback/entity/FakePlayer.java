@@ -1,5 +1,6 @@
 package kaptainwutax.playback.entity;
 
+import kaptainwutax.playback.init.PItems;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.Input;
@@ -9,6 +10,7 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.recipe.book.ClientRecipeBook;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.GameMode;
 
 public class FakePlayer extends ClientPlayerEntity {
@@ -28,6 +30,8 @@ public class FakePlayer extends ClientPlayerEntity {
 		this.setClientPermissionLevel(2);
 		this.input = keyboardInput;
 		this.dimension = null;
+
+		this.inventory.addPickBlock(new ItemStack(PItems.FEATURE_STICK));
 	}
 
 	@Override

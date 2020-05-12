@@ -1,6 +1,7 @@
 package kaptainwutax.playback;
 
-import kaptainwutax.playback.init.KeyBindings;
+import kaptainwutax.playback.init.PItems;
+import kaptainwutax.playback.init.PKeyBindings;
 import kaptainwutax.playback.replay.ReplayManager;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
@@ -20,8 +21,9 @@ public class Playback implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		KeyBindings.registerKeyCategories();
-		KeyBindings.registerKeyBindings();
+		PKeyBindings.registerKeyCategories();
+		PKeyBindings.registerKeyBindings();
+		PItems.registerItems();
 	}
 
 	public static ReplayManager getManager() {

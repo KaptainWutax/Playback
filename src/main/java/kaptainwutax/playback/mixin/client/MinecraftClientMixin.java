@@ -3,7 +3,7 @@ package kaptainwutax.playback.mixin.client;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
 import kaptainwutax.playback.gui.ReplayHudScreen;
-import kaptainwutax.playback.init.KeyBindings;
+import kaptainwutax.playback.init.PKeyBindings;
 import kaptainwutax.playback.replay.PlayerFrame;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.PacketAction;
@@ -201,26 +201,26 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			boolean shouldOpenHudScreen =  false;
 			boolean shouldPlayCameraPath = false;
 
-			if(KeyBindings.TOGGLE_VIEW.isPressed()) {
-				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {
+			if(PKeyBindings.TOGGLE_VIEW.isPressed()) {
+				while(PKeyBindings.TOGGLE_VIEW.wasPressed()) {
 					shouldToggleView = true;
 				}
 			}
 
-			if(KeyBindings.TOGGLE_PAUSE.isPressed()) {
-				while(KeyBindings.TOGGLE_PAUSE.wasPressed()) {
+			if(PKeyBindings.TOGGLE_PAUSE.isPressed()) {
+				while(PKeyBindings.TOGGLE_PAUSE.wasPressed()) {
 					shouldTogglePause = true;
 				}
 			}
 
-			if(KeyBindings.OPEN_REPLAY_HUD.isPressed()) {
-				while(KeyBindings.OPEN_REPLAY_HUD.wasPressed()) {
+			if(PKeyBindings.OPEN_REPLAY_HUD.isPressed()) {
+				while(PKeyBindings.OPEN_REPLAY_HUD.wasPressed()) {
 					shouldOpenHudScreen = true;
 				}
 			}
 
-			if(KeyBindings.PLAY_CAMERA_PATH.isPressed()) {
-				while(KeyBindings.PLAY_CAMERA_PATH.wasPressed()) {
+			if(PKeyBindings.PLAY_CAMERA_PATH.isPressed()) {
+				while(PKeyBindings.PLAY_CAMERA_PATH.wasPressed()) {
 					shouldPlayCameraPath = true;
 				}
 			}

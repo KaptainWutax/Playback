@@ -26,18 +26,25 @@ public interface Renderer {
 		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
 		Vec3d camPos = camera.getPos();
 
-		ChunkPos p1 = new ChunkPos(camera.getBlockPos());
-		ChunkPos p2 = new ChunkPos(renderer.getCenter());
-		int distance = Math.max(Math.abs(p1.x - p2.x), Math.abs(p1.z - p2.z));
-
 		matrices.push();
 		matrices.translate(-camPos.getX(), -camPos.getY(), -camPos.getZ());
 
-		if(distance <= renderer.getRenderDistance()) {
+		if(renderer.shouldRender(camera)) {
 			renderer.render(tickDelta, matrices);
 		}
 
 		matrices.pop();
+	}
+
+	default boolean shouldRender(Camera camera) {
+		ChunkPos p1 = new ChunkPos(camera.getBlockPos());
+		ChunkPos p2 = new ChunkPos(this.getCenter());
+		int distance = Math.max(Math.abs(p1.x - p2.x), Math.abs(p1.z - p2.z));
+		return distance <= this.getRenderDistance();
+	}
+
+	static Vec3d toVec3d(BlockPos pos) {
+		return new Vec3d(pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	static void putVertex(BufferBuilder buffer, Matrix4f matrix, Vec3d pos, Color color) {
