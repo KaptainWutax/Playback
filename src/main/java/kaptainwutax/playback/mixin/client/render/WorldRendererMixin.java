@@ -2,6 +2,7 @@ package kaptainwutax.playback.mixin.client.render;
 
 import com.google.common.collect.Iterables;
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.render.RenderQueue;
 import kaptainwutax.playback.replay.ReplayView;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
@@ -60,6 +61,8 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "render", at = @At("RETURN"))
 	private void afterRender(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
+		RenderQueue.get().render(tickDelta, matrices);
 		Playback.getManager().renderManager.render(matrices, tickDelta, camera, matrix4f);
 	}
+
 }
