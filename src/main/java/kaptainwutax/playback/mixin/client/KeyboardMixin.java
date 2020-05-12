@@ -1,7 +1,6 @@
 package kaptainwutax.playback.mixin.client;
 
 import kaptainwutax.playback.Playback;
-import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.KeyAction;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;

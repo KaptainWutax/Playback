@@ -1,5 +1,6 @@
 package kaptainwutax.playback.render;
 
+import kaptainwutax.playback.render.util.Color;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -15,8 +16,8 @@ public class RenderQueue {
 	private List<Renderer> renderers = new ArrayList<>();
 
 	public RenderQueue() {
-		Line line = new Line(new Vec3d(0, 0, 0), new Vec3d(100, 100, 100));
-		Text3D text = new Text3D("Hello World", new BlockPos(100, 100, 100));
+		Line line = new Line(Vec3d.ZERO, new Vec3d(100, 100, -100), Color.GREEN);
+		Text3D text = new Text3D("Hello World", new BlockPos(100, 100, -100), new Color(2130706433));
 		this.add(line, text);
 	}
 
@@ -28,6 +29,10 @@ public class RenderQueue {
 		for(Renderer renderer: renderers) {
 			this.renderers.remove(renderer);
 		}
+	}
+
+	public void clear() {
+		this.renderers.clear();
 	}
 
 	public void render(float tickDelta, MatrixStack matrices) {

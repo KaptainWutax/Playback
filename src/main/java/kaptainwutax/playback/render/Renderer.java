@@ -1,7 +1,10 @@
 package kaptainwutax.playback.render;
 
+import kaptainwutax.playback.render.util.Color;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -35,6 +38,19 @@ public interface Renderer {
 		}
 
 		matrices.pop();
+	}
+
+	static void putVertex(BufferBuilder buffer, Matrix4f matrix, Vec3d pos, Color color) {
+		buffer.vertex(matrix,
+				(float)pos.getX(),
+				(float)pos.getY(),
+				(float)pos.getZ()
+		).color(
+				color.getFRed(),
+				color.getFGreen(),
+				color.getFBlue(),
+				1.0F
+		).next();
 	}
 
 }

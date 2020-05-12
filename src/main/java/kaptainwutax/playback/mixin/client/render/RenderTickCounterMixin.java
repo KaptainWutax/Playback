@@ -1,6 +1,5 @@
 package kaptainwutax.playback.mixin.client.render;
 
-import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.render.RenderManager;
 import net.minecraft.client.render.RenderTickCounter;
 import org.spongepowered.asm.mixin.Final;
