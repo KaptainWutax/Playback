@@ -3,6 +3,8 @@ package kaptainwutax.playback.item;
 import kaptainwutax.playback.init.PItems;
 import kaptainwutax.playback.render.Cube;
 import kaptainwutax.playback.render.RenderQueue;
+import kaptainwutax.playback.render.Text3D;
+import kaptainwutax.playback.render.util.Color;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.item.Item;
@@ -25,7 +27,7 @@ public class FeatureStick extends Item {
 					return super.shouldRender(camera)
 							&& MinecraftClient.getInstance().player.getStackInHand(Hand.MAIN_HAND).getItem() == PItems.FEATURE_STICK;
 				}
-			});
+			}, new Text3D("Test", context.getBlockPos(), Color.BLUE));
 
 			return ActionResult.SUCCESS;
 		}

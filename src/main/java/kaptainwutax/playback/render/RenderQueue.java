@@ -1,11 +1,12 @@
 package kaptainwutax.playback.render;
 
-import kaptainwutax.playback.render.util.Color;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RenderQueue {
 
@@ -14,9 +15,7 @@ public class RenderQueue {
 	private Map<BlockPos, List<Renderer>> renderers = new HashMap<>();
 
 	public RenderQueue() {
-		Line line = new Line(Vec3d.ZERO, new Vec3d(100, 100, -100), Color.GREEN);
-		Text3D text = new Text3D("Hello World", new BlockPos(100, 100, -100), new Color(2130706433));
-		this.add(line, text);
+
 	}
 
 	public List<Renderer> getAt(BlockPos pos) {
