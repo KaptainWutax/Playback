@@ -26,14 +26,13 @@ import java.util.List;
 public class Timeline extends DrawableHelper implements Drawable, Element {
 
 	//some random texture until we have our own or a better one
-	private static Identifier TEXTURE = Playback.createIdentifier("textures/hud/timeline.png");
-	private static int TEXTURE_Y_OFFSET = 0;
-	public static int TEXTURE_HEIGHT = 20;
-	public static int TEXTURE_WIDTH = 254;
-	public static int BORDER_HEIGHT = 2;
+	private static final Identifier TEXTURE = Playback.createIdentifier("textures/hud/timeline.png");
+	private static final int TEXTURE_HEIGHT = 20;
+	private static final int TEXTURE_WIDTH = 254;
+	private static final int BORDER_HEIGHT = 2;
 
-	private static int KEYFRAME_TEXTURE_SIZE_X = 7;
-	private static int KEYFRAME_TEXTURE_SIZE_Y = 7;
+	private static final int KEYFRAME_TEXTURE_SIZE_X = 7;
+	private static final int KEYFRAME_TEXTURE_SIZE_Y = 7;
 
 	protected int x;
 	protected int y;
