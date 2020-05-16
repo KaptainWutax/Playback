@@ -1,6 +1,7 @@
 package kaptainwutax.playback.replay;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.replay.edit.ReplayEdit;
 import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.replay.render.RenderManager;
 import kaptainwutax.playback.replay.render.ReplayCamera;
@@ -32,6 +33,7 @@ public class ReplayManager {
 	private boolean paused;
 
 	public RenderManager renderManager = new RenderManager();
+	public ReplayEdit replayEdit = new ReplayEdit();
 
 	public boolean isInReplay() {
 		return recording != null && this.replayingState == PlaybackState.REPLAYING;
@@ -74,6 +76,8 @@ public class ReplayManager {
 			this.recording.getCurrentTickInfo().recordDebug();
 			this.recording.tickRecord(++this.tickCounter);
 		} else {
+			this.replayEdit.tick();
+
 			if(this.tickCounter > this.recording.getEnd()) {
 				if (!this.replayingHasFinished) {
 					this.replayingHasFinished = true;
@@ -149,6 +153,8 @@ public class ReplayManager {
 	}
 
 	public void restart(Recording recording) {
+		this.replayEdit.unload();
+
 		if(cameraPlayer != null) {
 			cameraPlayer.options.apply();
 		}
@@ -162,6 +168,7 @@ public class ReplayManager {
 		this.joined = false;
 		this.recording = recording;
 		this.paused = false;
+		this.replayEdit = new ReplayEdit();
 	}
 
 	public void startRecording(GameJoinS2CPacket packet) {

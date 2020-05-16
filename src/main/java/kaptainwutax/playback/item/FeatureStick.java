@@ -1,16 +1,11 @@
 package kaptainwutax.playback.item;
 
-import kaptainwutax.playback.init.PItems;
-import kaptainwutax.playback.render.Cube;
-import kaptainwutax.playback.render.RenderQueue;
-import kaptainwutax.playback.render.Text3D;
+import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.render.util.Color;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Camera;
+import kaptainwutax.playback.replay.edit.WorldText;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 
 public class FeatureStick extends Item {
 
@@ -20,7 +15,7 @@ public class FeatureStick extends Item {
 
 	@Override
 	public ActionResult useOnBlock(ItemUsageContext context) {
-		if(RenderQueue.get().getAt(context.getBlockPos()).isEmpty()) {
+		/*if(RenderQueue.get().getAt(context.getBlockPos()).isEmpty()) {
 			RenderQueue.get().add(new Cube(context.getBlockPos()) {
 				@Override
 				public boolean shouldRender(Camera camera) {
@@ -30,8 +25,11 @@ public class FeatureStick extends Item {
 			}, new Text3D("Test", context.getBlockPos(), Color.BLUE));
 
 			return ActionResult.SUCCESS;
-		}
+		}*/
 
+		WorldText text = new WorldText("Hello World", null, Color.RED);
+		text.setPos(context.getBlockPos());
+		Playback.getManager().replayEdit.add(text);
 		return super.useOnBlock(context);
 	}
 

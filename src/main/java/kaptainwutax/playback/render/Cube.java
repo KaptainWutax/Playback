@@ -1,26 +1,17 @@
 package kaptainwutax.playback.render;
 
 import kaptainwutax.playback.render.util.Color;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 
 public class Cube extends Cuboid {
-
-    public Cube() {
-        this(BlockPos.ORIGIN, Color.WHITE);
-    }
 
     public Cube(BlockPos pos) {
         this(pos, Color.WHITE);
     }
 
     public Cube(BlockPos pos, Color color) {
-        super(pos, new Vec3i(1, 1, 1), color);
-    }
-
-    @Override
-    public BlockPos getCenter() {
-        return this.start;
+        super(Renderer.toVec3d(pos), new Vector3f(1.0F, 1.0F, 1.0F), color);
     }
 
 }
