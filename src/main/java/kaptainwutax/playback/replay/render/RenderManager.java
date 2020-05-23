@@ -3,6 +3,7 @@ package kaptainwutax.playback.replay.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.gui.ReplayHud;
+import kaptainwutax.playback.replay.encoding.LibAvEncoder;
 import kaptainwutax.playback.replay.render.interpolation.CatmullRomSplineInterpolator;
 import kaptainwutax.playback.replay.render.interpolation.ComponentKey;
 import kaptainwutax.playback.replay.render.interpolation.HierarchyInterpolator;
@@ -10,6 +11,7 @@ import kaptainwutax.playback.replay.render.interpolation.LinearInterpolator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Tessellator;
@@ -20,6 +22,7 @@ import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,6 +48,8 @@ public class RenderManager {
 
     private Camera vanillaCamera;
     private final ReplayCamera replayCamera = new ReplayCamera();
+
+    private RenderingSession renderingSession;
 
     public RenderManager() {
         this.client = MinecraftClient.getInstance();
@@ -102,6 +107,40 @@ public class RenderManager {
         }
     }
 
+    public void startExampleRendering() {
+        if (this.renderingSession != null) {
+            this.renderingSession.setPaused(true);
+            this.renderingSession = null;
+        } else {
+            LibAvEncoder.Options options = new LibAvEncoder.Options(1280, 720, 60);
+            try {
+                RenderingSession session = new RenderingSession(this, exampleCameraPath, new LibAvEncoder(options));
+                startRendering(session);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void startRendering(RenderingSession session) {
+        if (!Playback.getManager().isInReplay()) throw new IllegalStateException("Can only render when replaying");
+        this.renderingSession = session;
+        useReplayCamera();
+        session.setPaused(false);
+    }
+
+    public boolean isRendering() {
+        return this.renderingSession != null && this.renderingSession.isRenderingFrame();
+    }
+
+    public Framebuffer getFramebuffer() {
+        return isRendering() ? this.renderingSession.framebuffer : null;
+    }
+
+    public boolean isRenderingActive() {
+        return this.renderingSession != null && this.renderingSession.isActive();
+    }
+
     @Nullable
     public CameraPath getPlayingCameraPath() {
         return this.playingCameraPath;
@@ -124,6 +163,10 @@ public class RenderManager {
      */
     public void updateCameraForCameraPath() {
         if (!Playback.getManager().isInReplay()) return;
+        if (isRendering()) {
+            if (renderingSession.cameraState != null) setCameraState(renderingSession.cameraState, true);
+            return;
+        }
 
         if (this.playingCameraPath != null) {
             int frame = this.cameraPathProgress++;
@@ -131,13 +174,29 @@ public class RenderManager {
                 this.playingCameraPath = null;
                 setFrameRate(0);
             } else {
-                this.adjustCameraPositionAndRotation(this.playingCameraPath.getCameraStateAtTime(frame));
+                this.setCameraState(this.playingCameraPath.getCameraStateAtTime(frame), false);
+            }
+        }
+    }
+
+    public void checkRender() {
+        if (this.renderingSession != null) {
+            this.renderingSession.render();
+            if (!this.renderingSession.isActive()) {
+                this.renderingSession = null;
+                useVanillaCamera();
             }
         }
     }
 
     public void render(MatrixStack matrices, float tickDelta, Camera camera, Matrix4f matrix4f) {
-        if (playingCameraPath != null || selectedCameraPath == null) return;
+        if (playingCameraPath != null || isRendering()) return;
+        if (selectedCameraPath != null) {
+            renderCameraPath(matrices, tickDelta, camera, matrix4f, selectedCameraPath);
+        }
+    }
+
+    public void renderCameraPath(MatrixStack matrices, float tickDelta, Camera camera, Matrix4f matrix4f, CameraPath path) {
         matrices.push();
         Vec3d camPos = camera.getPos();
         matrices.translate(-camPos.x, -camPos.y, -camPos.z);
@@ -151,7 +210,6 @@ public class RenderManager {
         RenderSystem.disableCull();
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
-        CameraPath path = selectedCameraPath;
         float rotationOffset = 0.5f;
         glPointSize(4.0F);
         RenderSystem.lineWidth(2.0F);
@@ -222,9 +280,10 @@ public class RenderManager {
     /**
      * Method to set the Minecraft Client's camera to the specified state
      * @param state the state of the camera
+     * @param seek whether to seek the recording to the state's timestamp
      */
-    private void adjustCameraPositionAndRotation(CameraState state) {
-        // TODO: play recording up to state.time (optional for preview?)
+    private void setCameraState(CameraState state, boolean seek) {
+        // TODO: implement seek
         replayCamera.setState(state);
     }
 

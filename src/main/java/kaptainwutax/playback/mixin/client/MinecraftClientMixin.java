@@ -21,7 +21,6 @@ import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -189,6 +188,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			boolean shouldTogglePause = false;
 			boolean shouldOpenHudScreen =  false;
 			boolean shouldPlayCameraPath = false;
+			boolean shouldRender = false;
 
 			if(KeyBindings.TOGGLE_VIEW.isPressed()) {
 				while(KeyBindings.TOGGLE_VIEW.wasPressed()) {
@@ -214,6 +214,12 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 				}
 			}
 
+			if(KeyBindings.RENDER.isPressed()) {
+				while(KeyBindings.RENDER.wasPressed()) {
+					shouldRender = true;
+				}
+			}
+
 			if(Playback.getManager().view == ReplayView.FIRST_PERSON) {
 				Playback.getManager().replayPlayer.options.apply();
 			}
@@ -228,6 +234,10 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 			if(shouldPlayCameraPath) {
 				Playback.getManager().renderManager.startPlayingCameraPath(Playback.getManager().tickCounter, MinecraftClient.getInstance().getTickDelta());
+			}
+
+			if (shouldRender) {
+				Playback.getManager().renderManager.startExampleRendering();
 			}
 
 			//open only when player is under user control

@@ -39,7 +39,7 @@ public class ReplayHud {
 
 
     public boolean isVisible() {
-        return Playback.getManager().isInReplay() && !MinecraftClient.getInstance().options.hudHidden;
+        return Playback.getManager().isInReplay() && !MinecraftClient.getInstance().options.hudHidden && !Playback.getManager().renderManager.isRendering();
     }
 
     public void resize() {

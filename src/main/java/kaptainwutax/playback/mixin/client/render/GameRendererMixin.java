@@ -1,5 +1,6 @@
 package kaptainwutax.playback.mixin.client.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.render.RenderManager;
 import kaptainwutax.playback.replay.render.ReplayCamera;
@@ -58,5 +59,11 @@ public class GameRendererMixin implements RenderManager.MutableCamera {
             return;
         }
         minecraftClient.openPauseMenu(bl);
+    }
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;viewport(IIII)V"))
+    private void fixViewport(int x, int y, int width, int height) {
+        if (Playback.getManager().renderManager.isRendering()) return;
+        RenderSystem.viewport(x, y, width, height);
     }
 }

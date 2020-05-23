@@ -1,9 +1,12 @@
 package kaptainwutax.playback.replay.encoding;
 
+import sun.nio.ch.DirectBuffer;
+
 import java.io.IOException;
+import java.util.function.BiConsumer;
 
 public abstract class Encoder<O extends Encoder.Options> implements AutoCloseable {
-    protected final O options;
+    public final O options;
 
     public Encoder(O options) {
         this.options = options;
@@ -13,7 +16,7 @@ public abstract class Encoder<O extends Encoder.Options> implements AutoCloseabl
 
     }
 
-    public abstract void captureFrame() throws IOException;
+    public abstract void captureFrame(BiConsumer<DirectBuffer, Integer> render) throws IOException;
 
     public static class Options {
         public final int width;

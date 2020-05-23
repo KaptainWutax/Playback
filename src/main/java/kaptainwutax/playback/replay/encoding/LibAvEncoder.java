@@ -13,15 +13,19 @@ import org.bytedeco.ffmpeg.swscale.SwsContext;
 import org.bytedeco.javacpp.IntPointer;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.PointerPointer;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 import sun.nio.ch.DirectBuffer;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.function.BiConsumer;
 
 import static org.bytedeco.ffmpeg.global.avcodec.*;
 import static org.bytedeco.ffmpeg.global.avformat.*;
 import static org.bytedeco.ffmpeg.global.avutil.*;
 import static org.bytedeco.ffmpeg.global.swscale.*;
+import static org.lwjgl.opengl.GL12.GL_BGRA;
 
 public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
     private final AVFormatContext formatCtx = avformat_alloc_context();
@@ -47,7 +51,7 @@ public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
         this.videoStream.avg_frame_rate(frameRate);
         this.videoStream.time_base(rational(frameRate.den(), frameRate.num()));
         this.videoCtx.time_base(rational(frameRate.den(), frameRate.num()));
-        this.videoCtx.bit_rate(4000_000);
+        this.videoCtx.bit_rate(6000_000);
         this.videoCtx.gop_size(10);
         this.videoCtx.max_b_frames(1);
         int codecPixFmt = AV_PIX_FMT_YUV420P;
@@ -55,9 +59,9 @@ public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
         int height = options.height;
         this.videoCtx.width(width).height(height).pix_fmt(codecPixFmt);
         this.codecFrame.width(width).height(height).format(codecPixFmt);
-        this.frame = aligned(width * height * 3, 32);
-        this.stride = width * 3;
-        this.swsContext = sws_getContext(width, height, AV_PIX_FMT_RGB24, width, height, codecPixFmt, SWS_BICUBIC, null, null, (double[]) null);
+        this.frame = aligned(width * height * 4, 32);
+        this.stride = width * 4;
+        this.swsContext = sws_getContext(width, height, AV_PIX_FMT_BGRA, width, height, codecPixFmt, SWS_BICUBIC, null, null, (double[]) null);
         if (av_frame_get_buffer(this.codecFrame, 32) != 0) {
             throw new IOException("Could not allocate buffer for frame");
         }
@@ -67,27 +71,22 @@ public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
     public void open() throws IOException {
         AVIOContext ioCtx = new AVIOContext();
         int ret = avio_open(ioCtx, filename, AVIO_FLAG_WRITE);
-        if (ret < 0) throw new IOException("Could not open output file for writing");
+        if (ret < 0) throw new IOException("Could not open output file for writing: " + ret);
         this.formatCtx.pb(ioCtx);
         if (avformat_write_header(this.formatCtx, (AVDictionary) null) < 0) {
-            throw new IOException("Could not write header");
+            throw new IOException("Could not write header: " + ret);
         }
         if (avcodec_open2(this.videoCtx, this.videoCodec, (AVDictionary) null) < 0) {
-            throw new IOException("Could not open video codec");
+            throw new IOException("Could not open video codec: " + ret);
         }
         av_dump_format(this.formatCtx, 0, filename, 1);
     }
 
     @Override
-    public void captureFrame() throws IOException {
+    public void captureFrame(BiConsumer<DirectBuffer, Integer> render) throws IOException {
         ByteBuffer frameBuffer = this.frame;
-        int size = frameBuffer.limit() / 3;
-        for (int i = 0; i < size; i++) {
-            int val = (int) (this.frames + i);
-            frameBuffer.put(3 * i, (byte) val);
-            frameBuffer.put(3 * i + 1, (byte) (val >> 8));
-            frameBuffer.put(3 * i + 2, (byte) (val >> 16));
-        }
+        render.accept((DirectBuffer) frameBuffer, GL_BGRA);
+        flip(frameBuffer, this.stride);
         av_frame_make_writable(this.codecFrame);
         PointerPointer<?> srcSlice = new PointerPointer<>(4);
         srcSlice.put(new Pointer(frameBuffer));
@@ -102,18 +101,39 @@ public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
         encodeFrame(this.codecFrame);
     }
 
+    private static void flip(ByteBuffer buf, int stride) {
+        long base = MemoryUtil.memAddress(buf);
+        int size = buf.remaining();
+        int height = size / stride;
+        try (MemoryStack memoryStack = MemoryStack.stackPush()) {
+            long tmp = memoryStack.nmalloc(32, stride);
+            for (int y = 0; y < height / 2; y++) {
+                int yoff = y * stride;
+                long a = base + yoff;
+                long b = base + size - yoff - stride;
+                MemoryUtil.memCopy(a, tmp, stride);
+                MemoryUtil.memCopy(b, a, stride);
+                MemoryUtil.memCopy(tmp, b, stride);
+            }
+        }
+    }
+
     private void encodeFrame(AVFrame frame) throws IOException {
         int ret = avcodec_send_frame(this.videoCtx, frame);
-        if (ret < 0) throw new IOException("Could not send frame to encoder");
+        if (ret == AVERROR_EAGAIN()) throw new IOException("Could not send frame to encoder: EAGAIN");
+        if (ret == AVERROR_ENOMEM()) throw new IOException("Could not send frame to encoder: ENOMEM");
+        if (ret == AVERROR_EINVAL()) throw new IOException("Could not send frame to encoder: EINVAL");
+        if (ret < 0) throw new IOException("Could not send frame to encoder: " + ret);
         AVPacket packet = av_packet_alloc();
         while (true) {
             ret = avcodec_receive_packet(this.videoCtx, packet);
             if (ret == AVERROR_EAGAIN() || ret == AVERROR_EOF()) return;
-            if (ret < 0) throw new IOException("Error encoding frame");
+            if (ret < 0) throw new IOException("Error encoding frame: " + ret);
             av_packet_rescale_ts(packet, this.videoCtx.time_base(), this.videoStream.time_base());
             packet.stream_index(this.videoStream.index());
+            System.out.printf("Frame %d, %d bytes\n", this.frames, packet.size());
             int ret2 = av_interleaved_write_frame(this.formatCtx, packet);
-            if (ret2 < 0) throw new IOException("Error writing frame");
+            if (ret2 < 0) throw new IOException("Error writing frame: " + ret);
         }
     }
 
@@ -175,16 +195,5 @@ public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
         buf.position((alignment - ((int) address & mask)) & mask);
         buf.limit(buf.position() + size);
         return buf.slice();
-    }
-
-    public static void main(String[] args) throws IOException {
-        System.out.println("libav version " + av_version_info().getString());
-        av_log_set_level(AV_LOG_DEBUG);
-        LibAvEncoder enc = new LibAvEncoder(new LibAvEncoder.Options(1280, 720, 60));
-        enc.open();
-        for (int i = 0; i < 300; i++) {
-            enc.captureFrame();
-        }
-        enc.close();
     }
 }
