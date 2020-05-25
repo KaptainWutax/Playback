@@ -29,18 +29,18 @@ public abstract class ClientConnectionMixin {
 
 	@Shadow @Final private NetworkSide side;
 
-	private static Set<Class<? extends Packet<?>>> SEND_WHITELIST = ImmutableSet.of(
+	private static final Set<Class<? extends Packet<?>>> SEND_WHITELIST = ImmutableSet.of(
 			HandshakeC2SPacket.class, LoginHelloC2SPacket.class,
 			RequestCommandCompletionsC2SPacket.class, ClientStatusC2SPacket.class,
 			ChatMessageC2SPacket.class
 	);
 
-	private static Set<Class<? extends Packet<?>>> RECEIVE_BLACKLIST = ImmutableSet.of(
+	private static final Set<Class<? extends Packet<?>>> RECEIVE_BLACKLIST = ImmutableSet.of(
 			ContainerSlotUpdateS2CPacket.class, PlayerAbilitiesS2CPacket.class, HeldItemChangeS2CPacket.class,
 			DifficultyS2CPacket.class, CustomPayloadS2CPacket.class, SynchronizeRecipesS2CPacket.class,
 			UnlockRecipesS2CPacket.class, PlayerSpawnPositionS2CPacket.class, InventoryS2CPacket.class,
 			WorldTimeUpdateS2CPacket.class, ChunkRenderDistanceCenterS2CPacket.class, WorldBorderS2CPacket.class,
-			PlayerSpawnPositionS2CPacket.class, PlayerPositionLookS2CPacket.class, PlayerListS2CPacket.class
+			PlayerSpawnPositionS2CPacket.class, PlayerPositionLookS2CPacket.class, PlayerListS2CPacket.class, ChunkLoadDistanceS2CPacket.class
 	);
 
 	/**
