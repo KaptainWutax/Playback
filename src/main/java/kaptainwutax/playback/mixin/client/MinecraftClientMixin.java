@@ -125,7 +125,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Inject(method = "isIntegratedServerRunning", at = @At(value = "HEAD"), cancellable = true)
 	private void replayIntegratedServerRunning(CallbackInfoReturnable<Boolean> cir) {
 		if (Playback.getManager().isInReplay()) {
-			cir.setReturnValue(!Playback.getManager().recording.isSinglePlayerRecording() && this.server != null);
+			cir.setReturnValue(Playback.getManager().recording.isSinglePlayerRecording() && this.server != null);
 		}
 	}
 
