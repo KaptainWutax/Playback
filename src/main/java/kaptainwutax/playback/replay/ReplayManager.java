@@ -198,6 +198,7 @@ public class ReplayManager {
 			e.printStackTrace();
 		}
 		recording = null;
+		Playback.getManager().setReplaying(ReplayManager.PlaybackState.NO_REPLAY);
 	}
 
 }
