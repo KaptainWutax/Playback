@@ -1,5 +1,6 @@
 package kaptainwutax.playback.replay.capture;
 
+import kaptainwutax.playback.gui.WindowSize;
 import kaptainwutax.playback.replay.action.*;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.network.Packet;
@@ -91,5 +92,9 @@ public class TickCapture implements PlaybackSerializable {
 		while(buf.readableBytes() > 0) {
 			this.addAction(Action.readAction(buf));
 		}
+	}
+
+	public void addWindowSizeAction(WindowSize windowSize) {
+		this.addAction(new WindowSizeAction(windowSize));
 	}
 }

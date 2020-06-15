@@ -32,6 +32,7 @@
     "client.sound.PositionedSoundInstanceMixin",
     "client.util.ClipboardMixin",
     "client.util.InputUtilMixin",
+    "client.util.WindowMixin",
     "client.world.ClientWorldMixin",
     "server.IntegratedServerMixin"
   ],

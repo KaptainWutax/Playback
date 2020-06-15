@@ -1,6 +1,7 @@
 package kaptainwutax.playback.replay;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.gui.WindowSize;
 import kaptainwutax.playback.replay.edit.ReplayEdit;
 import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.replay.render.RenderManager;
@@ -179,6 +180,10 @@ public class ReplayManager {
 		try {
 			recording = new Recording(Playback.getNewRecordingFile(), "rw");
 			this.setReplaying(PlaybackState.RECORDING);
+
+			//noinspection ConstantConditions
+			recording.recordInitialWindowSize(((IGetWindowSize)(Object)(MinecraftClient.getInstance().getWindow())).getWindowSize());
+
 			recording.recordJoinPacket(packet);
 			recording.recordPerspective(MinecraftClient.getInstance().options.perspective);
 			recording.recordPhysicalSide(MinecraftClient.getInstance().isInSingleplayer());
@@ -201,4 +206,8 @@ public class ReplayManager {
 		Playback.getManager().setReplaying(ReplayManager.PlaybackState.NO_REPLAY);
 	}
 
+
+	public interface IGetWindowSize {
+		WindowSize getWindowSize();
+	}
 }

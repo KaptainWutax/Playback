@@ -2,6 +2,7 @@ package kaptainwutax.playback.replay.capture;
 
 import io.netty.buffer.Unpooled;
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.gui.WindowSize;
 import kaptainwutax.playback.replay.action.DebugAction;
 import kaptainwutax.playback.replay.action.KeyAction;
 import kaptainwutax.playback.replay.action.MouseAction;
@@ -62,6 +63,8 @@ public class TickInfo implements PlaybackSerializable {
     public void recordWindowFocus(boolean windowFocus) {
         this.tickCapture.addWindowFocusAction(windowFocus);
     }
+
+    public void recordWindowSize(WindowSize windowSize) {this.tickCapture.addWindowSizeAction(windowSize);}
 
 	public void recordDebug() {
 		this.tickCapture.addDebugAction(new DebugAction(MinecraftClient.getInstance().player));

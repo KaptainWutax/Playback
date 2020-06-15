@@ -4,6 +4,7 @@ import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.gui.WindowSize;
 import kaptainwutax.playback.replay.capture.StartState;
 import kaptainwutax.playback.replay.capture.TickInfo;
 import kaptainwutax.playback.util.SerializationUtil;
@@ -20,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.DoubleConsumer;
 
 public class Recording implements AutoCloseable {
-	public static final int FORMAT_VERSION = 11;
+	public static final int FORMAT_VERSION = 12;
 	private static final int HEADER_SIZE = 16;
 
 	protected StartState startState = new StartState();
@@ -39,7 +40,8 @@ public class Recording implements AutoCloseable {
 	public long currentTick = 0;
 	private TickInfo currentTickInfo = new TickInfo(this);
 
-	transient protected Set<Integer> currentKeyStates = new HashSet<>(); //todo clear this at recording start etc
+	transient protected Set<Integer> currentKeyStates = new HashSet<>();
+	transient protected WindowSize currentRecordedWindowSize;
 	transient protected String clipboard;
 	transient protected boolean paused;
 
@@ -69,6 +71,10 @@ public class Recording implements AutoCloseable {
 
 	public void recordInitialWindowFocus(boolean windowFocus) {
 		this.startState.addWindowFocus(windowFocus);
+	}
+
+	public void recordInitialWindowSize(WindowSize windowSize) {
+		this.startState.addWindowSize(windowSize);
 	}
 
 	public void recordGameOptions(GameOptions options) {
@@ -245,6 +251,14 @@ public class Recording implements AutoCloseable {
 
 	public void setClipboard(String clipboard) {
 		this.clipboard = clipboard == null ? "" : clipboard;
+	}
+
+	public WindowSize getCurrentRecordedWindowSize() {
+		return currentRecordedWindowSize;
+	}
+
+	public void setCurrentRecordedWindowSize(WindowSize windowSize) {
+		this.currentRecordedWindowSize = windowSize;
 	}
 
 	public boolean isTickPaused() {

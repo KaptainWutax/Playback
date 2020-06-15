@@ -72,6 +72,7 @@ public abstract class Action implements PlaybackSerializable {
 		KEY(KeyAction.class),
 		MOUSE(MouseAction.class),
 		WINDOW_FOCUS(WindowFocusAction.class),
+		WINDOW_SIZE(WindowSizeAction.class),
 		CLIPBOARD_READ(ClipboardReadAction.class),
 		LOST_FOCUS_PAUSE_SCREEN(LostFocusPauseScreenAction.class),
 		PAUSED_STATE(SetPausedAction.class);
