@@ -91,7 +91,7 @@ public class PlayerFrame {
 			this.applyState();
 		}
 
-		client.setCameraEntity(this.player); //todo get rid of side effect of removing shaders (e.g. green creeper view)
+		client.setCameraEntity(this.player);
 	}
 
 	public void copyState() {
