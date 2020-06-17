@@ -1,11 +1,13 @@
 package kaptainwutax.playback.mixin.client.render;
 
 import kaptainwutax.playback.Playback;
+import kaptainwutax.playback.gui.WindowSize;
 import kaptainwutax.playback.replay.render.RenderManager;
 import kaptainwutax.playback.replay.render.ReplayCamera;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
@@ -58,5 +60,26 @@ public class GameRendererMixin implements RenderManager.MutableCamera {
             return;
         }
         minecraftClient.openPauseMenu(bl);
+    }
+
+    //The following 2 redirects cause the replayed screen (size is replayed) to get stretched to the window the user sees during the replaying
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/Window;getFramebufferWidth()I", ordinal = 1))
+    public int getReplayedFrameBufferWidth(Window window) {
+        if (Playback.getManager().isInReplay() && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
+            WindowSize size = Playback.getManager().recording.getCurrentRecordedWindowSize();
+            if (size != null)
+                return (size.getFramebufferWidth());
+        }
+        return window.getFramebufferWidth();
+    }
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/Window;getFramebufferHeight()I", ordinal = 1))
+    public int getReplayedFrameBufferHeight(Window window) {
+        if (Playback.getManager().isInReplay() && Playback.getManager().isOnlyAcceptingReplayedInputs()) {
+            WindowSize size = Playback.getManager().recording.getCurrentRecordedWindowSize();
+            if (size != null)
+                return (size.getFramebufferHeight());
+        }
+        return window.getFramebufferHeight();
     }
 }

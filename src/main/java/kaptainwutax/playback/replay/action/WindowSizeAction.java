@@ -26,8 +26,10 @@ public class WindowSizeAction extends Action {
         int scaledHeight = buf.readVarInt();
         int scaledWidth = buf.readVarInt();
         double scaleFactor = buf.readDouble();
+        int framebufferWidth = buf.readVarInt();
+        int framebufferHeight = buf.readVarInt();
 
-        this.windowSize = new WindowSize(width, height, scaledWidth, scaledHeight, scaleFactor);
+        this.windowSize = new WindowSize(width, height, scaledWidth, scaledHeight, scaleFactor, framebufferWidth, framebufferHeight);
     }
 
     @Override
@@ -38,6 +40,8 @@ public class WindowSizeAction extends Action {
         buf.writeVarInt(this.windowSize.getScaledHeight());
         buf.writeVarInt(this.windowSize.getScaledWidth());
         buf.writeDouble(this.windowSize.getScaleFactor());
+        buf.writeVarInt(this.windowSize.getFramebufferWidth());
+        buf.writeVarInt(this.windowSize.getFramebufferHeight());
     }
 
     @Override

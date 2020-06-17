@@ -182,7 +182,7 @@ public class ReplayManager {
 			this.setReplaying(PlaybackState.RECORDING);
 
 			//noinspection ConstantConditions
-			recording.recordInitialWindowSize(((IGetWindowSize)(Object)(MinecraftClient.getInstance().getWindow())).getWindowSize());
+			recording.recordInitialWindowSize(((IWindowCaller)(Object)(MinecraftClient.getInstance().getWindow())).getWindowSize());
 
 			recording.recordJoinPacket(packet);
 			recording.recordPerspective(MinecraftClient.getInstance().options.perspective);
@@ -207,7 +207,7 @@ public class ReplayManager {
 	}
 
 
-	public interface IGetWindowSize {
+	public interface IWindowCaller {
 		WindowSize getWindowSize();
 	}
 }

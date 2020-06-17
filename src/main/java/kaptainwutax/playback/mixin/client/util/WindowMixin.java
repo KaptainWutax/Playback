@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 
 @Mixin(Window.class)
-public class WindowMixin implements ReplayManager.IGetWindowSize {
+public class WindowMixin implements ReplayManager.IWindowCaller {
     @Shadow private int width;
 
     @Shadow private int height;
@@ -29,18 +29,43 @@ public class WindowMixin implements ReplayManager.IGetWindowSize {
 
     @Shadow private double scaleFactor;
 
+    @Shadow private int framebufferWidth;
+
+    @Shadow private int framebufferHeight;
+
     public WindowSize getWindowSize() {
-        return new WindowSize(this.width, this.height, this.scaledWidth, this.scaledHeight, this.scaleFactor);
+        assert Playback.getManager().isRecording();
+        return new WindowSize(this.width, this.height, this.scaledWidth, this.scaledHeight, this.scaleFactor, this.framebufferWidth, this.framebufferHeight);
     }
 
-    @Inject(method = "setScaleFactor", at = @At("RETURN"))
-    public void recordNewSize(double scaleFactor, CallbackInfo ci) {
+    public void recordWindowSize() {
         if (Playback.getManager().isRecording()) {
             Playback.getManager().recording.getCurrentTickInfo().recordWindowSize(
                     this.getWindowSize()
             );
         }
     }
+
+    @Inject(method = "setScaleFactor", at = @At("RETURN"))
+    public void recordNewSize1(double scaleFactor, CallbackInfo ci) {
+        this.recordWindowSize();
+    }
+
+    @Inject(method = "onFramebufferSizeChanged", at = @At("RETURN"))
+    public void recordNewSize2(long window, int width, int height, CallbackInfo ci) {
+        this.recordWindowSize();
+    }
+
+    @Inject(method = "updateWindowRegion", at = @At("RETURN"))
+    public void recordNewSize3(CallbackInfo ci) {
+        this.recordWindowSize();
+    }
+
+    @Inject(method = "onWindowSizeChanged", at = @At("RETURN"))
+    public void recordNewSize4(long window, int width, int height, CallbackInfo ci) {
+        this.recordWindowSize();
+    }
+
 
     @Inject(method = "getHeight", at = @At("HEAD"), cancellable = true)
     public void getHeight(CallbackInfoReturnable<Integer> cir) {
