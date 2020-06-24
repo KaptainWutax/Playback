@@ -38,7 +38,7 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 				//moving this into the !replayingHasFinished would be desireable but this would break switching to the camera player,
 				//as only the camera player has the custom hotkeys
 				Playback.getManager().cameraPlayer.apply(false);
-				Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
+				Playback.getManager().handleUserInput(key, scanCode, i);
 				Playback.getManager().replayPlayer.apply(false);
 
 				if (!Playback.getManager().replayingHasFinished) {
@@ -60,14 +60,6 @@ public abstract class KeyboardMixin implements KeyAction.IKeyboardCaller {
 			if (Playback.getManager().isProcessingReplay) {
 				return;
 			}
-			//user input, so check global keybindings (e.g. toggle replay)
-//            Playback.getManager().cameraPlayer.options.apply();
-//
-//            Playback.getManager().cameraPlayer.keyboard.onKey(window, key, scanCode, i, j);
-//
-//            if(Playback.getManager().view == ReplayView.FIRST_PERSON) {
-//                Playback.getManager().replayPlayer.options.apply();
-//            }
             //user input, not allowed to reach replayPlayer
 			if (Playback.getManager().currentAppliedPlayer == Playback.getManager().replayPlayer && !Playback.getManager().replayingHasFinished) {
 				ci.cancel();

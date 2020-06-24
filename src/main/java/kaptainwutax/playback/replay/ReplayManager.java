@@ -2,6 +2,7 @@ package kaptainwutax.playback.replay;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.gui.WindowSize;
+import kaptainwutax.playback.init.PKeyBindings;
 import kaptainwutax.playback.replay.edit.ReplayEdit;
 import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.replay.render.RenderManager;
@@ -9,6 +10,7 @@ import kaptainwutax.playback.replay.render.ReplayCamera;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
@@ -100,6 +102,12 @@ public class ReplayManager {
 		}
 		if(!this.isInReplay() || paused || this.replayingHasFinished) return;
 		this.recording.playFrame(this.tickCounter, tickDelta);
+	}
+
+	public void handleUserInput(int keyCode, int scanCode, int i) {
+		if (!InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 292)) {
+			PKeyBindings.updateSharedKeybindings(keyCode, scanCode, i);
+		}
 	}
 
 	public boolean isOnlyAcceptingReplayedInputs() {
