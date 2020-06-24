@@ -64,7 +64,7 @@ public class TickInfo implements PlaybackSerializable {
         this.tickCapture.addWindowFocusAction(windowFocus);
     }
 
-    public void recordWindowSize(WindowSize windowSize) {this.tickCapture.addWindowSizeAction(windowSize);}
+    public void recordWindowSize(WindowSize windowSize, boolean runOnResolutionChanged) {this.tickCapture.addWindowSizeAction(windowSize, runOnResolutionChanged);}
 
 	public void recordDebug() {
 		this.tickCapture.addDebugAction(new DebugAction(MinecraftClient.getInstance().player));

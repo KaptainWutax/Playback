@@ -2,18 +2,20 @@ package kaptainwutax.playback.replay.action;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.gui.WindowSize;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.PacketByteBuf;
 
 import java.io.IOException;
 
 public class WindowSizeAction extends Action {
     private WindowSize windowSize;
+    private boolean runOnResolutionChanged;
 
     public WindowSizeAction() {
         super(true);
     }
 
-    public WindowSizeAction(WindowSize windowSize) {
+    public WindowSizeAction(WindowSize windowSize, boolean runOnResolutionChanged) {
         this();
         this.windowSize = windowSize;
     }
@@ -30,6 +32,7 @@ public class WindowSizeAction extends Action {
         int framebufferHeight = buf.readVarInt();
 
         this.windowSize = new WindowSize(width, height, scaledWidth, scaledHeight, scaleFactor, framebufferWidth, framebufferHeight);
+        this.runOnResolutionChanged = buf.readBoolean();
     }
 
     @Override
@@ -42,10 +45,14 @@ public class WindowSizeAction extends Action {
         buf.writeDouble(this.windowSize.getScaleFactor());
         buf.writeVarInt(this.windowSize.getFramebufferWidth());
         buf.writeVarInt(this.windowSize.getFramebufferHeight());
+
+        buf.writeBoolean(this.runOnResolutionChanged);
     }
 
     @Override
     public void play() {
         Playback.getManager().recording.setCurrentRecordedWindowSize(this.windowSize);
+        if (this.runOnResolutionChanged)
+            MinecraftClient.getInstance().onResolutionChanged();
     }
 }

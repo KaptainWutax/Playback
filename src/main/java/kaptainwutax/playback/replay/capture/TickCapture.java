@@ -94,7 +94,7 @@ public class TickCapture implements PlaybackSerializable {
 		}
 	}
 
-	public void addWindowSizeAction(WindowSize windowSize) {
-		this.addAction(new WindowSizeAction(windowSize));
+	public void addWindowSizeAction(WindowSize windowSize, boolean runOnResolutionChanged) {
+		this.addAction(new WindowSizeAction(windowSize, runOnResolutionChanged));
 	}
 }

@@ -42,7 +42,7 @@ public class StartState implements PlaybackSerializable {
 	}
 
 	public void addWindowSize(WindowSize windowSize) {
-		this.windowSizeAction = new WindowSizeAction(windowSize);
+		this.windowSizeAction = new WindowSizeAction(windowSize, false);
 	}
 
 	public void addGameOptions(GameOptions options) {

@@ -38,32 +38,32 @@ public class WindowMixin implements ReplayManager.IWindowCaller {
         return new WindowSize(this.width, this.height, this.scaledWidth, this.scaledHeight, this.scaleFactor, this.framebufferWidth, this.framebufferHeight);
     }
 
-    public void recordWindowSize() {
+    public void recordWindowSize(boolean runOnResolutionChanged) {
         if (Playback.getManager().isRecording()) {
             Playback.getManager().recording.getCurrentTickInfo().recordWindowSize(
-                    this.getWindowSize()
+                    this.getWindowSize(), runOnResolutionChanged
             );
         }
     }
 
     @Inject(method = "setScaleFactor", at = @At("RETURN"))
     public void recordNewSize1(double scaleFactor, CallbackInfo ci) {
-        this.recordWindowSize();
+        this.recordWindowSize(false);
     }
 
     @Inject(method = "onFramebufferSizeChanged", at = @At("RETURN"))
     public void recordNewSize2(long window, int width, int height, CallbackInfo ci) {
-        this.recordWindowSize();
+        this.recordWindowSize(true);
     }
 
     @Inject(method = "updateWindowRegion", at = @At("RETURN"))
     public void recordNewSize3(CallbackInfo ci) {
-        this.recordWindowSize();
+        this.recordWindowSize(false);
     }
 
     @Inject(method = "onWindowSizeChanged", at = @At("RETURN"))
     public void recordNewSize4(long window, int width, int height, CallbackInfo ci) {
-        this.recordWindowSize();
+        this.recordWindowSize(false);
     }
 
 
