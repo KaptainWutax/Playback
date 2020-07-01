@@ -170,7 +170,14 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 		} else if (Playback.getManager().isInReplay() && Playback.getManager().isProcessingReplay) {
 			if (this.recursionDepth != 1)
 				System.out.println("Unexpected recursion depth in mousemixin, probably causes wrong behaviour");
-			return this.latestMouseAction.getScreenPositionData(index);
+			double retval = this.latestMouseAction.getScreenPositionData(index);
+
+			if (retval != coord)
+				//This should never happen, because now the screen size is replayed and the mouse coords are also replayed.
+				//This is a preparation to remove the whole recordOrReplayScreenCoordinate again.
+				//When removing this we can also add rendering a mouse texture.
+				throw new IllegalStateException("Mouse position not replayed correctly!");
+			return retval;
 		}
 		return coord;
 	}
