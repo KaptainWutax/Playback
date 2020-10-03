@@ -2,17 +2,20 @@ package kaptainwutax.playback.replay;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
+import kaptainwutax.playback.replay.action.PacketAction;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
+import kaptainwutax.playback.replay.capture.PlayNetworkHandler;
+import kaptainwutax.playback.replay.capture.PlayRenderers;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.input.KeyboardInput;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.options.GameOptions;
-import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.HitResult;
@@ -21,14 +24,16 @@ public class PlayerFrame {
 
 	private static MinecraftClient client = MinecraftClient.getInstance();
 
+
 	private ClientPlayerEntity player;
 	private ClientPlayerInteractionManager interactionManager;
 	public PlayGameOptions options;
 	public Mouse mouse;
 	public Keyboard keyboard;
 	public ToastManager toastManager;
-	public DebugRenderer debugRenderer;
 	public InGameHud inGameHud;
+	public PlayNetworkHandler networkHandler;
+	private final PlayRenderers renderers;
 
 	private boolean cameraOnly;
 	public boolean wasTeleported;
@@ -41,15 +46,20 @@ public class PlayerFrame {
 	private int itemUseCooldown;
 	private boolean windowFocus;
 
-	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager, PlayGameOptions options, Mouse mouse, Keyboard keyboard, ToastManager toastManager, DebugRenderer debugRenderer, InGameHud inGameHud, boolean windowFocus) {
+	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager,
+	                    PlayGameOptions options, Mouse mouse, Keyboard keyboard, ToastManager toastManager,
+	                    InGameHud inGameHud, boolean windowFocus, PlayNetworkHandler networkHandler,
+	                    PlayRenderers renderers) {
 		this.player = player;
 		this.interactionManager = interactionManager;
 		this.options = options;
 		this.mouse = mouse;
 		this.keyboard = keyboard;
 		this.toastManager = toastManager;
-		this.debugRenderer = debugRenderer;
 		this.inGameHud = inGameHud;
+		this.networkHandler = networkHandler;
+		this.renderers = renderers;
+
 		this.windowFocus = windowFocus;
 		this.wasTeleported = false;
 	}
@@ -111,8 +121,9 @@ public class PlayerFrame {
 		client.targetedEntity = this.targetedEntity;
 		((IClientCaller)client).setWindowFocusNoInjects(this.windowFocus);
 		((IClientCaller)client).setToastManager(this.toastManager);
-		((IClientCaller)client).setDebugRenderer(this.debugRenderer);
 		((IClientCaller)client).setInGameHud(this.inGameHud);
+		this.networkHandler.apply();
+		this.renderers.apply();
 	}
 
 	public static PlayerFrame createFromExisting() {
@@ -120,7 +131,9 @@ public class PlayerFrame {
 		PlayGameOptions options = new PlayGameOptions();
 		((IKeyboardInputCaller)client.player.input).setOptions(options.getOptions());
 		Mouse mouse = new Mouse(client);
-		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client), client.getToastManager(), client.debugRenderer, client.inGameHud, Playback.getManager().recording.getStartState().getWindowFocus());
+		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client),
+				client.getToastManager(), client.inGameHud, Playback.getManager().recording.getStartState().getWindowFocus(),
+				PlayNetworkHandler.createFromExisting(), PlayRenderers.createFromExisting());
 	}
 
 	public static PlayerFrame createNew() {
@@ -129,9 +142,13 @@ public class PlayerFrame {
 		FakePlayer player = new FakePlayer(client, client.world, client.getNetworkHandler(), interactionManager, options, new KeyboardInput(options.getOptions()));
 		Mouse mouse = new Mouse(client);
 		ToastManager toast = new ToastManager(client);
-		DebugRenderer renderer = new DebugRenderer(client);
+
 		InGameHud hud = new InGameHud(client);
-		return new PlayerFrame(player, interactionManager, options, mouse, new Keyboard(client), toast, renderer, hud, MinecraftClient.getInstance().isWindowFocused());
+		ClientPlayNetworkHandler networkHandler = new ClientPlayNetworkHandler(client, null,
+				((PacketAction.IConnectionGetter)client).getConnection(), client.getSession().getProfile());
+
+		return new PlayerFrame(player, interactionManager, options, mouse, new Keyboard(client), toast,
+				hud, MinecraftClient.getInstance().isWindowFocused(), PlayNetworkHandler.createNew(), PlayRenderers.createNew());
 	}
 
 
@@ -202,7 +219,6 @@ public class PlayerFrame {
 		void setItemUseCooldown(int itemUseCooldown);
 		void setWindowFocusNoInjects(boolean windowFocus);
 		void setToastManager(ToastManager toastManager);
-		void setDebugRenderer(DebugRenderer debugRenderer);
 		void setInGameHud(InGameHud inGameHud);
 	}
 

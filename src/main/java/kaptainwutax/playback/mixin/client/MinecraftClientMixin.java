@@ -9,6 +9,7 @@ import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.PacketAction;
 import kaptainwutax.playback.replay.action.SetPausedAction;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
+import kaptainwutax.playback.replay.capture.PlayRenderers;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
@@ -16,6 +17,9 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.render.BufferBuilderStorage;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.debug.DebugRenderer;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.toast.ToastManager;
@@ -40,7 +44,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import javax.annotation.Nullable;
 
 @Mixin(MinecraftClient.class)
-public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller, PlayerFrame.IClientCaller, PlayGameOptions.IClientCaller, SetPausedAction.ClientSetPause {
+public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller,
+		PlayerFrame.IClientCaller, PlayGameOptions.IClientCaller, SetPausedAction.ClientSetPause, PlayRenderers.IClientCaller {
 
 	private Keyboard callbackKeyboard;
 	private Mouse callbackMouse;
@@ -90,6 +95,18 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Mutable
 	@Shadow @Final public InGameHud inGameHud;
+
+	@Mutable
+	@Shadow @Final private BufferBuilderStorage bufferBuilders;
+
+	@Mutable
+	@Shadow @Final public WorldRenderer worldRenderer;
+
+	@Mutable
+	@Shadow @Final public GameRenderer gameRenderer;
+
+	@Mutable
+	@Shadow @Final private HeldItemRenderer heldItemRenderer;
 
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.getManager().isInReplay()) {
@@ -282,8 +299,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
-
-
 	@Override
 	public ClientConnection getConnection() {
 		return this.connection;
@@ -359,11 +374,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	}
 
 	@Override
-	public void setDebugRenderer(DebugRenderer debugRenderer) {
-		this.debugRenderer = debugRenderer;
-	}
-
-	@Override
 	public void setInGameHud(InGameHud inGameHud) {
 		this.inGameHud = inGameHud;
 	}
@@ -386,4 +396,30 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	public void setPaused(boolean paused) {
 		this.paused = paused;
 	}
+
+	@Override
+	public void setBufferBuilders(BufferBuilderStorage bufferBuilders) {
+		this.bufferBuilders = bufferBuilders;
+	}
+
+	@Override
+	public void setWorldRenderer(WorldRenderer worldRenderer) {
+		this.worldRenderer = worldRenderer;
+	}
+
+	@Override
+	public void setGameRenderer(GameRenderer gameRenderer) {
+		this.gameRenderer = gameRenderer;
+	}
+
+	@Override
+	public void setDebugRenderer(DebugRenderer debugRenderer) {
+		this.debugRenderer = debugRenderer;
+	}
+
+	@Override
+	public void setHeldItemRenderer(HeldItemRenderer heldItemRenderer) {
+		this.heldItemRenderer = heldItemRenderer;
+	}
+
 }
