@@ -1,5 +1,6 @@
 package kaptainwutax.playback.replay.edit;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import kaptainwutax.playback.render.Cuboid;
 import kaptainwutax.playback.render.Renderer;
 import kaptainwutax.playback.render.util.Color;
@@ -73,7 +74,9 @@ public abstract class WorldEdit implements Renderer {
 		}
 
 		if(this.isHovered()) {
+			GlStateManager.disableDepthTest();
 			this.outline.render(tickDelta, matrices);
+			GlStateManager.enableDepthTest();
 		}
 	}
 

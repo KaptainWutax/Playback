@@ -1,5 +1,6 @@
 package kaptainwutax.playback.replay.edit;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.datafixers.Dynamic;
 import kaptainwutax.playback.render.Text3D;
 import kaptainwutax.playback.render.util.Color;
@@ -56,7 +57,7 @@ public class WorldText extends WorldEdit {
 		int h = this.text3D.getHeight();
 		int w = this.text3D.getWidth();
 
-		this.setClickBox(new Box(x - w, y + 2, z - 0.2D, x - 1, y + h, z + 0.2D));
+		this.setClickBox(new Box(x - w, y + 2.0D, z - 0.2D, x - 1.0D, y + h, z + 0.2D));
 		super.refresh();
 	}
 
@@ -68,6 +69,7 @@ public class WorldText extends WorldEdit {
 	@Override
 	public void render(float tickDelta, MatrixStack matrices) {
 		super.render(tickDelta, matrices);
+
 		if(this.text3D != null) {
 			this.text3D.render(tickDelta, matrices);
 		}
