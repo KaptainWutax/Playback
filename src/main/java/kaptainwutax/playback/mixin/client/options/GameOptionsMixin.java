@@ -2,6 +2,7 @@ package kaptainwutax.playback.mixin.client.options;
 
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.options.Perspective;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -13,6 +14,8 @@ import java.io.File;
 public abstract class GameOptionsMixin implements PlayGameOptions.IOptionsCaller {
 
 	@Shadow @Final @Mutable private File optionsFile;
+
+	@Shadow public abstract Perspective getPerspective();
 
 	@Override
 	public void setFile(File file) {

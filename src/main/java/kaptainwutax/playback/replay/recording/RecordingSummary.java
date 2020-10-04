@@ -6,9 +6,6 @@ import kaptainwutax.playback.replay.ReplayManager;
 import kaptainwutax.playback.replay.capture.StartState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.LiteralText;
-import net.minecraft.world.GameMode;
-import net.minecraft.world.level.LevelGeneratorType;
-import net.minecraft.world.level.LevelInfo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -65,7 +62,7 @@ public class RecordingSummary {
         MinecraftClient.getInstance().send(() -> {
             Playback.getManager().restart(recording);
             Playback.getManager().setReplaying(ReplayManager.PlaybackState.REPLAYING);
-            MinecraftClient.getInstance().startIntegratedServer(".replay", "Replay", new LevelInfo(0, GameMode.SPECTATOR, false, false, LevelGeneratorType.DEFAULT));
+            MinecraftClient.getInstance().startIntegratedServer("Replay");
             MinecraftClient.getInstance().getServer().getPlayerManager().setCheatsAllowed(true);
         });
     }

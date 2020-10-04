@@ -16,6 +16,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -56,7 +57,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float delta) {
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		if (this.startTime == null)
 			this.init();
 
@@ -64,14 +65,14 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
 		int i = this.width / 2;
-		int prevBlitOffset = this.getBlitOffset();
+		int prevBlitOffset = this.getZOffset();
 		//BlitOffset is a z value, more positive renders on top
-		this.setBlitOffset(-10);
+		this.setZOffset(-10);
 		//args: on screen x1 (left), on screen y1 (top), in texture x1, in texture y1, width Dx, height Dy
-		this.blit(this.x - 1, this.y - 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+		this.drawTexture(matrices, this.x - 1, this.y - 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
 
-		this.blit(this.x - 2, this.y + 1, 0,
+		this.drawTexture(matrices, this.x - 2, this.y + 1, 0,
 				TEXTURE_HEIGHT + 2, (int)(TEXTURE_WIDTH * MathHelper.clamp(Playback.getManager().recording.currentTick / this.duration, 0, 1)), TEXTURE_HEIGHT);
 
 		Collection<CameraPath> paths = Playback.getManager().renderManager.getCameraPaths();
@@ -79,7 +80,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 			if(this.endTime.isAfter(path.getStartTime()) && this.startTime.isBefore(path.getEndTime())) {
 				//this.renderCameraPathBox(path);
 				if (path instanceof KeyFrameCameraPath) {
-					this.renderCameraPathKeyFrames((KeyFrameCameraPath) path);
+					this.renderCameraPathKeyFrames(matrices, (KeyFrameCameraPath)path);
 				}
 			}
 		}
@@ -87,10 +88,10 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 		GameTimeStamp progressTime = Playback.getManager().renderManager.getCurrentCameraPathTime();
 		if (progressTime != null) {
 			int x1 = (int)(this.width * progressTime.asDouble() / this.duration);
-			this.blit(this.x + x1 - 1, this.y + BORDER_HEIGHT, 0, 64, 3, TEXTURE_HEIGHT);
+			this.drawTexture(matrices, this.x + x1 - 1, this.y + BORDER_HEIGHT, 0, 64, 3, TEXTURE_HEIGHT);
 		}
 
-		this.setBlitOffset(prevBlitOffset);
+		this.setZOffset(prevBlitOffset);
 		RenderSystem.disableRescaleNormal();
 		RenderSystem.disableBlend();
 		//int xAdd = this.width / 2;
@@ -108,7 +109,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 			date = new Date(Math.abs(tick - Playback.getManager().recording.currentTick) * 50 - (1000 * 60 * 60 * 19));
 			String addend = format.format(date);
 
-			this.renderTooltip(mouseX, mouseY, time + "  "
+			this.renderTooltip(matrices, mouseX, mouseY, time + "  "
 					+ (tick < Playback.getManager().recording.currentTick ? "-" : "+") + addend);
 		}
 
@@ -116,23 +117,23 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	}
 
 
-	private void renderCameraPathKeyFrames(KeyFrameCameraPath path) {
+	private void renderCameraPathKeyFrames(MatrixStack matrices, KeyFrameCameraPath path) {
 		List<KeyFrame> keyFrames = path.getKeyFrames();
 		for (KeyFrame keyFrame : keyFrames) {
 			int x1 = this.x + (int)(this.width * keyFrame.getTimeAsDouble() / this.duration);
-			this.blit(x1 - KEYFRAME_TEXTURE_SIZE_X / 2, this.y + this.height / 2 - KEYFRAME_TEXTURE_SIZE_Y / 2, 0, 56, KEYFRAME_TEXTURE_SIZE_X, KEYFRAME_TEXTURE_SIZE_Y);
+			this.drawTexture(matrices, x1 - KEYFRAME_TEXTURE_SIZE_X / 2, this.y + this.height / 2 - KEYFRAME_TEXTURE_SIZE_Y / 2, 0, 56, KEYFRAME_TEXTURE_SIZE_X, KEYFRAME_TEXTURE_SIZE_Y);
 		}
 	}
 
-	private void renderCameraPathBox(CameraPath path) {
+	private void renderCameraPathBox(MatrixStack matrices, CameraPath path) {
 		double start = Math.max(this.startTime.asDouble(), path.getStartTime().asDouble());
 		double end = Math.min(this.endTime.asDouble(), path.getEndTime().asDouble());
 		int x1 = this.x + (int)(this.width * start / this.duration);
 		int x2 = this.x + (int)(this.width * end / this.duration);
 
 		//Parameters have the wrong name in fillGradient: order is LEFT,TOP,RIGHT,BOTTOM // x1,y1,x2,y2
-		this.setBlitOffset(-9);
-		this.fillGradient(x1, this.y, x2, this.y + this.height, 0xff808080, 0xff808080);
+		this.setZOffset(-9);
+		this.fillGradient(matrices, x1, this.y, x2, this.y + this.height, 0xff808080, 0xff808080);
 	}
 
 	private void onLeftClick(double mouseX, double mouseY) {
@@ -180,7 +181,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 		return y;
 	}
 
-	public void renderTooltip(int x, int y, String... text) {
+	public void renderTooltip(MatrixStack matrices, int x, int y, String... text) {
 		if (text.length != 0) {
 			RenderSystem.disableRescaleNormal();
 			RenderSystem.disableDepthTest();
@@ -208,20 +209,20 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 				l = this.height - n - 6;
 			}
 
-			this.setBlitOffset(300);
+			this.setZOffset(300);
 
 			int o = -267386864;
-			this.fillGradient(k - 3, l - 4, k + i + 3, l - 3, -267386864, -267386864);
-			this.fillGradient(k - 3, l + n + 3, k + i + 3, l + n + 4, -267386864, -267386864);
-			this.fillGradient(k - 3, l - 3, k + i + 3, l + n + 3, -267386864, -267386864);
-			this.fillGradient(k - 4, l - 3, k - 3, l + n + 3, -267386864, -267386864);
-			this.fillGradient(k + i + 3, l - 3, k + i + 4, l + n + 3, -267386864, -267386864);
+			this.fillGradient(matrices, k - 3, l - 4, k + i + 3, l - 3, -267386864, -267386864);
+			this.fillGradient(matrices, k - 3, l + n + 3, k + i + 3, l + n + 4, -267386864, -267386864);
+			this.fillGradient(matrices, k - 3, l - 3, k + i + 3, l + n + 3, -267386864, -267386864);
+			this.fillGradient(matrices, k - 4, l - 3, k - 3, l + n + 3, -267386864, -267386864);
+			this.fillGradient(matrices, k + i + 3, l - 3, k + i + 4, l + n + 3, -267386864, -267386864);
 			int p = 1347420415;
 			int q = 1344798847;
-			this.fillGradient(k - 3, l - 3 + 1, k - 3 + 1, l + n + 3 - 1, 1347420415, 1344798847);
-			this.fillGradient(k + i + 2, l - 3 + 1, k + i + 3, l + n + 3 - 1, 1347420415, 1344798847);
-			this.fillGradient(k - 3, l - 3, k + i + 3, l - 3 + 1, 1347420415, 1347420415);
-			this.fillGradient(k - 3, l + n + 2, k + i + 3, l + n + 3, 1344798847, 1344798847);
+			this.fillGradient(matrices, k - 3, l - 3 + 1, k - 3 + 1, l + n + 3 - 1, 1347420415, 1344798847);
+			this.fillGradient(matrices, k + i + 2, l - 3 + 1, k + i + 3, l + n + 3 - 1, 1347420415, 1344798847);
+			this.fillGradient(matrices, k - 3, l - 3, k + i + 3, l - 3 + 1, 1347420415, 1347420415);
+			this.fillGradient(matrices, k - 3, l + n + 2, k + i + 3, l + n + 3, 1344798847, 1344798847);
 			MatrixStack matrixStack = new MatrixStack();
 			VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
 			Matrix4f matrix4f = matrixStack.peek().getModel();
@@ -240,7 +241,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 			}
 
 			immediate.draw();
-			this.setBlitOffset(0);
+			this.setZOffset(0);
 			RenderSystem.enableDepthTest();
 			RenderSystem.enableRescaleNormal();
 		}

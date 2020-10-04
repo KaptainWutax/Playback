@@ -7,16 +7,18 @@ import kaptainwutax.playback.replay.action.WindowSizeAction;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.options.Perspective;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
+
 import java.io.IOException;
 
 public class StartState implements PlaybackSerializable {
 
 	private PacketAction joinPacket = new PacketAction();
-	private int perspective;
+	private Perspective perspective;
 	private int isSinglePlayer = -1;
 	private WindowFocusAction windowFocus = new WindowFocusAction(true);
 	private String gameOptions;
@@ -24,7 +26,7 @@ public class StartState implements PlaybackSerializable {
 
 	public StartState() {}
 
-	public void addPerspective(int perspective) {
+	public void addPerspective(Perspective perspective) {
 		this.perspective = perspective;
 	}
 
@@ -49,7 +51,7 @@ public class StartState implements PlaybackSerializable {
 	}
 
 	public void play() {
-		MinecraftClient.getInstance().options.perspective = this.perspective;
+		MinecraftClient.getInstance().options.method_31043(this.perspective);
 		this.windowFocus.play();
 		PlayGameOptions.loadContents(MinecraftClient.getInstance().options, this.gameOptions);
 		this.windowSizeAction.play();
@@ -57,7 +59,7 @@ public class StartState implements PlaybackSerializable {
 
 	@Override
 	public void read(PacketByteBuf buf) throws IOException {
-		this.perspective = buf.readVarInt();
+		this.perspective = Perspective.values()[buf.readVarInt()];
 		this.isSinglePlayer = buf.readBoolean() ? 1 : 0;
 		this.joinPacket.read(buf);
 		this.windowFocus = new WindowFocusAction(true);
@@ -69,7 +71,7 @@ public class StartState implements PlaybackSerializable {
 
 	@Override
 	public void write(PacketByteBuf buf) throws IOException {
-		buf.writeVarInt(this.perspective);
+		buf.writeVarInt(this.perspective.ordinal());
 		buf.writeBoolean(this.isSinglePlayer());
 		this.joinPacket.write(buf);
 		this.windowFocus.write(buf);
@@ -77,7 +79,7 @@ public class StartState implements PlaybackSerializable {
 		this.windowSizeAction.write(buf);
 	}
 
-	public int getPerspective() {
+	public Perspective getPerspective() {
 		return this.perspective;
 	}
 
@@ -99,4 +101,5 @@ public class StartState implements PlaybackSerializable {
 	public boolean getWindowFocus() {
 	    return this.windowFocus.getFocus();
     }
+
 }

@@ -10,9 +10,11 @@ import kaptainwutax.playback.replay.capture.TickInfo;
 import kaptainwutax.playback.util.SerializationUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.options.Perspective;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+
 import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,7 +62,7 @@ public class Recording implements AutoCloseable {
 		this.startState.addJoinPacket(packet);
 	}
 
-	public void recordPerspective(int perspective) {
+	public void recordPerspective(Perspective perspective) {
 		this.startState.addPerspective(perspective);
 	}
 

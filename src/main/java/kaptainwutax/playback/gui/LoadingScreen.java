@@ -2,6 +2,7 @@ package kaptainwutax.playback.gui;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 
@@ -21,17 +22,18 @@ public class LoadingScreen extends Screen implements DoubleConsumer {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float delta) {
-        renderBackground();
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        renderBackground(matrices);
         int center = this.width / 2;
         int barY = this.height / 2;
         int barHeight = 4;
         int border = 1;
-        drawCenteredString(this.font, this.title.asFormattedString(), center, barY - 50, 0xffffff);
-        drawCenteredString(this.font, progress + "%", center, barY - 20, 0xffffff);
-        fill(center - 50 - border, barY - barHeight - border, center + 50 + border, barY + barHeight + border, 0xff666666);
-        fill(center - 50, barY - barHeight, center - 50 + progress, barY + barHeight, 0xffffffff);
-        if (joining) drawCenteredString(this.font, I18n.translate("connect.joining"), center, barY + 20, 0xffffff);
-        super.render(mouseX, mouseY, delta);
+        drawCenteredString(matrices, this.textRenderer, this.title.asString(), center, barY - 50, 0xffffff);
+        drawCenteredString(matrices, this.textRenderer, progress + "%", center, barY - 20, 0xffffff);
+        fill(matrices, center - 50 - border, barY - barHeight - border, center + 50 + border, barY + barHeight + border, 0xff666666);
+        fill(matrices, center - 50, barY - barHeight, center - 50 + progress, barY + barHeight, 0xffffffff);
+        if (joining) drawCenteredString(matrices, this.textRenderer, I18n.translate("connect.joining"), center, barY + 20, 0xffffff);
+        super.render(matrices, mouseX, mouseY, delta);
     }
+
 }

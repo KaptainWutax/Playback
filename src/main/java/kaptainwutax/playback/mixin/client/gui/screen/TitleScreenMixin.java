@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,7 +26,7 @@ public abstract class TitleScreenMixin extends Screen {
         boolean modMenu = FabricLoader.getInstance().isModLoaded("modmenu");
         int line4 = this.height / 4 + 48 + 24 * 3;
         int x = modMenu ? this.width / 2 + 2 : this.width / 2 - 100;
-        this.addButton(new ButtonWidget(x, line4, 200, 20, "Playback", button -> minecraft.openScreen(new PlaybackBrowserScreen(this))));
+        this.addButton(new ButtonWidget(x, line4, 200, 20, new LiteralText("Playback"), button -> this.client.openScreen(new PlaybackBrowserScreen(this))));
 
         for(AbstractButtonWidget button : this.buttons) {
             if (!modMenu && button.y <= line4) button.y -= 12;

@@ -1,7 +1,6 @@
 package kaptainwutax.playback.replay.render;
 
 import com.mojang.serialization.Dynamic;
-
 import com.mojang.serialization.DynamicOps;
 
 import java.util.LinkedHashMap;

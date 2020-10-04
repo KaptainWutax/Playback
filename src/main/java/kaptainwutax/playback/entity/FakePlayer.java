@@ -19,7 +19,7 @@ public class FakePlayer extends ClientPlayerEntity {
 
 	//This is the player that carries the camera in THIRD PERSON replay. This should act like a freecam, without influencing the replay
 	public FakePlayer(MinecraftClient client, ClientWorld clientWorld, ClientPlayNetworkHandler clientPlayNetworkHandler, ClientPlayerInteractionManager interactionManager, PlayGameOptions options, Input keyboardInput) {
-		super(client, clientWorld, clientPlayNetworkHandler, null, new ClientRecipeBook(clientWorld.getRecipeManager()));
+		super(client, clientWorld, clientPlayNetworkHandler, null, new ClientRecipeBook(), false, false);
 
 		GameMode gameMode = GameMode.SPECTATOR;
 
@@ -29,7 +29,7 @@ public class FakePlayer extends ClientPlayerEntity {
 
 		this.setClientPermissionLevel(2);
 		this.input = keyboardInput;
-		this.dimension = null;
+		//this.dimension = null; TODO: check if this breaks anything
 
 		this.inventory.addPickBlock(new ItemStack(PItems.FEATURE_STICK));
 	}

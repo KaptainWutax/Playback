@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(RenderTickCounter.class)
@@ -38,7 +37,7 @@ public class RenderTickCounterMixin implements RenderManager.ISetForcedFrameRate
             this.tickDelta += this.lastFrameDuration;
             int ticksThisFrame = (int) this.tickDelta;
             this.tickDelta -= (float) ticksThisFrame;
-            ci.cancel();
+            cir.cancel();
         }
     }
 }

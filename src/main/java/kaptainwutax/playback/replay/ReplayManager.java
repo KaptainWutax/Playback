@@ -193,7 +193,7 @@ public class ReplayManager {
 			recording.recordInitialWindowSize(((IWindowCaller)(Object)(MinecraftClient.getInstance().getWindow())).getWindowSize());
 
 			recording.recordJoinPacket(packet);
-			recording.recordPerspective(MinecraftClient.getInstance().options.perspective);
+			recording.recordPerspective(MinecraftClient.getInstance().options.getPerspective());
 			recording.recordPhysicalSide(MinecraftClient.getInstance().isInSingleplayer());
 			recording.recordInitialWindowFocus(MinecraftClient.getInstance().isWindowFocused());
 			recording.recordGameOptions(MinecraftClient.getInstance().options);

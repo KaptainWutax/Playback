@@ -2,12 +2,9 @@ package kaptainwutax.playback.replay.action;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.fixes.PacketByteBuf_NotifyPacketActionOnDataloss;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkSide;
-import net.minecraft.network.NetworkState;
-import net.minecraft.network.Packet;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.*;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+
 import java.io.IOException;
 
 public class PacketAction extends Action {

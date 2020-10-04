@@ -2,6 +2,7 @@ package kaptainwutax.playback.gui;
 
 import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -33,9 +34,9 @@ public class ReplayHudScreen extends Screen {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float delta) {
-        this.drawables.forEach(e -> e.render(mouseX, mouseY, delta));
-        super.render(mouseX, mouseY, delta);
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        this.drawables.forEach(e -> e.render(matrices, mouseX, mouseY, delta));
+        super.render(matrices, mouseX, mouseY, delta);
         //Parameters have the wrong name in fillGradient: order is LEFT,TOP,RIGHT,BOTTOM
         //top left corner
         //this.fillGradient(0, 0, 20, 20, 0x8000ffff, 0x80ff00ff);

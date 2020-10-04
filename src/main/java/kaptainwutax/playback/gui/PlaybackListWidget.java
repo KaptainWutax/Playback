@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 
 import javax.annotation.Nullable;
@@ -71,11 +72,11 @@ public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackLi
         }
 
         @Override
-        public void render(int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
+        public void render(MatrixStack matrices, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovering, float delta) {
             String filename = summary.file == null ? "In-Memory Recording" : summary.file.getName();
             int extIndex = filename.lastIndexOf(".pbk");
             if (extIndex > 0) filename = filename.substring(0, extIndex);
-            DrawableHelper.fill(x, y, x + 32, y + 32, 0xa0909090);
+            DrawableHelper.fill(matrices, x, y, x + 32, y + 32, 0xa0909090);
             String fileSize = String.format("%.2fMB", summary.length / (1024.0 * 1024.0));
             String line1 = fileSize;
             String line2 = null;
@@ -91,11 +92,11 @@ public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackLi
                 int hours = (int) ((time - minutes) / 60);
                 String timeStr = hours > 0 ? String.format("%d:%02d:%02d", hours, minutes, seconds) : String.format("%d:%02d", minutes, seconds);
                 GameJoinS2CPacket joinPacket = summary.startState.getJoinPacket();
-                line2 = joinPacket == null ? timeStr : timeStr + " " + joinPacket.getGameMode().getTranslatableName().asFormattedString();
+                line2 = joinPacket == null ? timeStr : timeStr + " " + joinPacket.getGameMode().getTranslatableName().asString();
             }
-            this.client.textRenderer.draw(filename, x + 32 + 3, y + 1, 0xffffff);
-            this.client.textRenderer.draw(line1, x + 32 + 3, y + 3 + 9, 0x808080);
-            this.client.textRenderer.draw(line2, x + 32 + 3, y + 3 + 9 + 9, 0x808080);
+            this.client.textRenderer.draw(matrices, filename, x + 32 + 3, y + 1, 0xffffff);
+            this.client.textRenderer.draw(matrices, line1, x + 32 + 3, y + 3 + 9, 0x808080);
+            this.client.textRenderer.draw(matrices, line2, x + 32 + 3, y + 3 + 9 + 9, 0x808080);
         }
 
         @Override
