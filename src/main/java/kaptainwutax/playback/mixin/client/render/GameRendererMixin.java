@@ -30,14 +30,14 @@ public class GameRendererMixin implements RenderManager.MutableCamera {
         Playback.getManager().renderManager.updateCameraForCameraPath();
     }
 
-    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/client/util/math/Matrix4f;)V"))
+    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V"))
     private void rotateRoll(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
         if (camera instanceof ReplayCamera) {
             matrix.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(((ReplayCamera) camera).getRoll()));
         }
     }
 
-    @Inject(method = "method_22973", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getBasicProjectionMatrix", at = @At("HEAD"), cancellable = true)
     private void replayCameraMatrix(Camera camera, float f, boolean bl, CallbackInfoReturnable<Matrix4f> cir) {
         if (camera instanceof ReplayCamera) {
             cir.setReturnValue(((ReplayCamera) camera).getBasicProjectionMatrix(f, bl));

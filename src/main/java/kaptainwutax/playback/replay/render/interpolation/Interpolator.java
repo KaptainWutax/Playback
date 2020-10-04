@@ -1,6 +1,6 @@
 package kaptainwutax.playback.replay.render.interpolation;
 
-import com.mojang.datafixers.types.DynamicOps;
+import com.mojang.serialization.DynamicOps;
 import kaptainwutax.playback.replay.render.CameraState;
 
 import java.util.List;

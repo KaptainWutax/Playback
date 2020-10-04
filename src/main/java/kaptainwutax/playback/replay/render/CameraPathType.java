@@ -1,6 +1,6 @@
 package kaptainwutax.playback.replay.render;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Dynamic;
 import kaptainwutax.playback.Playback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.MutableRegistry;

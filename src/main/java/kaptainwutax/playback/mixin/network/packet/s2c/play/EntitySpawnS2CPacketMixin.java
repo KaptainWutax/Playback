@@ -20,7 +20,7 @@ public abstract class EntitySpawnS2CPacketMixin {
     @Shadow private int pitch; //the problem is that the datatype is int not byte
     @Shadow private int yaw; //the problem is that the datatype is int not byte
 
-    @Redirect(method = "write", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/PacketByteBuf;writeByte(I)Lio/netty/buffer/ByteBuf;"))
+    @Redirect(method = "write", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;writeByte(I)Lio/netty/buffer/ByteBuf;"))
     private ByteBuf saveIntInstead(PacketByteBuf packetByteBuf, int i) {
         ByteBuf retVal;
         if (Playback.getManager().recording != null && Playback.getManager().recording.isSinglePlayerRecording())
@@ -30,7 +30,7 @@ public abstract class EntitySpawnS2CPacketMixin {
         return retVal;
     }
 
-    @Redirect(method = "read", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/PacketByteBuf;readByte()B"))
+    @Redirect(method = "read", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;readByte()B"))
     private byte readNothing(PacketByteBuf packetByteBuf) {
         if (Playback.getManager().recording != null && Playback.getManager().recording.isSinglePlayerRecording()) {
             return 0;
@@ -39,7 +39,7 @@ public abstract class EntitySpawnS2CPacketMixin {
         }
     }
 
-    @Inject(method = "read", require = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/PacketByteBuf;readInt()I", ordinal = 0, shift = At.Shift.BEFORE))
+    @Inject(method = "read", require = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;readInt()I", ordinal = 0, shift = At.Shift.BEFORE))
     private void readIntsInstead(PacketByteBuf buf, CallbackInfo ci) {
         if (Playback.getManager().recording != null && Playback.getManager().recording.isSinglePlayerRecording()) {
             this.pitch = buf.readInt();

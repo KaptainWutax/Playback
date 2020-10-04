@@ -1,7 +1,6 @@
 package kaptainwutax.playback.replay.render.interpolation;
 
-import com.mojang.datafixers.Dynamic;
-
+import com.mojang.serialization.Dynamic;
 public class LinearAngleInterpolator extends LinearInterpolator {
     public static LinearAngleInterpolator INSTANCE = new LinearAngleInterpolator();
 

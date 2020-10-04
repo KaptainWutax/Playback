@@ -1,6 +1,6 @@
 package kaptainwutax.playback.replay.edit;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Dynamic;
 import kaptainwutax.playback.render.Text3D;
 import kaptainwutax.playback.render.util.Color;
 import net.minecraft.client.util.math.MatrixStack;

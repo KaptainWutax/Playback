@@ -1,6 +1,6 @@
 package kaptainwutax.playback.replay.render.interpolation;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Dynamic;
 import net.minecraft.util.math.MathHelper;
 
 public class LinearInterpolator extends SimpleInterpolator<Double> {

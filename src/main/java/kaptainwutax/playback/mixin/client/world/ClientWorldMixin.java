@@ -27,7 +27,7 @@ public abstract class ClientWorldMixin {
 	 * @param worldChunk the chunk
 	 * @param entity the entity to be added
 	 */
-	@Redirect(method = "checkChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;addEntity(Lnet/minecraft/entity/Entity;)V"))
+	@Redirect(method = "checkEntityChunkPos", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;addEntity(Lnet/minecraft/entity/Entity;)V"))
 	private void addEntityIfNotFakePlayer(WorldChunk worldChunk, Entity entity) {
 		if (entity instanceof FakePlayer) {
 			entity.updateNeeded = true;

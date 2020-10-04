@@ -132,7 +132,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderTickCounter;beginRenderTick(J)V", shift = At.Shift.AFTER), cancellable = true)
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderTickCounter;beginRenderTick(J)I", shift = At.Shift.AFTER), cancellable = true)
 	private void renderRunTasks(boolean tick, CallbackInfo ci) {
 		applyReplayPlayerIfNecessary();
 		Playback.getManager().tickFrame(this.paused, this.getTickDelta());

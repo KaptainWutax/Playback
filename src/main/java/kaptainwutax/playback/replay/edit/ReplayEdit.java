@@ -1,6 +1,7 @@
 package kaptainwutax.playback.replay.edit;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Dynamic;
+
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.render.RenderQueue;
 import kaptainwutax.playback.render.Renderer;

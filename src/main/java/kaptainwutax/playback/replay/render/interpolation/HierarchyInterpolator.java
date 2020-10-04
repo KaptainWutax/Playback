@@ -1,8 +1,8 @@
 package kaptainwutax.playback.replay.render.interpolation;
 
 import com.mojang.datafixers.DSL;
-import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.types.DynamicOps;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.DynamicOps;
 import kaptainwutax.playback.replay.render.CameraState;
 import net.minecraft.util.Identifier;
 

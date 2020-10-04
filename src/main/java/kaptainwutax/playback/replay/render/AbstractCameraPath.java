@@ -1,6 +1,6 @@
 package kaptainwutax.playback.replay.render;
 
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Dynamic;
 import net.minecraft.util.math.MathHelper;
 
 public abstract class AbstractCameraPath implements CameraPath {
