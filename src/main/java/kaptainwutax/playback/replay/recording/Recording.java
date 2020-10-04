@@ -277,8 +277,6 @@ public class Recording implements AutoCloseable {
 
 			Playback.getManager().togglePause();
 		}
-
-		System.out.println("die");
 	}
 
 }
