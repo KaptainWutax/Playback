@@ -20,6 +20,6 @@ public class InGameHudMixin implements ReplayHud.InGameHudGetters {
             )
     )
     private void renderReplayHud(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        Playback.getManager().renderManager.replayHud.renderReplayHud((InGameHud)(Object)this, tickDelta);
+        Playback.getManager().renderManager.replayHud.renderReplayHud(matrices, (InGameHud)(Object)this, tickDelta);
     }
 }

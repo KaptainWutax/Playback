@@ -9,7 +9,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.DataQueryHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.recipe.RecipeManager;
-import net.minecraft.tag.TagManagerLoader;
+import net.minecraft.tag.TagManager;
 
 public class PlayNetworkHandler {
 
@@ -36,7 +36,7 @@ public class PlayNetworkHandler {
 		INetworkHandlerCaller current = (INetworkHandlerCaller)client.getNetworkHandler();
 		current.setAdvancementHandler(this.internal.getAdvancementHandler());
 		current.setCommandSource(this.internal.getCommandSource());
-		current.setRegistryManager(this.internal.getRegistryManager());
+		current.setTagManager(this.internal.getTagManager());
 		current.setDataQueryManager(this.internal.getDataQueryManager());
 		current.setChunkLoadDistance(this.internal.getChunkLoadDistance());
 		current.setCommandDispatcher(this.internal.getCommandDispatcher());
@@ -46,7 +46,7 @@ public class PlayNetworkHandler {
 	public interface INetworkHandlerCaller {
 		ClientAdvancementManager getAdvancementHandler();
 		ClientCommandSource getCommandSource();
-		TagManagerLoader getRegistryManager();
+		TagManager getTagManager();
 		DataQueryHandler getDataQueryManager();
 		int getChunkLoadDistance();
 		CommandDispatcher<CommandSource> getCommandDispatcher();
@@ -54,7 +54,7 @@ public class PlayNetworkHandler {
 
 		void setAdvancementHandler(ClientAdvancementManager advancementHandler);
 		void setCommandSource(ClientCommandSource commandSource);
-		void setRegistryManager(TagManagerLoader registryManager);
+		void setTagManager(TagManager tagManager);
 		void setDataQueryManager(DataQueryHandler dataQueryManager);
 		void setChunkLoadDistance(int chunkLoadDistance);
 		void setCommandDispatcher(CommandDispatcher<CommandSource> commandDispatcher);

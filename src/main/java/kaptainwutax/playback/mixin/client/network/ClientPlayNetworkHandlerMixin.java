@@ -17,7 +17,7 @@ import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import net.minecraft.recipe.RecipeManager;
-import net.minecraft.tag.TagManagerLoader;
+import net.minecraft.tag.TagManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -38,7 +38,7 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 	@Mutable
 	@Shadow @Final private ClientCommandSource commandSource;
 
-	@Shadow private TagManagerLoader tagManager;
+	@Shadow private TagManager tagManager;
 
 	@Mutable
 	@Shadow @Final private DataQueryHandler dataQueryHandler;
@@ -109,7 +109,7 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 	}
 
 	@Override
-	public TagManagerLoader getRegistryManager() {
+	public TagManager getTagManager() {
 		return this.tagManager;
 	}
 
@@ -144,8 +144,8 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 	}
 
 	@Override
-	public void setRegistryManager(TagManagerLoader registryManager) {
-		this.tagManager = registryManager;
+	public void setTagManager(TagManager tagManager) {
+		this.tagManager = tagManager;
 	}
 
 	@Override
