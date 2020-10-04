@@ -31,11 +31,6 @@ public abstract class IntegratedServerMixin extends MinecraftServer {
         super(thread, impl, session, saveProperties, resourcePackManager, proxy, dataFixer, serverResourceManager, minecraftSessionService, gameProfileRepository, userCache, worldGenerationProgressListenerFactory);
     }
 
-    @Redirect(method = "loadWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;prepareStartRegion(Lnet/minecraft/server/WorldGenerationProgressListener;)V"))
-    private void dontLoadStartRegion(IntegratedServer integratedServer, WorldGenerationProgressListener worldGenerationProgressListener) {
-        if (!Playback.getManager().isInReplay()) prepareStartRegion(worldGenerationProgressListener);
-    }
-
     @Inject(method = "shutdown", at = @At("RETURN"))
     private void onShutdown(CallbackInfo ci) {
         Playback.getManager().setReplaying(ReplayManager.PlaybackState.NO_REPLAY);
