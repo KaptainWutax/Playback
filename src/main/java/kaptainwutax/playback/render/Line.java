@@ -43,7 +43,6 @@ public class Line implements Renderer {
 
 		//This is how thick the line is.
 		GlStateManager.lineWidth(2.0f);
-		GlStateManager.disableDepthTest();
 		buffer.begin(GL11.GL_LINE_STRIP, VertexFormats.POSITION_COLOR);
 
 		//Put the start and end vertices in the buffer.
