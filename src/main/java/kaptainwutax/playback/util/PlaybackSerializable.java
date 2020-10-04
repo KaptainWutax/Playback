@@ -1,8 +1,7 @@
 package kaptainwutax.playback.util;
 
-import net.minecraft.util.PacketByteBuf;
-
 import java.io.IOException;
+import net.minecraft.network.PacketByteBuf;
 
 public interface PlaybackSerializable {
     void read(PacketByteBuf buf) throws IOException;

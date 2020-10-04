@@ -1,7 +1,7 @@
 package kaptainwutax.playback.util;
 
 import io.netty.buffer.Unpooled;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Vec3d;
 
 import java.io.EOFException;

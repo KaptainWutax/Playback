@@ -190,10 +190,10 @@ public class CameraState {
     }
 
     public static Vec3d toEuler(Quaternion q) {
-        float w = q.getA();
-        float x = q.getB();
-        float y = q.getC();
-        float z = q.getD();
+        float w = q.getW();
+        float x = q.getX();
+        float y = q.getY();
+        float z = q.getZ();
 
         double pitch = Math.atan2(2 * (w * x + y * z), 1 - 2 * (x * x + y * y));
         double yaw = Math.asin(MathHelper.clamp(2 * (w * y - z * x), -1, 1));

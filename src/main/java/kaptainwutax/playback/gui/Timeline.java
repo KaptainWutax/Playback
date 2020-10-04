@@ -12,11 +12,10 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-
+import net.minecraft.util.math.Matrix4f;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -188,7 +187,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 			int i = 0;
 
 			for(String s : text) {
-				int j = MinecraftClient.getInstance().textRenderer.getStringWidth(s);
+				int j = MinecraftClient.getInstance().textRenderer.getWidth(s);
 				if (j > i) {
 					i = j;
 				}

@@ -154,7 +154,7 @@ public class ReplayManager {
 				this.replayPlayer.getPlayer().pitch
 		);
 
-		MinecraftClient.getInstance().player.addChatMessage(new LiteralText("Switched to " + Formatting.GREEN + this.view + Formatting.WHITE + ".").formatted(Formatting.BOLD), true);
+		MinecraftClient.getInstance().player.sendMessage(new LiteralText("Switched to " + Formatting.GREEN + this.view + Formatting.WHITE + ".").formatted(Formatting.BOLD), true);
 	}
 
 	public void togglePause() {

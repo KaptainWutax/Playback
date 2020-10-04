@@ -19,7 +19,7 @@ import java.util.Set;
 public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCaller, PKeyBindings.IKeyBindingCaller {
 
 	@Mutable @Shadow @Final private static Map<String, KeyBinding> keysById;
-	@Mutable @Shadow @Final private static Map<InputUtil.KeyCode, KeyBinding> keysByCode;
+	@Mutable @Shadow @Final private static Map<InputUtil.Key, KeyBinding> keysByCode;
 	@Mutable @Shadow @Final private static Set<String> keyCategories;
 	@Mutable @Shadow @Final private static Map<String, Integer> categoryOrderMap;
 
@@ -43,7 +43,7 @@ public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCall
 	}
 
 	@Override
-	public void setStaticCollections(Map<String, KeyBinding> keysById, Map<InputUtil.KeyCode, KeyBinding> keysByCode,
+	public void setStaticCollections(Map<String, KeyBinding> keysById, Map<InputUtil.Key, KeyBinding> keysByCode,
 	                                 Set<String> keyCategories, Map<String, Integer> categoryOrderMap) {
 		KeyBindingMixin.keysById = keysById;
 		KeyBindingMixin.keysByCode = keysByCode;
@@ -57,7 +57,7 @@ public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCall
 	}
 
 	@Override
-	public Map<InputUtil.KeyCode, KeyBinding> getKeysByCode() {
+	public Map<InputUtil.Key, KeyBinding> getKeysByCode() {
 		return keysByCode;
 	}
 

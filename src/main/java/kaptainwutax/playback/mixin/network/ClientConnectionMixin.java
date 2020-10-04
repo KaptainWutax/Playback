@@ -36,7 +36,7 @@ public abstract class ClientConnectionMixin {
 	);
 
 	private static final Set<Class<? extends Packet<?>>> RECEIVE_BLACKLIST = ImmutableSet.of(
-			ContainerSlotUpdateS2CPacket.class, PlayerAbilitiesS2CPacket.class, HeldItemChangeS2CPacket.class,
+			ScreenHandlerSlotUpdateS2CPacket.class, PlayerAbilitiesS2CPacket.class, HeldItemChangeS2CPacket.class,
 			DifficultyS2CPacket.class, CustomPayloadS2CPacket.class, SynchronizeRecipesS2CPacket.class,
 			UnlockRecipesS2CPacket.class, PlayerSpawnPositionS2CPacket.class, InventoryS2CPacket.class,
 			WorldTimeUpdateS2CPacket.class, ChunkRenderDistanceCenterS2CPacket.class, WorldBorderS2CPacket.class,

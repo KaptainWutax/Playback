@@ -4,9 +4,8 @@ import kaptainwutax.playback.gui.WindowSize;
 import kaptainwutax.playback.replay.action.*;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.util.PacketByteBuf;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

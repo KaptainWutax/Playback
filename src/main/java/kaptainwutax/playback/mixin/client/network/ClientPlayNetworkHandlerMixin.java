@@ -11,13 +11,13 @@ import net.minecraft.client.network.ClientAdvancementManager;
 import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.DataQueryHandler;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import net.minecraft.recipe.RecipeManager;
-import net.minecraft.server.command.CommandSource;
-import net.minecraft.tag.RegistryTagManager;
+import net.minecraft.tag.TagManagerLoader;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -38,7 +38,7 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 	@Mutable
 	@Shadow @Final private ClientCommandSource commandSource;
 
-	@Shadow private RegistryTagManager tagManager;
+	@Shadow private TagManagerLoader tagManager;
 
 	@Mutable
 	@Shadow @Final private DataQueryHandler dataQueryHandler;
@@ -109,7 +109,7 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 	}
 
 	@Override
-	public RegistryTagManager getRegistryManager() {
+	public TagManagerLoader getRegistryManager() {
 		return this.tagManager;
 	}
 
@@ -144,7 +144,7 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 	}
 
 	@Override
-	public void setRegistryManager(RegistryTagManager registryManager) {
+	public void setRegistryManager(TagManagerLoader registryManager) {
 		this.tagManager = registryManager;
 	}
 

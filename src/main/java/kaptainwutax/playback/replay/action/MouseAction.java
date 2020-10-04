@@ -1,8 +1,7 @@
 package kaptainwutax.playback.replay.action;
 
-import net.minecraft.util.PacketByteBuf;
-
 import java.io.IOException;
+import net.minecraft.network.PacketByteBuf;
 
 public class MouseAction extends Action {
 

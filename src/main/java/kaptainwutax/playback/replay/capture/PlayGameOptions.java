@@ -12,7 +12,7 @@ import java.util.Set;
 public class PlayGameOptions {
 
 	private Map<String, KeyBinding> keysById;
-	private Map<InputUtil.KeyCode, KeyBinding> keysByCode;
+	private Map<InputUtil.Key, KeyBinding> keysByCode;
 	private Set<String> keyCategories;
 	private Map<String, Integer> categoryOrderMap;
 
@@ -95,12 +95,12 @@ public class PlayGameOptions {
 
 	public interface IKeyBindingCaller {
 		void resetStaticCollections();
-		void setStaticCollections(Map<String, KeyBinding> keysById, Map<InputUtil.KeyCode, KeyBinding> keysByCode,
+		void setStaticCollections(Map<String, KeyBinding> keysById, Map<InputUtil.Key, KeyBinding> keysByCode,
 		                          Set<String> keyCategories, Map<String, Integer> categoryOrderMap);
 
 		Map<String, KeyBinding> getKeysById();
 
-		Map<InputUtil.KeyCode, KeyBinding> getKeysByCode();
+		Map<InputUtil.Key, KeyBinding> getKeysByCode();
 
 		Set<String> getKeyCategories();
 

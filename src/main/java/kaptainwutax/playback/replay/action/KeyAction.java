@@ -1,7 +1,7 @@
 package kaptainwutax.playback.replay.action;
 
 import kaptainwutax.playback.Playback;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 import org.lwjgl.glfw.GLFW;
 
 public class KeyAction extends Action {

@@ -44,7 +44,7 @@ public class Text3D implements Renderer {
 	}
 
 	public int getWidth() {
-		return this.mc.textRenderer.getStringWidth(this.text);
+		return this.mc.textRenderer.getWidth(this.text);
 	}
 
 }

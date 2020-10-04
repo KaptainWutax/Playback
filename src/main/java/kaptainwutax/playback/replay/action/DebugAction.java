@@ -5,7 +5,7 @@ import kaptainwutax.playback.util.PlaybackSerializable;
 import kaptainwutax.playback.util.SerializationUtil;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EntityPose;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.Vec3d;
 
 import java.lang.reflect.Field;

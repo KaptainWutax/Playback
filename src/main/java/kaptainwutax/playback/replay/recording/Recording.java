@@ -11,9 +11,8 @@ import kaptainwutax.playback.util.SerializationUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.util.PacketByteBuf;
-
 import java.io.*;
 import java.util.HashSet;
 import java.util.Set;

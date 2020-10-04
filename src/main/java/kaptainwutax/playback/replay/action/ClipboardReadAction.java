@@ -1,8 +1,7 @@
 package kaptainwutax.playback.replay.action;
 
 import kaptainwutax.playback.Playback;
-import net.minecraft.util.PacketByteBuf;
-
+import net.minecraft.network.PacketByteBuf;
 import java.io.IOException;
 
 public class ClipboardReadAction extends Action {

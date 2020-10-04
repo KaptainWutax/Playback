@@ -10,9 +10,9 @@ import kaptainwutax.playback.replay.recording.Recording;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
-import net.minecraft.util.PacketByteBuf;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.IOException;

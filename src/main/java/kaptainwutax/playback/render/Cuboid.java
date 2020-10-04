@@ -23,7 +23,7 @@ public class Cuboid implements Renderer {
     }
 
     public Cuboid(Box box, Color color) {
-        this(new Vec3d(box.x1, box.y1, box.z1), new Vec3d(box.x2, box.y2, box.z2), color);
+        this(new Vec3d(box.minX, box.minY, box.minZ), new Vec3d(box.maxX, box.maxY, box.maxZ), color);
     }
 
     public Cuboid(Vec3d start, Vector3f size, Color color) {

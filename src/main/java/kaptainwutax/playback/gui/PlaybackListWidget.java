@@ -51,7 +51,7 @@ public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackLi
             return -a.file.compareTo(b.file);
         });
         for (RecordingSummary summary : summaries) {
-            addEntry(new Entry(this, summary));
+            addEntry(new kaptainwutax.playback.gui.PlaybackListWidget.Entry(this, summary));
         }
     }
 

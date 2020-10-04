@@ -2,8 +2,8 @@ package kaptainwutax.playback.mixin.network.packet.s2c.play;
 
 import io.netty.buffer.ByteBuf;
 import kaptainwutax.playback.Playback;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
-import net.minecraft.util.PacketByteBuf;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;

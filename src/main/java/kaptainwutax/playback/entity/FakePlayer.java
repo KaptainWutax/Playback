@@ -7,7 +7,7 @@ import net.minecraft.client.input.Input;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.recipe.book.ClientRecipeBook;
+import net.minecraft.client.recipebook.ClientRecipeBook;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -23,7 +23,7 @@ public class FakePlayer extends ClientPlayerEntity {
 
 		GameMode gameMode = GameMode.SPECTATOR;
 
-		gameMode.setAbilitites(this.abilities);
+		gameMode.setAbilities(this.abilities);
 		this.interactionManager = interactionManager;
 		((IInteractionCaller) interactionManager).setGameModeNoUpdates(gameMode);
 

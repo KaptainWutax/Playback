@@ -2,8 +2,8 @@ package kaptainwutax.playback.replay.render;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
-import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
 

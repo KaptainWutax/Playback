@@ -86,7 +86,7 @@ public abstract class WorldEdit implements Renderer {
 		Vec3d vec3d = entity.getCameraPosVec(1.0F);
 		Vec3d vec3d2 = entity.getRotationVec(1.0F);
 		Vec3d vec3d3 = vec3d.add(vec3d2.x * d, vec3d2.y * d, vec3d2.z * d);
-		return this.clickBox.rayTrace(entity.getCameraPosVec(1.0F), vec3d3);
+		return this.clickBox.raycast(entity.getCameraPosVec(1.0F), vec3d3);
 	}
 
 	public void refresh() {

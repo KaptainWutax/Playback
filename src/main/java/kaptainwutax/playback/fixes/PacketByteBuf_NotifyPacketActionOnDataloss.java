@@ -2,7 +2,7 @@ package kaptainwutax.playback.fixes;
 
 import io.netty.buffer.ByteBuf;
 import kaptainwutax.playback.replay.action.PacketAction;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 
 public class PacketByteBuf_NotifyPacketActionOnDataloss extends PacketByteBuf {
     private final ByteBuf parent;
