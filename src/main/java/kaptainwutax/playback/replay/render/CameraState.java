@@ -22,14 +22,14 @@ public class CameraState {
     public CameraState() {}
 
     public CameraState(Dynamic<?> config) {
-        Optional<List<Double>> posOpt = config.get("position").asListOpt(d -> d.asDouble(0));
+        Optional<List<Double>> posOpt = config.get("position").asListOpt(d -> d.asDouble(0)).result();
         if (posOpt.isPresent() && posOpt.get().size() == 3) {
             List<Double> pos = posOpt.get();
             this.x = pos.get(0);
             this.y = pos.get(1);
             this.z = pos.get(2);
         }
-        Optional<List<Double>> rotOpt = config.get("rotation").asListOpt(d -> d.asDouble(0));
+        Optional<List<Double>> rotOpt = config.get("rotation").asListOpt(d -> d.asDouble(0)).result();
         if (rotOpt.isPresent() && rotOpt.get().size() == 3) {
             List<Double> rot = rotOpt.get();
             this.yaw = rot.get(0);

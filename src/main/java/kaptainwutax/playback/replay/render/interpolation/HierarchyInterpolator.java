@@ -25,9 +25,9 @@ public class HierarchyInterpolator extends TreeMap<ComponentKey<?>, Interpolator
     public HierarchyInterpolator(Dynamic<?> config) {
         this();
         this.putAll(config.asMap(
-            k -> ComponentKey.REGISTRY.get(new Identifier(k.asString().orElseThrow(IllegalArgumentException::new))),
+            k -> ComponentKey.REGISTRY.get(new Identifier(k.asString().result().orElseThrow(IllegalArgumentException::new))),
             v -> {
-                Identifier typeId = new Identifier(v.get("type").asString().orElseThrow(IllegalArgumentException::new));
+                Identifier typeId = new Identifier(v.get("type").asString().result().orElseThrow(IllegalArgumentException::new));
                 InterpolationType<?> type = InterpolationType.REGISTRY.get(typeId);
                 if (type == null) throw new IllegalArgumentException("Unknown interpolation type " + typeId);
                 Dynamic<?> cfg = v.get("config").orElseEmptyMap();

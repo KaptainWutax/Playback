@@ -13,9 +13,9 @@ public class FixedPointCameraPath extends AbstractCameraPath {
 
     public FixedPointCameraPath(Dynamic<?> config) {
         super(config);
-        state = new CameraState(config.get("state").get().orElseThrow(IllegalArgumentException::new));
-        startTime = new GameTimeStamp(config.get("start").get().orElseThrow(IllegalArgumentException::new));
-        endTime = new GameTimeStamp(config.get("end").get().orElseThrow(IllegalArgumentException::new));
+        state = new CameraState(config.get("state").get().result().orElseThrow(IllegalArgumentException::new));
+        startTime = new GameTimeStamp(config.get("start").get().result().orElseThrow(IllegalArgumentException::new));
+        endTime = new GameTimeStamp(config.get("end").get().result().orElseThrow(IllegalArgumentException::new));
     }
 
     public FixedPointCameraPath(int frames, CameraState state, GameTimeStamp startTime, GameTimeStamp endTime) {

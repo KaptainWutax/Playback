@@ -24,10 +24,10 @@ public interface CameraPath {
     <T> T serialize(DynamicOps<T> ops);
 
     static CameraPath deserialize(Dynamic<?> config) {
-        Identifier typeId = new Identifier(config.get("type").asString().orElseThrow(IllegalArgumentException::new));
+        Identifier typeId = new Identifier(config.get("type").asString().result().orElseThrow(IllegalArgumentException::new));
         CameraPathType<?> type = CameraPathType.REGISTRY.get(typeId);
         if (type == null) throw new IllegalArgumentException("Unknown camera path type " + typeId);
-        return type.create(config.get("value").get().orElseThrow(IllegalArgumentException::new));
+        return type.create(config.get("value").get().result().orElseThrow(IllegalArgumentException::new));
     }
 
     static <T> T serialize(DynamicOps<T> ops, CameraPath path) {

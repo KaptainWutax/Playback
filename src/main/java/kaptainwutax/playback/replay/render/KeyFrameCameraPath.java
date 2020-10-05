@@ -26,7 +26,7 @@ public class KeyFrameCameraPath extends AbstractCameraPath {
         List<Object> list = config.asList(e -> {
             String type = e.get("type").asString(null);
             if (type == null) return null;
-            Optional<Dynamic<T>> value = e.get("value").get();
+            Optional<Dynamic<T>> value = e.get("value").get().result();
             if (!value.isPresent()) return null;
             switch (type) {
                 case "key_frame": return new KeyFrame(value.get());
