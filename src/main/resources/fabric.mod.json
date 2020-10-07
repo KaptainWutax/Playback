@@ -23,6 +23,7 @@
   "mixins": [
     "playback.mixins.json"
   ],
+  "accessWidener": "playback.accesswidener",
   "depends": {
     "fabricloader": ">=0.7.2",
     "minecraft": "1.16.x"
