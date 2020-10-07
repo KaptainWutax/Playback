@@ -13,7 +13,7 @@
     "sources": "https://github.com/KaptainWutax/Playback"
   },
   "license": "MIT",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/playback/icon.png",
   "environment": "client",
   "entrypoints": {
     "main": [
