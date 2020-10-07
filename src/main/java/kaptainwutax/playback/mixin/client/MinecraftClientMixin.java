@@ -324,7 +324,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
-	@Redirect(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
+	@Redirect(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
 	private void noLoadingScreen(MinecraftClient client, Screen screen) {
 		if (!Playback.getManager().isInReplay()) client.openScreen(screen);
 	}

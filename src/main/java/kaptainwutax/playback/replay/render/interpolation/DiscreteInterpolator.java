@@ -33,7 +33,7 @@ public class DiscreteInterpolator implements Interpolator {
 
     @Override
     public <T> T serialize(DynamicOps<T> ops) {
-        return ops.mergeInto(ops.emptyMap(), ops.createString("threshold"), ops.createFloat(threshold));
+        return ops.mergeToMap(ops.emptyMap(), ops.createString("threshold"), ops.createFloat(threshold)).get().orThrow();
     }
 
     @Override

@@ -105,9 +105,11 @@ public class HierarchyInterpolator extends TreeMap<ComponentKey<?>, Interpolator
             InterpolationType<?> type = e.getValue().getType();
             eMap.put(ops.createString("type"), ops.createString(InterpolationType.getId(type).toString()));
             T config = e.getValue().serialize(ops);
-            if (ops.getType(config) != DSL.nilType()) {
+
+            if (config == ops.empty()) {
                 eMap.put(ops.createString("config"), config);
             }
+
             map.put(ops.createString(ComponentKey.getId(e.getKey()).toString()), ops.createMap(eMap));
         }
         return ops.createMap(map);

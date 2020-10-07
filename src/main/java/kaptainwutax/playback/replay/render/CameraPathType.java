@@ -1,16 +1,18 @@
 package kaptainwutax.playback.replay.render;
 
 import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.Lifecycle;
 import kaptainwutax.playback.Playback;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 
 import java.util.function.Function;
 
 public class CameraPathType<T extends CameraPath> {
-    public static final Registry<CameraPathType<?>> REGISTRY = new SimpleRegistry<>();
+    public static final SimpleRegistry<CameraPathType<?>> REGISTRY = new SimpleRegistry<>(
+            RegistryKey.ofRegistry(Playback.createIdentifier("camera_path_type")), Lifecycle.stable());
+
     private final Function<Dynamic<?>, T> constructor;
 
     private CameraPathType(Function<Dynamic<?>, T> constructor) {
@@ -22,7 +24,7 @@ public class CameraPathType<T extends CameraPath> {
     }
 
     private static <T extends CameraPath> CameraPathType<T> register(String id, CameraPathType<T> type) {
-        return ((MutableRegistry<CameraPathType<?>>) REGISTRY).add(Playback.id(id), type);
+        return REGISTRY.add(RegistryKey.of(REGISTRY.getKey(), Playback.createIdentifier(id)), type, Lifecycle.stable());
     }
 
     public static Identifier getId(CameraPathType<?> type) {

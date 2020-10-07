@@ -116,7 +116,7 @@ public class CameraState {
                 ops.createDouble(yaw), ops.createDouble(pitch), ops.createDouble(roll)
         )));
         map.put(ops.createString("fov"), ops.createDouble(fov));
-        return ops.mergeInto(ops.createMap(map), time.serialize(ops));
+        return ops.mergeToPrimitive(ops.createMap(map), time.serialize(ops)).get().orThrow();
     }
 
     public static class Mutable extends CameraState {

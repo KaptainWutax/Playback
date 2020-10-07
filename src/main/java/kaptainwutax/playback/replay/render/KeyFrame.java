@@ -16,8 +16,10 @@ public class KeyFrame extends CameraState {
         this.frame = frame;
     }
 
+    @Override
     public <T> T serialize(DynamicOps<T> ops) {
         T map = super.serialize(ops);
-        return ops.mergeInto(map, ops.createString("frame"), ops.createInt(frame));
+        return ops.mergeToMap(map, ops.createString("frame"), ops.createInt(frame)).get().orThrow();
     }
+
 }

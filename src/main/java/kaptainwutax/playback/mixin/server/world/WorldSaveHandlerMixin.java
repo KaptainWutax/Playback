@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(WorldSaveHandler.class)
 public class WorldSaveHandlerMixin {
 
+    /* TODO: no suck
     @Inject(method = "saveWorld(Lnet/minecraft/world/level/LevelProperties;)V", at = @At("HEAD"), cancellable = true)
     private void noSave(LevelProperties levelProperties, CallbackInfo ci) {
         if (Playback.getManager().isOrWasReplaying()) ci.cancel();
@@ -22,7 +23,7 @@ public class WorldSaveHandlerMixin {
     @Inject(method = "saveWorld(Lnet/minecraft/world/level/LevelProperties;Lnet/minecraft/nbt/CompoundTag;)V", at = @At("HEAD"), cancellable = true)
     private void noSave(LevelProperties levelProperties, CompoundTag tag, CallbackInfo ci) {
         if (Playback.getManager().isOrWasReplaying()) ci.cancel();
-    }
+    }*/
 
     @Inject(method = "savePlayerData", at = @At("HEAD"), cancellable = true)
     private void noSave(PlayerEntity playerEntity, CallbackInfo ci) {

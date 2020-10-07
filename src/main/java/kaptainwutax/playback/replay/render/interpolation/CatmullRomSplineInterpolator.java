@@ -49,6 +49,6 @@ public class CatmullRomSplineInterpolator implements Interpolator {
 
     @Override
     public <T> T serialize(DynamicOps<T> ops) {
-        return ops.mergeInto(ops.emptyMap(), ops.createString("threshold"), ops.createDouble(alpha));
+        return ops.mergeToMap(ops.emptyMap(), ops.createString("threshold"), ops.createDouble(alpha)).get().orThrow();
     }
 }

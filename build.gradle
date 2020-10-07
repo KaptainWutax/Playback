@@ -20,9 +20,10 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	// We just need the keybindings
+	// We just need these few modules
 	modCompile "net.fabricmc.fabric-api:fabric-api-base:${project.fabric_api_base_version}"
 	modCompile "net.fabricmc.fabric-api:fabric-keybindings-v0:${project.fabric_keybindings_v0_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-key-binding-api-v1:${project.fabric_keybindings_v1_version}"
 	modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
 	modCompile "net.fabricmc.fabric-api:fabric-item-groups-v0:${project.fabric_item_groups_v0_version}"
 

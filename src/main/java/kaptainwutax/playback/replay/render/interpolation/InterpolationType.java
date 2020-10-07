@@ -1,15 +1,20 @@
 package kaptainwutax.playback.replay.render.interpolation;
 
 import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.Lifecycle;
+import kaptainwutax.playback.Playback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 
 import java.util.function.Function;
 
 public class InterpolationType<T extends Interpolator> {
-    public static final Registry<InterpolationType<?>> REGISTRY = new SimpleRegistry<>();
+    public static final SimpleRegistry<InterpolationType<?>> REGISTRY = new SimpleRegistry<>(
+            RegistryKey.ofRegistry(Playback.createIdentifier("interpolation_type")), Lifecycle.stable());
+
     private final Function<Dynamic<?>, T> constructor;
 
     private InterpolationType(Function<Dynamic<?>, T> constructor) {
@@ -21,7 +26,7 @@ public class InterpolationType<T extends Interpolator> {
     }
 
     private static <T extends Interpolator> InterpolationType<T> register(String id, InterpolationType<T> type) {
-        return ((MutableRegistry<InterpolationType<?>>) REGISTRY).add(new Identifier("playback", id), type);
+        return REGISTRY.add(RegistryKey.of(REGISTRY.getKey(), Playback.createIdentifier(id)), type, Lifecycle.stable());
     }
 
     public static Identifier getId(InterpolationType<?> type) {

@@ -1,10 +1,13 @@
 package kaptainwutax.playback.replay.render.interpolation;
 
+import com.mojang.serialization.Lifecycle;
+import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.render.CameraState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 
 import javax.annotation.Nullable;
@@ -15,7 +18,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class ComponentKey<T> {
-    public static final Registry<ComponentKey<?>> REGISTRY = new SimpleRegistry<>();
+    public static final SimpleRegistry<ComponentKey<?>> REGISTRY = new SimpleRegistry<>(
+            RegistryKey.ofRegistry(Playback.createIdentifier("component_key")), Lifecycle.stable());
 
     @Nullable
     private final ComponentKey<?> parent;
@@ -66,7 +70,7 @@ public class ComponentKey<T> {
     }
 
     private static <T> ComponentKey<T> register(String key, ComponentKey<T> component) {
-        return ((MutableRegistry<ComponentKey<?>>) REGISTRY).add(new Identifier("playback", key), component);
+        return REGISTRY.add(RegistryKey.of(REGISTRY.getKey(), Playback.createIdentifier(key)), component, Lifecycle.stable());
     }
 
     public static Identifier getId(ComponentKey<?> key) {

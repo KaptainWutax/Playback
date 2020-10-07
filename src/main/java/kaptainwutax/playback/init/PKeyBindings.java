@@ -3,6 +3,7 @@ package kaptainwutax.playback.init;
 import kaptainwutax.playback.Playback;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
