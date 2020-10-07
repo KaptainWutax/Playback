@@ -9,6 +9,7 @@
     "server.MinecraftServerMixin",
     "server.network.ServerPlayNetworkHandlerMixin",
     "server.world.ChunkTicketManagerMixin",
+    "server.world.LevelStorage$SessionMixin",
     "server.world.ServerChunkManagerMixin",
     "server.world.WorldSaveHandlerMixin"
   ],
