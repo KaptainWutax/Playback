@@ -309,10 +309,14 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		this.handleInputEvents();
 	}
 
-	@Inject(method = "openPauseMenu", at = @At("HEAD"), cancellable = true)
-	public void openPauseMenu(CallbackInfo ci) {
-		if(Playback.getManager().isInReplay() && Playback.getManager().isProcessingReplay) {
-			//ci.cancel();
+	@Redirect(method = "method_30133()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Mouse;method_30134()V"))
+	public void redirectMouseCallback(Mouse mouse) {
+		if(Playback.getManager().isInReplay()) {
+			if (Playback.getManager().cameraPlayer != null && Playback.getManager().cameraPlayer.mouse != null) {
+				Playback.getManager().cameraPlayer.mouse.method_30134();
+			} else {
+				mouse.method_30134();
+			}
 		}
 	}
 
