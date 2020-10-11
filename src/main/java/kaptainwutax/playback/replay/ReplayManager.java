@@ -111,13 +111,7 @@ public class ReplayManager {
 	}
 
 	public boolean isOnlyAcceptingReplayedInputs() {
-		if (this.currentAppliedPlayer == null) {
-			if (this.isInReplay()) {
-				System.out.println("Input permission request with no player frame! Allowing ...");
-			}
-			return false;
-		}
-		return this.replayingState == PlaybackState.REPLAYING && this.currentAppliedPlayer == replayPlayer && !this.replayingHasFinished;
+		return this.replayingState == PlaybackState.REPLAYING && (this.currentAppliedPlayer == null || this.currentAppliedPlayer == replayPlayer) && !this.replayingHasFinished;
 	}
 
 	public boolean isCurrentlyAcceptingInputs() {

@@ -146,6 +146,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 			return;
 		}
 		PlayerFrame player = Playback.getManager().getPlayerFrameForView(Playback.getManager().getView());
+		//noinspection ConstantConditions
 		if (player == null || player.mouse == (Object)this && Playback.getManager().isCurrentlyAcceptingInputs()) {
 			InputUtil.setCursorParameters(l, i, d, e);
 		}

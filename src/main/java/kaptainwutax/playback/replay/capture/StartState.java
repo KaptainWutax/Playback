@@ -51,7 +51,7 @@ public class StartState implements PlaybackSerializable {
 	}
 
 	public void play() {
-		MinecraftClient.getInstance().options.method_31043(this.perspective);
+		MinecraftClient.getInstance().options.method_31043(this.getPerspective());
 		this.windowFocus.play();
 		PlayGameOptions.loadContents(MinecraftClient.getInstance().options, this.gameOptions);
 		this.windowSizeAction.play();
