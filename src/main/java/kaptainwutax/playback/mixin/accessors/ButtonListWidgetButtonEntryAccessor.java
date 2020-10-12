@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.List;
 
 @Mixin(ButtonListWidget.ButtonEntry.class)
-public interface ButtonListWidget$ButtonEntryAccessor {
+public interface ButtonListWidgetButtonEntryAccessor {
     @Accessor("buttons")
     List<AbstractButtonWidget> getButtons();
 }

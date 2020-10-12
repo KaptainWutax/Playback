@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LevelStorage.Session.class)
-public class LevelStorage$SessionMixin {
+public class LevelStorageSessionMixin {
 
     @Inject(method = "backupLevelDataFile(Lnet/minecraft/util/registry/DynamicRegistryManager;Lnet/minecraft/world/SaveProperties;)V", at = @At("HEAD"), cancellable = true)
     private void noSave(DynamicRegistryManager dynamicRegistryManager, SaveProperties saveProperties, CallbackInfo ci) {

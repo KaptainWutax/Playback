@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(EditGameRulesScreen.BooleanRuleWidget.class)
-public interface EditGameRulesScreen$BooleanRuleWidgetAccessor {
+public interface EditGameRulesScreenBooleanRuleWidgetAccessor {
     @Accessor("toggleButton")
     ButtonWidget getToggleButton();
 }

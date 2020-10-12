@@ -1,9 +1,9 @@
 package kaptainwutax.playback.mixin.client.gui.widget;
 
-import kaptainwutax.playback.mixin.accessors.ButtonListWidget$ButtonEntryAccessor;
-import kaptainwutax.playback.mixin.accessors.ControlsListWidget$KeybindingEntryAccessor;
-import kaptainwutax.playback.mixin.accessors.EditGameRulesScreen$BooleanRuleWidgetAccessor;
-import kaptainwutax.playback.mixin.accessors.EditGameRulesScreen$IntRuleWidgetAccessor;
+import kaptainwutax.playback.mixin.accessors.ButtonListWidgetButtonEntryAccessor;
+import kaptainwutax.playback.mixin.accessors.ControlsListWidgetKeybindingEntryAccessor;
+import kaptainwutax.playback.mixin.accessors.EditGameRulesScreenBooleanRuleWidgetAccessor;
+import kaptainwutax.playback.mixin.accessors.EditGameRulesScreenIntRuleWidgetAccessor;
 import net.minecraft.client.gui.screen.options.ControlsListWidget;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.ButtonListWidget;
@@ -58,31 +58,31 @@ public abstract class EntryListWidgetMixin<E extends EntryListWidget.Entry<E>> {
             if (newYEnd >= this.top && newY <= this.bottom) {
                 E entry = this.getEntry(rowIndex);
                 if (entry instanceof ButtonListWidget.ButtonEntry) {
-                    ((ButtonListWidget$ButtonEntryAccessor) entry).getButtons().forEach((button) -> button.y = newY);
+                    ((ButtonListWidgetButtonEntryAccessor) entry).getButtons().forEach((button) -> button.y = newY);
                 }
                 if (entry instanceof ControlsListWidget.KeyBindingEntry) {
                     int newX = this.getRowLeft();
-                    ((ControlsListWidget$KeybindingEntryAccessor) entry).getResetButton().x = newX + 190;
-                    ((ControlsListWidget$KeybindingEntryAccessor) entry).getResetButton().y = newY;
-                    ((ControlsListWidget$KeybindingEntryAccessor) entry).getResetButton().active = !((ControlsListWidget$KeybindingEntryAccessor) entry).getKeybinding().isDefault();
+                    ((ControlsListWidgetKeybindingEntryAccessor) entry).getResetButton().x = newX + 190;
+                    ((ControlsListWidgetKeybindingEntryAccessor) entry).getResetButton().y = newY;
+                    ((ControlsListWidgetKeybindingEntryAccessor) entry).getResetButton().active = !((ControlsListWidgetKeybindingEntryAccessor) entry).getKeybinding().isDefault();
 
-                    ((ControlsListWidget$KeybindingEntryAccessor) entry).getEditButton().x = newX + 105;
-                    ((ControlsListWidget$KeybindingEntryAccessor) entry).getEditButton().y = newY;
+                    ((ControlsListWidgetKeybindingEntryAccessor) entry).getEditButton().x = newX + 105;
+                    ((ControlsListWidgetKeybindingEntryAccessor) entry).getEditButton().y = newY;
                 }
                 if (entry instanceof EditGameRulesScreen.IntRuleWidget) {
                     int entryWidth = this.getRowWidth();
                     int x = this.getRowLeft();
 
-                    ((EditGameRulesScreen$IntRuleWidgetAccessor) entry).getValueWidget().x = x + entryWidth - 44;
-                    ((EditGameRulesScreen$IntRuleWidgetAccessor) entry).getValueWidget().y = newY;
+                    ((EditGameRulesScreenIntRuleWidgetAccessor) entry).getValueWidget().x = x + entryWidth - 44;
+                    ((EditGameRulesScreenIntRuleWidgetAccessor) entry).getValueWidget().y = newY;
 
                 }
                 if (entry instanceof EditGameRulesScreen.BooleanRuleWidget) {
                     int entryWidth = this.getRowWidth();
                     int x = this.getRowLeft();
 
-                    ((EditGameRulesScreen$BooleanRuleWidgetAccessor) entry).getToggleButton().x = x + entryWidth - 45;
-                    ((EditGameRulesScreen$BooleanRuleWidgetAccessor) entry).getToggleButton().y = newY;
+                    ((EditGameRulesScreenBooleanRuleWidgetAccessor) entry).getToggleButton().x = x + entryWidth - 45;
+                    ((EditGameRulesScreenBooleanRuleWidgetAccessor) entry).getToggleButton().y = newY;
                 }
             }
         }
