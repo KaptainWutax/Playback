@@ -5,7 +5,10 @@ import kaptainwutax.playback.gui.LoadingScreen;
 import kaptainwutax.playback.replay.ReplayManager;
 import kaptainwutax.playback.replay.capture.StartState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.world.gen.GeneratorOptions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -62,6 +65,10 @@ public class RecordingSummary {
         MinecraftClient.getInstance().send(() -> {
             Playback.getManager().restart(recording);
             Playback.getManager().setReplaying(ReplayManager.PlaybackState.REPLAYING);
+
+            //Start an integrated server like new worlds (demo world here) are started, not like loading a world from a save.
+            DynamicRegistryManager.Impl impl = DynamicRegistryManager.create();
+            MinecraftClient.getInstance().method_29607("Replay", MinecraftServer.DEMO_LEVEL_INFO, impl, GeneratorOptions.method_31112(impl));
             MinecraftClient.getInstance().startIntegratedServer("Replay");
             MinecraftClient.getInstance().getServer().getPlayerManager().setCheatsAllowed(true);
         });
