@@ -243,8 +243,8 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 				}
 			}
 
-			if(KeyBindings.RENDER.isPressed()) {
-				while(KeyBindings.RENDER.wasPressed()) {
+			if(PKeyBindings.RENDER.isPressed()) {
+				while(PKeyBindings.RENDER.wasPressed()) {
 					shouldRender = true;
 				}
 			}

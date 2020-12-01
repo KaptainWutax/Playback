@@ -6,6 +6,7 @@ import kaptainwutax.playback.replay.encoding.Encoder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.render.BackgroundRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.profiler.Profiler;
 import sun.nio.ch.DirectBuffer;
 
@@ -83,7 +84,7 @@ public class RenderingSession {
             client.gameRenderer.render(cameraState.time.tickDelta, Long.MAX_VALUE, true);
             // client.chunkCullingEnabled = true;
             profiler.swap("toasts");
-            client.getToastManager().draw();
+            client.getToastManager().draw(new MatrixStack());
             profiler.pop();
         }
         framebuffer.endWrite();

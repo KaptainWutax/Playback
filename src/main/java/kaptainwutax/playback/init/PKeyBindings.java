@@ -32,6 +32,8 @@ public class PKeyBindings {
 		KeyBindingRegistry.INSTANCE.register(TOGGLE_PAUSE);
 		KeyBindingRegistry.INSTANCE.register(PLAY_CAMERA_PATH);
 		KeyBindingRegistry.INSTANCE.register(OPEN_REPLAY_HUD);
+		KeyBindingRegistry.INSTANCE.register(RENDER);
+
 	}
 
 	public static void updateSharedKeybindings(int keyCode, int scanCode, int i) {
