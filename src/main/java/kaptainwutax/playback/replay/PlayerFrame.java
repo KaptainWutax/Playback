@@ -2,6 +2,7 @@ package kaptainwutax.playback.replay;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
+import kaptainwutax.playback.init.PKeyBindings;
 import kaptainwutax.playback.replay.action.PacketAction;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import kaptainwutax.playback.replay.capture.PlayNetworkHandler;
@@ -128,6 +129,7 @@ public class PlayerFrame {
 
 	public static PlayerFrame createFromExisting() {
 		((PlayGameOptions.IKeyBindingCaller)client.options.keysAll[0]).resetStaticCollections();
+		PKeyBindings.registerKeyCategories();
 		PlayGameOptions options = new PlayGameOptions();
 		((IKeyboardInputCaller)client.player.input).setOptions(options.getOptions());
 		Mouse mouse = new Mouse(client);
