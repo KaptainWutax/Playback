@@ -29,6 +29,16 @@ dependencies {
 	modCompile "net.fabricmc.fabric-api:fabric-item-groups-v0:${project.fabric_item_groups_v0_version}"
 
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
+
+	implementation "org.bytedeco:ffmpeg-platform:${project.bytedeco_ffmpeg_version}-${project.bytedeco_javacpp_version}"
+/*
+	for (platform in ["linux-x86", "linux-x86_64", "macosx-x86_64", "windows-x86", "windows-x86_64"]) {
+		implementation "org.bytedeco:javacpp:$platform:${project.bytedeco_javacpp_version}"
+		implementation "org.bytedeco:ffmpeg:$platform:${project.bytedeco_ffmpeg_version}-${project.bytedeco_javacpp_version}"
+	}
+	implementation "org.bytedeco:javacpp::${project.bytedeco_javacpp_version}"
+	implementation "org.bytedeco:ffmpeg::${project.bytedeco_ffmpeg_version}-${project.bytedeco_javacpp_version}"
+*/
 }
 
 processResources {

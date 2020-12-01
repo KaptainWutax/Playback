@@ -97,7 +97,7 @@ public class ReplayManager {
 		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
 		if (renderManager.isPlayingCameraPath()) {
 			if (!(camera instanceof ReplayCamera)) renderManager.useReplayCamera();
-		} else {
+		} else if (!renderManager.isRenderingActive()) {
 			if (camera instanceof ReplayCamera) renderManager.useVanillaCamera();
 		}
 		if(!this.isInReplay() || paused || this.replayingHasFinished) return;

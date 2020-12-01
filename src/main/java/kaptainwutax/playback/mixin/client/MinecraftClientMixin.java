@@ -217,6 +217,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			boolean shouldTogglePause = false;
 			boolean shouldOpenHudScreen =  false;
 			boolean shouldPlayCameraPath = false;
+			boolean shouldRender = false;
 
 			if(PKeyBindings.TOGGLE_VIEW.isPressed()) {
 				while(PKeyBindings.TOGGLE_VIEW.wasPressed()) {
@@ -242,6 +243,12 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 				}
 			}
 
+			if(KeyBindings.RENDER.isPressed()) {
+				while(KeyBindings.RENDER.wasPressed()) {
+					shouldRender = true;
+				}
+			}
+
 			if(Playback.getManager().view == ReplayView.FIRST_PERSON) {
 				Playback.getManager().replayPlayer.options.apply();
 			}
@@ -256,6 +263,10 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 			if(shouldPlayCameraPath) {
 				Playback.getManager().renderManager.startPlayingCameraPath(Playback.getManager().tickCounter, MinecraftClient.getInstance().getTickDelta());
+			}
+
+			if (shouldRender) {
+				Playback.getManager().renderManager.startExampleRendering();
 			}
 
 			//open only when player is under user control

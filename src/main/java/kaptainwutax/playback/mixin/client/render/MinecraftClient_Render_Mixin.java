@@ -3,11 +3,16 @@ package kaptainwutax.playback.mixin.client.render;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.render.RenderManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.options.Option;
 import net.minecraft.client.render.RenderTickCounter;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClient_Render_Mixin implements RenderManager.ISetForcedFrameRate {
@@ -39,5 +44,16 @@ public class MinecraftClient_Render_Mixin implements RenderManager.ISetForcedFra
             this.prevMaxFpsCameraPlayer = -1;
         }
 
+    }
+
+    @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V"))
+    private void preRender(CallbackInfo ci) {
+        Playback.getManager().renderManager.checkRender();
+    }
+
+    @Inject(method = "getFramebuffer", at = @At("HEAD"), cancellable = true)
+    private void replaceFramebuffer(CallbackInfoReturnable<Framebuffer> cir) {
+        RenderManager render = Playback.getManager().renderManager;
+        if (render.isRendering()) cir.setReturnValue(render.getFramebuffer());
     }
 }

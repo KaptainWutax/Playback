@@ -34,6 +34,7 @@
     "client.render.GameRendererMixin",
     "client.render.MinecraftClient_Render_Mixin",
     "client.render.RenderTickCounterMixin",
+    "client.render.WindowMixin",
     "client.render.WorldRendererMixin",
     "client.sound.PositionedSoundInstanceMixin",
     "client.util.ClipboardMixin",
