@@ -2,6 +2,7 @@ package kaptainwutax.playback.replay.action;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.fixes.PacketByteBuf_NotifyPacketActionOnDataloss;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.*;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 
@@ -28,12 +29,16 @@ public class PacketAction extends Action {
 		if(this.packet == null) return;
 		try {
 			ClientPlayPacketListener listener = client.getNetworkHandler();
-			if(listener != null) {
-				packet.apply(listener);
-			} else {
-				//This mess just safely gets ClientPlayPacketListener since we don't have a player instance to go about.
-				packet.apply((ClientPlayPacketListener)((IConnectionGetter) client).getConnection().getPacketListener());
+			if (listener == null) {
+				//This mess just gets ClientPlayPacketListener since we don't have a player instance to go about.
+				if (((IConnectionGetter) client).getConnection() != null) {
+					listener = (ClientPlayPacketListener)((IConnectionGetter) client).getConnection().getPacketListener();
+				} else {
+					listener = ((INetworkHandlerGetter) client.interactionManager).getNetworkHandler();
+				}
 			}
+			packet.apply(listener);
+
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -70,4 +75,7 @@ public class PacketAction extends Action {
 
 	}
 
+	public interface INetworkHandlerGetter {
+		public ClientPlayNetworkHandler getNetworkHandler();
+	}
 }

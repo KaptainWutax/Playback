@@ -133,6 +133,9 @@ public class PlayerFrame {
 		PlayGameOptions options = new PlayGameOptions();
 		((IKeyboardInputCaller)client.player.input).setOptions(options.getOptions());
 		Mouse mouse = new Mouse(client);
+		if (client.player instanceof FakePlayer) {
+			throw new IllegalStateException("Expected real ClientPlayerEntity but got FakePlayer!");
+		}
 		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client),
 				client.getToastManager(), client.inGameHud, Playback.getManager().recording.getStartState().getWindowFocus(),
 				PlayNetworkHandler.createFromExisting(), PlayRenderers.createFromExisting());

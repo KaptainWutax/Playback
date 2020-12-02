@@ -138,7 +138,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 
 	private void onLeftClick(double mouseX, double mouseY) {
 		int tick = (int)((mouseX - this.x) / (double)this.width * this.duration);
-		MinecraftClient.getInstance().execute(() -> Playback.getManager().recording.playUpTo(Playback.getManager().recording.currentTick, tick));
+		MinecraftClient.getInstance().execute(() -> Playback.getManager().recording.seekReplayTo(tick, true));
 	}
 
 	@Override

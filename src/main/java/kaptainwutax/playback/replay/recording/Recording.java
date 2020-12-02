@@ -5,6 +5,8 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.gui.WindowSize;
+import kaptainwutax.playback.replay.ReplayManager;
+import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.capture.StartState;
 import kaptainwutax.playback.replay.capture.TickInfo;
 import kaptainwutax.playback.util.SerializationUtil;
@@ -280,4 +282,54 @@ public class Recording implements AutoCloseable {
 		}
 	}
 
+	public void seekReplayTo(long tick, boolean pauseAfterSeek) {
+		if (tick < this.currentTick) {
+			ReplayManager manager = Playback.getManager();
+			manager.tickCounter = 0;
+			manager.replayingHasFinished = false;
+
+			this.currentTick = 0;
+			this.currentTickInfo = new TickInfo(this);
+			this.currentKeyStates.clear();
+			this.currentRecordedWindowSize = null;
+			this.clipboard = null;
+			this.paused = false;
+
+			ReplayView oldView = manager.getView();
+			manager.updateView(ReplayView.FIRST_PERSON, true);
+			manager.restart(this);
+
+			MinecraftClient.getInstance().world = null;
+			MinecraftClient.getInstance().player = null;
+			MinecraftClient.getInstance().inGameHud.getChatHud().clear(true);
+
+			manager.recording.getStartState().getJoinPacketAction().play();
+			manager.updateView(ReplayView.FIRST_PERSON, true);
+			manager.recording.getStartState().play();
+			MinecraftClient.getInstance().openScreen(null);
+
+			manager.updateView(oldView, true);
+
+
+			if (tick < Playback.getManager().recording.currentTick) {
+				throw new IllegalArgumentException("Cannot seek recording to tick " + tick + "!");
+			}
+		}
+
+		boolean wasPaused = Playback.getManager().isPaused();
+		if (wasPaused) {
+			Playback.getManager().togglePause();
+		}
+
+		while (tick > this.currentTick) {
+			MinecraftClient.getInstance().tick();
+		}
+
+		if (wasPaused) {
+			Playback.getManager().togglePause();
+		}
+		if (pauseAfterSeek && !Playback.getManager().isPaused()) {
+			Playback.getManager().togglePause();
+		}
+	}
 }
