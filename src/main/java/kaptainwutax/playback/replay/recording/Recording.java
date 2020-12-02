@@ -274,6 +274,7 @@ public class Recording implements AutoCloseable {
 				Playback.getManager().togglePause();
 			}
 
+			((IClientCaller) MinecraftClient.getInstance()).updatePaused();
 			for(; tickCounter < tick; tickCounter++) {
 				MinecraftClient.getInstance().tick();
 			}
@@ -293,7 +294,7 @@ public class Recording implements AutoCloseable {
 			this.currentKeyStates.clear();
 			this.currentRecordedWindowSize = null;
 			this.clipboard = null;
-			this.paused = false;
+
 
 			ReplayView oldView = manager.getView();
 			manager.updateView(ReplayView.FIRST_PERSON, true);
@@ -321,6 +322,7 @@ public class Recording implements AutoCloseable {
 			Playback.getManager().togglePause();
 		}
 
+		((IClientCaller) MinecraftClient.getInstance()).updatePaused();
 		while (tick > this.currentTick) {
 			MinecraftClient.getInstance().tick();
 		}
@@ -331,5 +333,9 @@ public class Recording implements AutoCloseable {
 		if (pauseAfterSeek && !Playback.getManager().isPaused()) {
 			Playback.getManager().togglePause();
 		}
+	}
+
+	public interface IClientCaller {
+		void updatePaused();
 	}
 }

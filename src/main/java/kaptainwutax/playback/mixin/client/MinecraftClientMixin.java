@@ -10,10 +10,12 @@ import kaptainwutax.playback.replay.action.PacketAction;
 import kaptainwutax.playback.replay.action.SetPausedAction;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import kaptainwutax.playback.replay.capture.PlayRenderers;
+import kaptainwutax.playback.replay.recording.Recording;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.options.GameOptions;
@@ -45,7 +47,7 @@ import javax.annotation.Nullable;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin implements PacketAction.IConnectionGetter, FakePlayer.IClientCaller,
-		PlayerFrame.IClientCaller, PlayGameOptions.IClientCaller, SetPausedAction.ClientSetPause, PlayRenderers.IClientCaller {
+		PlayerFrame.IClientCaller, PlayGameOptions.IClientCaller, SetPausedAction.ClientSetPause, PlayRenderers.IClientCaller, Recording.IClientCaller {
 
 	private Keyboard callbackKeyboard;
 	private Mouse callbackMouse;
@@ -107,6 +109,12 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Mutable
 	@Shadow @Final private HeldItemRenderer heldItemRenderer;
+
+	@Shadow public abstract boolean isIntegratedServerRunning();
+
+	@Shadow @Nullable public Screen currentScreen;
+
+	@Shadow @Nullable public Overlay overlay;
 
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.getManager().isInReplay()) {
@@ -435,6 +443,12 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Override
 	public void setHeldItemRenderer(HeldItemRenderer heldItemRenderer) {
 		this.heldItemRenderer = heldItemRenderer;
+	}
+
+
+	@Override
+	public void updatePaused() {
+		this.paused = this.isIntegratedServerRunning() && (this.currentScreen != null && this.currentScreen.isPauseScreen() || this.overlay != null && this.overlay.pausesGame()) && !this.server.isRemote();
 	}
 
 }
