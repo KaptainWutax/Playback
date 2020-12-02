@@ -24,7 +24,6 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 	@Shadow public abstract void onResolutionChanged();
 
-	@Unique private MouseAction latestMouseAction;
 	@Unique private int recursionDepth;
 	@Unique private int debug_numNonRecordedRecursiveCalls;
 
@@ -39,7 +38,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				this.latestMouseAction = Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.POS, x, y, 0);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.POS, x, y, 0);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}
@@ -65,7 +64,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				this.latestMouseAction = Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.BUTTON, button, action, mods);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.BUTTON, button, action, mods);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}
@@ -91,7 +90,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				this.latestMouseAction = Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.SCROLL, d, e, 0);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.SCROLL, d, e, 0);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}
@@ -113,7 +112,7 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 
 		if(Playback.getManager().isRecording()) {
 			if (this.recursionDepth == 1) {
-				this.latestMouseAction = Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.UPDATE, 0, 0, 0);
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.UPDATE, 0, 0, 0);
 			} else {
 				debug_numNonRecordedRecursiveCalls++;
 			}
@@ -157,70 +156,9 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 		this.setCursorParameters1(l, i, d, e);
 	}
 
-	/**
-	 * The following 8 ModifyVariable mixins are supposed to record or replay the
-	 * default screen size equivalent coordinates of mouse actions.
-	 * This is required to correctly replay the mouse movements and actions when screens are open.
-	 * @param coord the coordinate
-	 * @return unchanged coord if not replaying or the previously recorded coordinate if replaying
-	 */
-	private double recordOrReplayScreenCoordinate(double coord, int index) {
-		if (Playback.getManager().isRecording()) {
-			this.latestMouseAction.addScreenPositionData(coord, index);
-			return coord;
-		} else if (Playback.getManager().isInReplay() && Playback.getManager().isProcessingReplay) {
-			if (this.recursionDepth != 1)
-				System.out.println("Unexpected recursion depth in mousemixin, probably causes wrong behaviour");
-			double retval = this.latestMouseAction.getScreenPositionData(index);
-
-			if (retval != coord)
-				//This should never happen, because now the screen size is replayed and the mouse coords are also replayed.
-				//This is a preparation to remove the whole recordOrReplayScreenCoordinate again.
-				//When removing this we can also add rendering a mouse texture.
-				throw new IllegalStateException("Mouse position not replayed correctly!");
-			return retval;
-		}
-		return coord;
-	}
-	@ModifyVariable(ordinal = 0, method = "onMouseButton"/*, name = "d"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 0, shift = At.Shift.BY, by = 4))
-	private double recordOrReplayScreenCoordinateButton_d(double d) {
-		return recordOrReplayScreenCoordinate(d, 0);
-	}
-	@ModifyVariable(ordinal = 1, method = "onMouseButton"/*, name = "e"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 0, shift = At.Shift.BY, by = 4))
-	private double recordOrReplayScreenCoordinateButton_e(double e) {
-		return recordOrReplayScreenCoordinate(e, 1);
-	}
-	@ModifyVariable(ordinal = 3, method = "onMouseScroll"/*, name = "g"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 0, shift = At.Shift.BY, by = 4))
-	private double recordOrReplayScreenCoordinateScroll_g(double g) {
-		return recordOrReplayScreenCoordinate(g, 0);
-	}
-	@ModifyVariable(ordinal = 4, method = "onMouseScroll"/*, name = "h"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 0, shift = At.Shift.BY, by = 4))
-	private double recordOrReplayScreenCoordinateScroll_h(double h) {
-		return recordOrReplayScreenCoordinate(h, 1);
-	}
-	@ModifyVariable(ordinal = 2, method = "onCursorPos"/*, name = "d"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 0, shift = At.Shift.BY, by = 4))
-	private double recordOrReplayScreenCoordinatePos_d(double d) {
-		return recordOrReplayScreenCoordinate(d, 0);
-	}
-	@ModifyVariable(ordinal = 3, method = "onCursorPos"/*, name = "e"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 0, shift = At.Shift.BY, by = 4))
-	private double recordOrReplayScreenCoordinatePos_e(double e) {
-		return recordOrReplayScreenCoordinate(e, 1);
-	}
-	@ModifyVariable(ordinal = 4, method = "onCursorPos"/*, name = "f"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getWidth()I", ordinal = 1, shift = At.Shift.BY, by = 4))
-	private double recordOrReplayScreenCoordinatePos_f(double f) {
-		return recordOrReplayScreenCoordinate(f, 2);
-	}
-	@ModifyVariable(ordinal = 5, method = "onCursorPos"/*, name = "g"*/, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/util/Window;getHeight()I", ordinal = 1, shift = At.Shift.BY, by = 4))
-	private double recordOrReplayScreenCoordinatePos_g(double g) {
-		return recordOrReplayScreenCoordinate(g, 3);
-	}
-
-
-
 
 	@Override
 	public void execute(MouseAction.ActionType actionType, MouseAction action, double d1, double d2, int i1) {
-		this.latestMouseAction = action;
 		if (actionType == MouseAction.ActionType.POS) {
 			this.onCursorPos(MinecraftClient.getInstance().getWindow().getHandle(), d1, d2);
 		} else if (actionType == MouseAction.ActionType.BUTTON) {
@@ -234,7 +172,6 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 		} else {
 			throw new IllegalStateException("Unexpected value: " + actionType);
 		}
-		this.latestMouseAction = null;
 	}
 
 }
