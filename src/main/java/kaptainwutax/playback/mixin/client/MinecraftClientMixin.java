@@ -2,6 +2,7 @@ package kaptainwutax.playback.mixin.client;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
+import kaptainwutax.playback.gui.PlaybackRenderMenuScreen;
 import kaptainwutax.playback.gui.ReplayHudScreen;
 import kaptainwutax.playback.init.PKeyBindings;
 import kaptainwutax.playback.replay.PlayerFrame;
@@ -274,7 +275,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			}
 
 			if (shouldRender) {
-				Playback.getManager().renderManager.startExampleRendering();
+				MinecraftClient.getInstance().openScreen(new PlaybackRenderMenuScreen());
 			}
 
 			//open only when player is under user control
