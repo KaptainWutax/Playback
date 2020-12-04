@@ -112,6 +112,7 @@ public class PlayerFrame {
 		this.crosshairTarget = client.crosshairTarget;
 		this.targetedEntity = client.targetedEntity;
 		this.windowFocus = client.isWindowFocused();
+		this.networkHandler.copyState();
 	}
 
 	public void applyState() {

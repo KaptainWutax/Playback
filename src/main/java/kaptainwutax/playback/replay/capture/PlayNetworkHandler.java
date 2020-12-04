@@ -29,18 +29,36 @@ public class PlayNetworkHandler {
 	}
 
 	public static PlayNetworkHandler createFromExisting() {
-		return new PlayNetworkHandler(client.getNetworkHandler());
+		ClientPlayNetworkHandler clientPlayNetworkHandler = client.getNetworkHandler();
+		ClientPlayNetworkHandler internal = new ClientPlayNetworkHandler(client, null, null, null);
+		assert clientPlayNetworkHandler != null;
+		//noinspection ConstantConditions
+		copyContents((INetworkHandlerCaller) clientPlayNetworkHandler, (INetworkHandlerCaller) internal);
+		return new PlayNetworkHandler(internal);
 	}
 
+	//We are not swapping the NetworkHandler Objects themselves, because there are many references to it,
+	//some of which are created without synchronization on other threads in forceMainThread
 	public void apply() {
 		INetworkHandlerCaller current = (INetworkHandlerCaller)client.getNetworkHandler();
-		current.setAdvancementHandler(this.internal.getAdvancementHandler());
-		current.setCommandSource(this.internal.getCommandSource());
-		current.setTagManager(this.internal.getTagManager());
-		current.setDataQueryManager(this.internal.getDataQueryManager());
-		current.setChunkLoadDistance(this.internal.getChunkLoadDistance());
-		current.setCommandDispatcher(this.internal.getCommandDispatcher());
-		current.setRecipeManager(this.internal.getRecipeManager());
+		assert current != null;
+		copyContents(this.internal, current);
+	}
+
+	public static void copyContents(INetworkHandlerCaller from, INetworkHandlerCaller to) {
+		to.setAdvancementHandler(from.getAdvancementHandler());
+		to.setCommandSource(from.getCommandSource());
+		to.setTagManager(from.getTagManager());
+		to.setDataQueryManager(from.getDataQueryManager());
+		to.setChunkLoadDistance(from.getChunkLoadDistance());
+		to.setCommandDispatcher(from.getCommandDispatcher());
+		to.setRecipeManager(from.getRecipeManager());
+	}
+
+	public void copyState() {
+		ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+		assert networkHandler != null;
+		copyContents((INetworkHandlerCaller) networkHandler, this.internal);
 	}
 
 	public interface INetworkHandlerCaller {
