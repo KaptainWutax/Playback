@@ -21,15 +21,10 @@ public class FakePlayer extends ClientPlayerEntity {
 	public FakePlayer(MinecraftClient client, ClientWorld clientWorld, ClientPlayNetworkHandler clientPlayNetworkHandler, ClientPlayerInteractionManager interactionManager, PlayGameOptions options, Input keyboardInput) {
 		super(client, clientWorld, clientPlayNetworkHandler, null, new ClientRecipeBook(), false, false);
 
-		GameMode gameMode = GameMode.SPECTATOR;
-
-		gameMode.setAbilities(this.abilities);
 		this.interactionManager = interactionManager;
-		((IInteractionCaller) interactionManager).setGameModeNoUpdates(gameMode);
 
-		this.setClientPermissionLevel(2);
+//		this.setClientPermissionLevel(2);
 		this.input = keyboardInput;
-		//this.dimension = null; TODO: check if this breaks anything
 
 		this.inventory.addPickBlock(new ItemStack(PItems.FEATURE_STICK));
 	}

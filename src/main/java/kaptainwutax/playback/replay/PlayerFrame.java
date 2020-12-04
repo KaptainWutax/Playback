@@ -149,8 +149,6 @@ public class PlayerFrame {
 		ToastManager toast = new ToastManager(client);
 
 		InGameHud hud = new InGameHud(client);
-		ClientPlayNetworkHandler networkHandler = new ClientPlayNetworkHandler(client, null,
-				((PacketAction.IConnectionGetter)client).getConnection(), client.getSession().getProfile());
 
 		return new PlayerFrame(player, interactionManager, options, mouse, new Keyboard(client), toast,
 				hud, MinecraftClient.getInstance().isWindowFocused(), PlayNetworkHandler.createNew(), PlayRenderers.createNew());
@@ -174,6 +172,7 @@ public class PlayerFrame {
 		}
 	}
 
+	//todo remove this after confirming it is just an old leftover
 	public PlayerFrame cameraOnly() {
 		this.cameraOnly = true;
 		return this;

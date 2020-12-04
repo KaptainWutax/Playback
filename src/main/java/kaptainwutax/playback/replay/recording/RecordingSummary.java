@@ -8,7 +8,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.gen.GeneratorOptions;
+import net.minecraft.world.level.LevelInfo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -68,9 +70,9 @@ public class RecordingSummary {
 
             //Start an integrated server like new worlds (demo world here) are started, not like loading a world from a save.
             DynamicRegistryManager.Impl impl = DynamicRegistryManager.create();
-            MinecraftClient.getInstance().method_29607("Replay", MinecraftServer.DEMO_LEVEL_INFO, impl, GeneratorOptions.method_31112(impl));
-            MinecraftClient.getInstance().startIntegratedServer("Replay");
-            MinecraftClient.getInstance().getServer().getPlayerManager().setCheatsAllowed(true);
+            LevelInfo levelInfo = MinecraftServer.DEMO_LEVEL_INFO;
+            levelInfo = new LevelInfo(levelInfo.getLevelName(), GameMode.CREATIVE, false, levelInfo.getDifficulty(), true, levelInfo.getGameRules(), levelInfo.getDataPackSettings());
+            MinecraftClient.getInstance().method_29607("Replay", levelInfo, impl, GeneratorOptions.method_31112(impl));
         });
     }
 }

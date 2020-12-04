@@ -62,6 +62,9 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 			ReplayView oldView = manager.getView();
 			manager.updateView(ReplayView.FIRST_PERSON, true);
 			manager.recording.getStartState().play();
+
+			manager.updateView(ReplayView.THIRD_PERSON, false);
+			this.client.interactionManager.setGameMode(packet.getGameMode());
 			manager.updateView(oldView, true);
 
 			this.client.openScreen(null);
@@ -89,7 +92,7 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 	@Inject(method = "onPlayerPositionLook", at = @At("TAIL"))
 	public void onPlayerPositionLook(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
 		if(Playback.getManager().isRecording() || Playback.getManager().getView() != ReplayView.THIRD_PERSON
-				|| Playback.getManager().cameraPlayer == null || Playback.getManager().cameraPlayer.wasTeleported ||Playback.getManager().cameraPlayer.isActive()) return;
+				|| Playback.getManager().cameraPlayer == null || Playback.getManager().cameraPlayer.wasTeleported || Playback.getManager().cameraPlayer.isActive()) return;
 
 		Playback.getManager().cameraPlayer.wasTeleported = true;
 		FakePlayer cameraPlayer = (FakePlayer) Playback.getManager().cameraPlayer.getPlayer();

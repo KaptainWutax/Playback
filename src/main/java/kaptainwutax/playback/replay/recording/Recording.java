@@ -324,6 +324,7 @@ public class Recording implements AutoCloseable {
 
 		((IClientCaller) MinecraftClient.getInstance()).updatePaused();
 		while (tick > this.currentTick) {
+			//todo add a progress bar to indicate that the game didn't crash
 			MinecraftClient.getInstance().tick();
 		}
 
