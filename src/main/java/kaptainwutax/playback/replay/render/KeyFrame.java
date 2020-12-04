@@ -16,6 +16,11 @@ public class KeyFrame extends CameraState {
         this.frame = frame;
     }
 
+    public KeyFrame(int frame, CameraState cameraState) {
+        super(cameraState.time, cameraState.x, cameraState.y, cameraState.z, cameraState.yaw, cameraState.pitch, cameraState.roll, cameraState.fov);
+        this.frame = frame;
+    }
+
     @Override
     public <T> T serialize(DynamicOps<T> ops) {
         T map = super.serialize(ops);

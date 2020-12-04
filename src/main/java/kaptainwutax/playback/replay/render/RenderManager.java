@@ -301,6 +301,10 @@ public class RenderManager {
         return playingCameraPath != null;
     }
 
+    public CameraPath getSelectedCameraPath() {
+        return selectedCameraPath;
+    }
+
     public interface MutableCamera {
         void setCamera(Camera camera);
     }

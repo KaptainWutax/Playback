@@ -2,6 +2,8 @@ package kaptainwutax.playback.replay.render;
 
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.Camera;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Quaternion;
@@ -53,6 +55,12 @@ public class CameraState {
 
     public CameraState(CameraState state) {
         this(state.time, state.x, state.y, state.z, state.yaw, state.pitch, state.roll, state.fov);
+    }
+
+    public static CameraState fromCamera(GameTimeStamp time, Camera camera) {
+        return new CameraState(time,
+                camera.getPos().x, camera.getPos().y, camera.getPos().z, camera.getYaw(), camera.getPitch(), 0,
+                MinecraftClient.getInstance().options.fov);
     }
 
     public double getX() {

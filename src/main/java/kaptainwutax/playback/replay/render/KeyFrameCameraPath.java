@@ -56,6 +56,7 @@ public class KeyFrameCameraPath extends AbstractCameraPath {
             nextInterp = null;
         }
         keyFrames.add(index, kf);
+        frames = Math.max(frames, kf.frame);
         return this;
     }
 

@@ -16,7 +16,7 @@ import java.util.List;
 public class ReplayHudScreen extends Screen {
 
     protected List<Drawable> drawables = new ArrayList<>();
-    protected Timeline timeline;
+    protected GameTimeline gameTimeline;
 
     public ReplayHudScreen(Text title) {
         super(title);
@@ -26,8 +26,8 @@ public class ReplayHudScreen extends Screen {
     protected void init() {
         super.init();
         this.drawables.clear();
-        this.drawables.add(this.timeline = new Timeline((int)(this.width * 0.0125f), (int)(this.height * 0.025f)));
-        this.children.add(this.timeline);
+        this.drawables.add(this.gameTimeline = new GameTimeline((int)(this.width * 0.0125f), (int)(this.height * 0.025f)));
+        this.children.add(this.gameTimeline);
 //        this.addButton(new ButtonWidget(10, 10, this.width / 5, 20, "ButtonTest", b -> {
 //            System.out.println("Button Test!");
 //        }));

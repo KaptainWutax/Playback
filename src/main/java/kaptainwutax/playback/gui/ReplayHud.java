@@ -12,8 +12,7 @@ import net.minecraft.text.LiteralText;
  */
 public class ReplayHud {
 
-    //Store the state in ReplayHud and not ReplayHudScreen
-    //This replay hud screen is only one of several instances, opening a ReplayHudScreen will create a new one!
+    //Store no meaningful state in ReplayHudScreen
     private ReplayHudScreen replayHudScreen;
 
     public ReplayHud() {
@@ -44,7 +43,7 @@ public class ReplayHud {
     }
 
     public void resize() {
-            this.getScreen().resize(MinecraftClient.getInstance(), MinecraftClient.getInstance().getWindow().getScaledWidth(), MinecraftClient.getInstance().getWindow().getScaledHeight());
+        this.getScreen().resize(MinecraftClient.getInstance(), MinecraftClient.getInstance().getWindow().getScaledWidth(), MinecraftClient.getInstance().getWindow().getScaledHeight());
     }
 
     public interface InGameHudGetters {

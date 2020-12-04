@@ -23,9 +23,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public class Timeline extends DrawableHelper implements Drawable, Element {
+public class GameTimeline extends DrawableHelper implements Drawable, Element {
 
-	//some random texture until we have our own or a better one
 	private static final Identifier TEXTURE = Playback.createIdentifier("textures/hud/timeline.png");
 	private static final int TEXTURE_HEIGHT = 20;
 	private static final int TEXTURE_WIDTH = 254;
@@ -43,7 +42,7 @@ public class Timeline extends DrawableHelper implements Drawable, Element {
 	protected GameTimeStamp endTime;
 	protected double duration;
 
-	public Timeline(int x, int y) {
+	public GameTimeline(int x, int y) {
 		this.x = x;
 		this.y = y;
 		this.width = TEXTURE_WIDTH - 3;
