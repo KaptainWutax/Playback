@@ -7,6 +7,8 @@
     "accessors.ControlsListWidgetKeybindingEntryAccessor",
     "accessors.EditGameRulesScreenBooleanRuleWidgetAccessor",
     "accessors.EditGameRulesScreenIntRuleWidgetAccessor",
+    "client.fix_recipebook_order.ClientRecipeBookMixin",
+    "client.fix_recipebook_order.RecipeManagerMixin",
     "network.ClientConnectionMixin",
     "network.NetworkThreadUtilsMixin",
     "network.packet.s2c.play.EntitySpawnS2CPacketMixin",
