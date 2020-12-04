@@ -65,6 +65,9 @@ public abstract class WorldRendererMixin implements PlayRenderers.IWorldRenderer
 
 	@Inject(method = "render", at = @At("RETURN"))
 	private void afterRender(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
+		if (!Playback.getManager().isInReplay()) {
+			return;
+		}
 		RenderQueue.get().render(tickDelta, matrices);
 		Playback.getManager().renderManager.render(matrices, tickDelta, camera, matrix4f);
 	}
