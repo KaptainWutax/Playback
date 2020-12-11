@@ -3,7 +3,6 @@ package kaptainwutax.playback.replay;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
 import kaptainwutax.playback.init.PKeyBindings;
-import kaptainwutax.playback.replay.action.PacketAction;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import kaptainwutax.playback.replay.capture.PlayNetworkHandler;
 import kaptainwutax.playback.replay.capture.PlayRenderers;
@@ -12,18 +11,20 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.input.KeyboardInput;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.util.hit.HitResult;
 
 public class PlayerFrame {
 
 	private static MinecraftClient client = MinecraftClient.getInstance();
+	private static ICreativeInventoryScreenCaller creativeInventoryScreenCaller;
 
 
 	private ClientPlayerEntity player;
@@ -35,6 +36,8 @@ public class PlayerFrame {
 	public InGameHud inGameHud;
 	public PlayNetworkHandler networkHandler;
 	private final PlayRenderers renderers;
+	private final SimpleInventory creativeInventoryScreen$inventory;
+	private int creativeInventoryScreen$selectedTab;
 
 	private boolean cameraOnly;
 	public boolean wasTeleported;
@@ -60,6 +63,8 @@ public class PlayerFrame {
 		this.inGameHud = inGameHud;
 		this.networkHandler = networkHandler;
 		this.renderers = renderers;
+		this.creativeInventoryScreen$inventory = new SimpleInventory(45);
+		this.creativeInventoryScreen$selectedTab = 0;
 
 		this.windowFocus = windowFocus;
 		this.wasTeleported = false;
@@ -113,6 +118,7 @@ public class PlayerFrame {
 		this.targetedEntity = client.targetedEntity;
 		this.windowFocus = client.isWindowFocused();
 		this.networkHandler.copyState();
+		this.creativeInventoryScreen$selectedTab = creativeInventoryScreenCaller.getSelectedTab();
 	}
 
 	public void applyState() {
@@ -126,9 +132,16 @@ public class PlayerFrame {
 		((IClientCaller)client).setInGameHud(this.inGameHud);
 		this.networkHandler.apply();
 		this.renderers.apply();
+		creativeInventoryScreenCaller.setSelectedTab(this.creativeInventoryScreen$selectedTab);
+		creativeInventoryScreenCaller.setInventory(this.creativeInventoryScreen$inventory);
 	}
 
 	public static PlayerFrame createFromExisting() {
+		if (creativeInventoryScreenCaller == null) {
+			//noinspection ConstantConditions
+			creativeInventoryScreenCaller = (ICreativeInventoryScreenCaller) new CreativeInventoryScreen(client.player);
+		}
+
 		((PlayGameOptions.IKeyBindingCaller)client.options.keysAll[0]).resetStaticCollections();
 		PKeyBindings.registerKeyCategories();
 		PlayGameOptions options = new PlayGameOptions();
@@ -231,4 +244,13 @@ public class PlayerFrame {
 		void setOptions(GameOptions options);
 	}
 
+	public interface ICreativeInventoryScreenCaller {
+		SimpleInventory getInventory();
+
+		int getSelectedTab();
+
+		void setInventory(SimpleInventory newVal);
+
+		void setSelectedTab(int newVal);
+	}
 }
