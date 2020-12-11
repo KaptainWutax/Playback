@@ -81,7 +81,7 @@ public class HierarchyInterpolator extends TreeMap<ComponentKey<?>, Interpolator
                 if (LinearAngleInterpolator.INSTANCE.canInterpolate(k)) {
                     LinearAngleInterpolator.INSTANCE.interpolate((ComponentKey<Double>) k, stateFrom, stateTo, t, dest);
                 } else {
-                    if (defaultInterpolator != null) {
+                    if (defaultInterpolator != null && defaultInterpolator.canInterpolate(k)) {
                         defaultInterpolator.interpolate(k, states, from, to, t, dest);
                     } else if (LinearInterpolator.INSTANCE.canInterpolate(k)) {
                         LinearInterpolator.INSTANCE.interpolate((ComponentKey<Double>) k, stateFrom, stateTo, t, dest);
