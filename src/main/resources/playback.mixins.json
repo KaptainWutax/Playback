@@ -9,6 +9,7 @@
     "accessors.EditGameRulesScreenIntRuleWidgetAccessor",
     "client.fix_recipebook_order.ClientRecipeBookMixin",
     "client.fix_recipebook_order.RecipeManagerMixin",
+    "client.render.PlayerEntityRendererMixin",
     "network.ClientConnectionMixin",
     "network.NetworkThreadUtilsMixin",
     "network.packet.s2c.play.EntitySpawnS2CPacketMixin",

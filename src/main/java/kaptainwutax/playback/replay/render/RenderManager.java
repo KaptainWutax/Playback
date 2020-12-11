@@ -3,6 +3,8 @@ package kaptainwutax.playback.replay.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.gui.ReplayHud;
+import kaptainwutax.playback.replay.ReplayManager;
+import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.encoding.LibAvEncoder;
 import kaptainwutax.playback.replay.render.interpolation.CatmullRomSplineInterpolator;
 import kaptainwutax.playback.replay.render.interpolation.ComponentKey;
@@ -12,6 +14,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Tessellator;
@@ -42,6 +45,7 @@ public class RenderManager {
     private Collection<CameraPath> cameraPaths = new ArrayList<>();
     private CameraPath selectedCameraPath;
     private CameraPath playingCameraPath;
+    private CameraState lastCameraState;
 
     protected Random random;
     private int cameraPathProgress;
@@ -59,7 +63,7 @@ public class RenderManager {
         this.exampleCameraPath = new KeyFrameCameraPath(451)
             .keyFrame(new KeyFrame(0, new GameTimeStamp(0, 0), 0, 70, 0, -45, 80, 0, 90, true, false))
             .interpolate(interp2)
-            .keyFrame(new KeyFrame(301, new GameTimeStamp(100, 0.3f), 30, 70, 0, 360 + 45, 50, -20, 50, true, false))
+            .keyFrame(new KeyFrame(301, new GameTimeStamp(100, 0.3f), 30, 70, 0, 360 + 45, 50, -20, 50, false, false))
             .interpolate(interp1)
             .keyFrame(new KeyFrame(451, new GameTimeStamp(150, 0.3f), 45, 90, 0, 45, 0, 20, 120, true, false));
         /*
@@ -179,6 +183,13 @@ public class RenderManager {
         }
     }
 
+    public CameraState getCurrentCameraState() {
+        if (!Playback.getManager().isInReplay()) return null;
+        if (isRendering()) return renderingSession.cameraState;
+        if (this.playingCameraPath != null) return this.lastCameraState;
+        return null;
+    }
+
     public void checkRender() {
         if (this.renderingSession != null) {
             this.renderingSession.render();
@@ -285,6 +296,7 @@ public class RenderManager {
     private void setCameraState(CameraState state, boolean seek) {
         // TODO: implement seek
         replayCamera.setState(state);
+        lastCameraState = state;
     }
 
     public void useVanillaCamera() {
@@ -303,6 +315,18 @@ public class RenderManager {
 
     public CameraPath getSelectedCameraPath() {
         return selectedCameraPath;
+    }
+
+    public boolean shouldRenderPlayer(AbstractClientPlayerEntity entity) {
+        ReplayManager manager = Playback.getManager();
+        if (!manager.isInReplay()) return true;
+        if (entity == manager.cameraPlayer.getPlayer()) return false;
+        if (entity == manager.replayPlayer.getPlayer()) {
+            if (manager.view == ReplayView.FIRST_PERSON) return false;
+            CameraState state = getCurrentCameraState();
+            return state == null || state.isRenderPlayer();
+        }
+        return true;
     }
 
     public interface MutableCamera {
