@@ -11,13 +11,13 @@ public class KeyFrame extends CameraState {
         this.frame = config.get("frame").asInt(0);
     }
 
-    public KeyFrame(int frame, GameTimeStamp time, double x, double y, double z, double yaw, double pitch, double roll, double fov) {
-        super(time, x, y, z, yaw, pitch, roll, fov);
+    public KeyFrame(int frame, GameTimeStamp time, double x, double y, double z, double yaw, double pitch, double roll, double fov, boolean renderPlayer, boolean renderGui) {
+        super(time, x, y, z, yaw, pitch, roll, fov, renderPlayer, renderGui);
         this.frame = frame;
     }
 
     public KeyFrame(int frame, CameraState cameraState) {
-        super(cameraState.time, cameraState.x, cameraState.y, cameraState.z, cameraState.yaw, cameraState.pitch, cameraState.roll, cameraState.fov);
+        super(cameraState);
         this.frame = frame;
     }
 

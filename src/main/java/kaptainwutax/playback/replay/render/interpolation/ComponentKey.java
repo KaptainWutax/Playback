@@ -5,8 +5,6 @@ import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.render.CameraState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 
@@ -90,4 +88,6 @@ public class ComponentKey<T> {
     public static final ComponentKey<Double> PITCH = register("pitch", new ComponentKey<>(ROTATION, Double.class, CameraState::getPitch, CameraState.Mutable::setPitch));
     public static final ComponentKey<Double> ROLL = register("roll", new ComponentKey<>(ROTATION, Double.class, CameraState::getRoll, CameraState.Mutable::setRoll));
     public static final ComponentKey<Double> FOV = register("fov", new ComponentKey<>(KEY_FRAME, Double.class, CameraState::getFov, CameraState.Mutable::setFov));
+    public static final ComponentKey<Boolean> PLAYER_RENDERED = register("render_player", new ComponentKey<>(KEY_FRAME, Boolean.class, CameraState::isRenderPlayer, CameraState.Mutable::setRenderPlayer));
+    public static final ComponentKey<Boolean> GUI_RENDERED = register("render_gui", new ComponentKey<>(KEY_FRAME, Boolean.class, CameraState::isRenderGui, CameraState.Mutable::setRenderGui));
 }

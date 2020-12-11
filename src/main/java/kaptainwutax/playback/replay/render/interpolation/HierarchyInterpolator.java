@@ -1,6 +1,5 @@
 package kaptainwutax.playback.replay.render.interpolation;
 
-import com.mojang.datafixers.DSL;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import kaptainwutax.playback.replay.render.CameraState;
@@ -84,8 +83,10 @@ public class HierarchyInterpolator extends TreeMap<ComponentKey<?>, Interpolator
                 } else {
                     if (defaultInterpolator != null) {
                         defaultInterpolator.interpolate(k, states, from, to, t, dest);
-                    } else {
+                    } else if (LinearInterpolator.INSTANCE.canInterpolate(k)) {
                         LinearInterpolator.INSTANCE.interpolate((ComponentKey<Double>) k, stateFrom, stateTo, t, dest);
+                    } else {
+                        ((ComponentKey<Object>) k).set(dest, k.get(stateFrom));
                     }
                 }
             }

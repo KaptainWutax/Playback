@@ -77,10 +77,10 @@ public class RenderingSession {
         RenderSystem.enableCull();
         if (!client.skipGameRender) {
             profiler.push("gameRenderer");
-            // Long.MAX_VALUE: give updateChunks() as much time as it needs
             // TODO: normal rendering passes a different tickDelta for paused, do we need that as well?
             client.world.setTimeOfDay(6000);
             client.chunkCullingEnabled = false;
+            // Long.MAX_VALUE: give updateChunks() as much time as it needs
             client.gameRenderer.render(cameraState.time.tickDelta, Long.MAX_VALUE, true);
             // client.chunkCullingEnabled = true;
             profiler.swap("toasts");

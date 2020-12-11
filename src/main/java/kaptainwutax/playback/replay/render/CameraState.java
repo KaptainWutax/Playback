@@ -20,6 +20,7 @@ public class CameraState {
     protected double x, y, z;
     protected double yaw, pitch, roll;
     protected double fov;
+    protected boolean renderPlayer, renderGui;
 
     public CameraState() {}
 
@@ -40,9 +41,11 @@ public class CameraState {
         }
         this.fov = config.get("fov").asDouble(90);
         this.time = new GameTimeStamp(config);
+        this.renderPlayer = config.get("renderPlayer").asBoolean(true);
+        this.renderGui = config.get("renderGui").asBoolean(false);
     }
 
-    public CameraState(GameTimeStamp time, double x, double y, double z, double yaw, double pitch, double roll, double fov) {
+    public CameraState(GameTimeStamp time, double x, double y, double z, double yaw, double pitch, double roll, double fov, boolean renderPlayer, boolean renderGui) {
         this.time = time;
         this.x = x;
         this.y = y;
@@ -51,16 +54,18 @@ public class CameraState {
         this.pitch = pitch;
         this.roll = roll;
         this.fov = fov;
+        this.renderPlayer = renderPlayer;
+        this.renderGui = renderGui;
     }
 
     public CameraState(CameraState state) {
-        this(state.time, state.x, state.y, state.z, state.yaw, state.pitch, state.roll, state.fov);
+        this(state.time, state.x, state.y, state.z, state.yaw, state.pitch, state.roll, state.fov, state.renderPlayer, state.renderGui);
     }
 
     public static CameraState fromCamera(GameTimeStamp time, Camera camera) {
         return new CameraState(time,
                 camera.getPos().x, camera.getPos().y, camera.getPos().z, camera.getYaw(), camera.getPitch(), 0,
-                MinecraftClient.getInstance().options.fov);
+                MinecraftClient.getInstance().options.fov, true, false);
     }
 
     public double getX() {
@@ -107,6 +112,14 @@ public class CameraState {
         return fov;
     }
 
+    public boolean isRenderGui() {
+        return renderGui;
+    }
+
+    public boolean isRenderPlayer() {
+        return renderPlayer;
+    }
+
     public GameTimeStamp getTime() {
         return time;
     }
@@ -130,8 +143,8 @@ public class CameraState {
     public static class Mutable extends CameraState {
         public Mutable() {}
 
-        public Mutable(GameTimeStamp time, double x, double y, double z, double yaw, double pitch, double roll, double fov) {
-            super(time, x, y, z, yaw, pitch, roll, fov);
+        public Mutable(GameTimeStamp time, double x, double y, double z, double yaw, double pitch, double roll, double fov, boolean renderPlayer, boolean renderGui) {
+            super(time, x, y, z, yaw, pitch, roll, fov, renderPlayer, renderGui);
         }
 
         public Mutable(CameraState state) {
@@ -176,6 +189,14 @@ public class CameraState {
 
         public void setFov(double fov) {
             this.fov = fov;
+        }
+
+        public void setRenderPlayer(boolean renderPlayer) {
+            this.renderPlayer = renderPlayer;
+        }
+
+        public void setRenderGui(boolean renderGui) {
+            this.renderGui = renderGui;
         }
 
         public void setTime(GameTimeStamp time) {
