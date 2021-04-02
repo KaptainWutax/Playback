@@ -10,7 +10,9 @@
     "skyrising"
   ],
   "contact": {
-    "sources": "https://github.com/KaptainWutax/Playback"
+    "homepage": "https://github.com/KaptainWutax/Playback",
+    "sources": "https://github.com/KaptainWutax/Playback",
+    "issues": "https://github.com/KaptainWutax/Playback/issues"
   },
   "license": "MIT",
   "icon": "assets/playback/icon.png",
