@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.6-SNAPSHOT'
+	id 'fabric-loom' version '0.4-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -18,15 +18,15 @@ dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	// modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	// We just need these few modules
-	modImplementation "net.fabricmc.fabric-api:fabric-api-base:${project.fabric_api_base_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-keybindings-v0:${project.fabric_keybindings_v0_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-key-binding-api-v1:${project.fabric_keybindings_v1_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-item-groups-v0:${project.fabric_item_groups_v0_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-api-base:${project.fabric_api_base_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-keybindings-v0:${project.fabric_keybindings_v0_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-key-binding-api-v1:${project.fabric_keybindings_v1_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-item-groups-v0:${project.fabric_item_groups_v0_version}"
 
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 
