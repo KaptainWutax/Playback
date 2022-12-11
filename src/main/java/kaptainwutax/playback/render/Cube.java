@@ -1,8 +1,8 @@
 package kaptainwutax.playback.render;
 
 import kaptainwutax.playback.render.util.Color;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.BlockPos;
+import org.joml.Vector3f;
 
 public class Cube extends Cuboid {
 

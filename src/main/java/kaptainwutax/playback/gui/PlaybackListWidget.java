@@ -9,6 +9,7 @@ import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
+import net.minecraft.text.Text;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -57,7 +58,7 @@ public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackLi
     }
 
     public Optional<RecordingSummary> getSelectedRecording() {
-        return Optional.ofNullable(getSelected()).map(e -> e.summary);
+        return Optional.ofNullable(this.getSelectedOrNull()).map(e -> e.summary);
     }
 
     public static final class Entry extends AlwaysSelectedEntryListWidget.Entry<PlaybackListWidget.Entry> {
@@ -92,7 +93,7 @@ public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackLi
                 int hours = (int) ((time - minutes) / 60);
                 String timeStr = hours > 0 ? String.format("%d:%02d:%02d", hours, minutes, seconds) : String.format("%d:%02d", minutes, seconds);
                 GameJoinS2CPacket joinPacket = summary.startState.getJoinPacket();
-                line2 = joinPacket == null ? timeStr : timeStr + " " + joinPacket.getGameMode().getTranslatableName().asString();
+                line2 = joinPacket == null ? timeStr : timeStr + " " + joinPacket.gameMode().getTranslatableName().getString();
             }
             this.client.textRenderer.draw(matrices, filename, x + 32 + 3, y + 1, 0xffffff);
             this.client.textRenderer.draw(matrices, line1, x + 32 + 3, y + 3 + 9, 0x808080);
@@ -104,6 +105,11 @@ public class PlaybackListWidget extends AlwaysSelectedEntryListWidget<PlaybackLi
             parent.setSelected(this);
             parent.parentScreen.loadButton.active = summary.canLoad();
             return false;
+        }
+
+        @Override
+        public Text getNarration() {
+            return Text.empty();
         }
     }
 }

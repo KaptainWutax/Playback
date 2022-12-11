@@ -5,6 +5,7 @@ import kaptainwutax.playback.entity.FakePlayer;
 import kaptainwutax.playback.gui.PlaybackRenderMenuScreen;
 import kaptainwutax.playback.gui.ReplayHudScreen;
 import kaptainwutax.playback.init.PKeyBindings;
+import kaptainwutax.playback.mixin.InvokerEntityRenderDispatcher;
 import kaptainwutax.playback.replay.PlayerFrame;
 import kaptainwutax.playback.replay.ReplayView;
 import kaptainwutax.playback.replay.action.PacketAction;
@@ -18,16 +19,19 @@ import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Overlay;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.debug.DebugRenderer;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.integrated.IntegratedServer;
@@ -62,9 +66,6 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	private boolean windowFocused;
 	@Shadow
 	private boolean paused;
-
-	@Shadow
-	private ClientConnection connection;
 
 	@Shadow
 	protected abstract void handleInputEvents();
@@ -108,14 +109,17 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 	@Mutable
 	@Shadow @Final public GameRenderer gameRenderer;
 
-	@Mutable
-	@Shadow @Final private HeldItemRenderer heldItemRenderer;
-
 	@Shadow public abstract boolean isIntegratedServerRunning();
 
 	@Shadow @Nullable public Screen currentScreen;
 
 	@Shadow @Nullable public Overlay overlay;
+
+	@Shadow public abstract ClientPlayNetworkHandler getNetworkHandler();
+
+	@Shadow public abstract EntityRenderDispatcher getEntityRenderDispatcher();
+
+	@Shadow private @org.jetbrains.annotations.Nullable ClientConnection integratedServerConnection;
 
 	private void applyCameraPlayerIfNecessary() {
 		if(this.world != null && Playback.getManager().isInReplay()) {
@@ -178,11 +182,11 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;tick()V", shift = At.Shift.BEFORE))
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;tick(Z)V", shift = At.Shift.BEFORE))
 	private void tickHudStart(CallbackInfo ci) {
 		applyCameraPlayerIfNecessary();
 	}
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;tick()V", shift = At.Shift.AFTER))
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;tick(Z)V", shift = At.Shift.AFTER))
 	private void tickHudEnd(CallbackInfo ci) {
 		applyReplayPlayerIfNecessary();
 	}
@@ -275,15 +279,15 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 			}
 
 			if (shouldRender) {
-				MinecraftClient.getInstance().openScreen(new PlaybackRenderMenuScreen());
+				MinecraftClient.getInstance().setScreen(new PlaybackRenderMenuScreen());
 			}
 
 			//open only when player is under user control
 			if (shouldOpenHudScreen && !Playback.getManager().isOnlyAcceptingReplayedInputs()) {
 				if (MinecraftClient.getInstance().currentScreen instanceof ReplayHudScreen)
-					MinecraftClient.getInstance().openScreen(null);
+					MinecraftClient.getInstance().setScreen(null);
 				else
-					MinecraftClient.getInstance().openScreen(Playback.getManager().renderManager.replayHud.getScreen());
+					MinecraftClient.getInstance().setScreen(Playback.getManager().renderManager.replayHud.getScreen());
 			}
 		}
 	}
@@ -310,10 +314,10 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 	//Record this.paused changing
-	@Inject(method = "render", slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;isPauseScreen()Z")),
+	@Inject(method = "render", slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;shouldPause()Z")),
 			at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;paused:Z", ordinal = 1, shift = At.Shift.BEFORE),
 			locals = LocalCapture.CAPTURE_FAILHARD)
-	private void recordPauseChanged(boolean tick, CallbackInfo ci, boolean bl) {
+	private void recordPauseChanged(boolean tick, CallbackInfo ci, long l, long m, boolean bl, MatrixStack matrixStack, int k, boolean bl2) {
 		if (Playback.getManager().isRecording()) {
 			Playback.getManager().recording.getCurrentTickInfo().recordPauseChanged(bl);
 		}
@@ -321,7 +325,7 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Override
 	public ClientConnection getConnection() {
-		return this.connection;
+		return this.integratedServerConnection;
 	}
 
 	@Override
@@ -329,13 +333,13 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		this.handleInputEvents();
 	}
 
-	@Redirect(method = "method_30133()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Mouse;method_30134()V"))
+	@Redirect(method = "onCursorEnterChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Mouse;setResolutionChanged()V"))
 	public void redirectMouseCallback(Mouse mouse) {
 		if(Playback.getManager().isInReplay()) {
 			if (Playback.getManager().cameraPlayer != null && Playback.getManager().cameraPlayer.mouse != null) {
-				Playback.getManager().cameraPlayer.mouse.method_30134();
+				Playback.getManager().cameraPlayer.mouse.setResolutionChanged();
 			} else {
-				mouse.method_30134();
+				mouse.setResolutionChanged();
 			}
 		}
 	}
@@ -348,14 +352,14 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 		}
 	}
 
-	@Redirect(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
+	@Redirect(method = "startIntegratedServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;setScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
 	private void noLoadingScreen(MinecraftClient client, Screen screen) {
-		if (!Playback.getManager().isInReplay()) client.openScreen(screen);
+		if (!Playback.getManager().isInReplay()) client.setScreen(screen);
 	}
 
-	@Redirect(method = "reset", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;openScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
+	@Redirect(method = "reset", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;setScreen(Lnet/minecraft/client/gui/screen/Screen;)V"))
 	private void noLoadingScreen2(MinecraftClient client, Screen screen) {
-		if (!Playback.getManager().isInReplay()) client.openScreen(screen);
+		if (!Playback.getManager().isInReplay()) client.setScreen(screen);
 	}
 
 	@Override
@@ -443,13 +447,13 @@ public abstract class MinecraftClientMixin implements PacketAction.IConnectionGe
 
 	@Override
 	public void setHeldItemRenderer(HeldItemRenderer heldItemRenderer) {
-		this.heldItemRenderer = heldItemRenderer;
+		((InvokerEntityRenderDispatcher)this.getEntityRenderDispatcher()).setHeldItemRenderer(heldItemRenderer);
 	}
 
 
 	@Override
 	public void updatePaused() {
-		this.paused = this.isIntegratedServerRunning() && (this.currentScreen != null && this.currentScreen.isPauseScreen() || this.overlay != null && this.overlay.pausesGame()) && !this.server.isRemote();
+		this.paused = this.isIntegratedServerRunning() && (this.currentScreen != null && this.currentScreen.shouldPause() || this.overlay != null && this.overlay.pausesGame()) && !this.server.isRemote();
 	}
 
 }

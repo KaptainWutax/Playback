@@ -3,10 +3,10 @@ package kaptainwutax.playback.replay.render.interpolation;
 import com.mojang.serialization.Lifecycle;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.render.CameraState;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -68,7 +68,8 @@ public class ComponentKey<T> {
     }
 
     private static <T> ComponentKey<T> register(String key, ComponentKey<T> component) {
-        return REGISTRY.add(RegistryKey.of(REGISTRY.getKey(), Playback.createIdentifier(key)), component, Lifecycle.stable());
+        REGISTRY.add(RegistryKey.of(REGISTRY.getKey(), Playback.createIdentifier(key)), component, Lifecycle.stable());
+        return component;
     }
 
     public static Identifier getId(ComponentKey<?> key) {

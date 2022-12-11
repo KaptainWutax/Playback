@@ -2,8 +2,8 @@ package kaptainwutax.playback.replay.capture;
 
 import kaptainwutax.playback.init.PKeyBindings;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.GameOptions;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
 import java.io.*;
@@ -26,13 +26,12 @@ public class PlayGameOptions {
 
 	public PlayGameOptions(GameOptions options) {
 		this.options = options;
-		this.dummyKey = ((IKeyBindingCaller)this.options.keysAll[0]);
+		this.dummyKey = ((IKeyBindingCaller)this.options.allKeys[0]);
 		this.keysById = this.dummyKey.getKeysById();
 		this.keysByCode = this.dummyKey.getKeysByCode();
 		this.keyCategories = this.dummyKey.getKeyCategories();
 		this.categoryOrderMap = this.dummyKey.getCategoryOrderMap();
 		this.dummyKey.resetStaticCollections();
-		PKeyBindings.registerKeyCategories();
 	}
 
 	public GameOptions getOptions() {

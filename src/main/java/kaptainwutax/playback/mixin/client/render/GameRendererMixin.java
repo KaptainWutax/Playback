@@ -5,13 +5,15 @@ import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.gui.WindowSize;
 import kaptainwutax.playback.replay.render.RenderManager;
 import kaptainwutax.playback.replay.render.ReplayCamera;
+import kaptainwutax.playback.util.Quaternion;
+import kaptainwutax.playback.util.Vec3f;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.math.Matrix4f;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -31,17 +33,18 @@ public class GameRendererMixin implements RenderManager.MutableCamera {
         Playback.getManager().renderManager.updateCameraForCameraPath();
     }
 
-    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Matrix4f;)V"))
+    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;FJZLnet/minecraft/client/render/Camera;Lnet/minecraft/client/render/GameRenderer;Lnet/minecraft/client/render/LightmapTextureManager;Lorg/joml/Matrix4f;)V"))
     private void rotateRoll(float tickDelta, long limitTime, MatrixStack matrix, CallbackInfo ci) {
         if (camera instanceof ReplayCamera) {
-            matrix.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(((ReplayCamera) camera).getRoll()));
+            Quaternion old = Vec3f.POSITIVE_Z.getDegreesQuaternion(((ReplayCamera) camera).getRoll());
+            matrix.multiply(new Quaternionf(old.getX(), old.getY(), old.getZ(), old.getW()));
         }
     }
 
     @Inject(method = "getBasicProjectionMatrix", at = @At("HEAD"), cancellable = true)
-    private void replayCameraMatrix(Camera camera, float f, boolean bl, CallbackInfoReturnable<Matrix4f> cir) {
+    private void replayCameraMatrix(double fov, CallbackInfoReturnable<Matrix4f> cir) {
         if (camera instanceof ReplayCamera) {
-            cir.setReturnValue(((ReplayCamera) camera).getBasicProjectionMatrix(f, bl));
+            cir.setReturnValue(((ReplayCamera)camera).getBasicProjectionMatrix().toJOML());
         }
     }
 

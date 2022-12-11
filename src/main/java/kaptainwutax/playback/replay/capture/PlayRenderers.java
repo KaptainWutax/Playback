@@ -29,11 +29,12 @@ public class PlayRenderers {
 
 	public static PlayRenderers createNew() {
 		BufferBuilderStorage bb = new BufferBuilderStorage();
-		WorldRenderer worldRenderer = new WorldRenderer(client, bb);
-		GameRenderer gameRenderer = new GameRenderer(client, client.getResourceManager(), bb);
+		WorldRenderer worldRenderer = new WorldRenderer(client, client.getEntityRenderDispatcher(), client.getBlockEntityRenderDispatcher(), bb);
+		HeldItemRenderer heldItemRenderer = new HeldItemRenderer(client, client.getEntityRenderDispatcher(), client.getItemRenderer());
+		GameRenderer gameRenderer = new GameRenderer(client, heldItemRenderer, client.getResourceManager(), bb);
 		//((ReloadableResourceManager)client.getResourceManager()).registerListener(worldRenderer);
 		//((ReloadableResourceManager)client.getResourceManager()).registerListener(gameRenderer);
-		HeldItemRenderer heldItemRenderer = new HeldItemRenderer(client);
+
 		return new PlayRenderers(bb, new DebugRenderer(client), worldRenderer, gameRenderer, heldItemRenderer);
 	}
 
@@ -56,7 +57,7 @@ public class PlayRenderers {
 				client.debugRenderer,
 				client.worldRenderer,
 				client.gameRenderer,
-				client.getHeldItemRenderer());
+				client.getEntityRenderDispatcher().getHeldItemRenderer());
 	}
 
 	public interface IClientCaller {

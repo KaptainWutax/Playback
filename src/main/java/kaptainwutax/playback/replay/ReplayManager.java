@@ -12,7 +12,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class ReplayManager {
 
 	public boolean isPaused() {
 		Screen screen;
-		return this.paused || (this.cameraPlayer != null && (screen  = this.cameraPlayer.getCurrentScreen()) != null && screen.isPauseScreen());
+		return this.paused || (this.cameraPlayer != null && (screen  = this.cameraPlayer.getCurrentScreen()) != null && screen.shouldPause());
 	}
 
 	public void setReplaying(PlaybackState state) {
@@ -144,11 +144,11 @@ public class ReplayManager {
 				this.replayPlayer.getPlayer().getX(),
 				this.replayPlayer.getPlayer().getY(),
 				this.replayPlayer.getPlayer().getZ(),
-				this.replayPlayer.getPlayer().yaw,
-				this.replayPlayer.getPlayer().pitch
+				this.replayPlayer.getPlayer().getYaw(),
+				this.replayPlayer.getPlayer().getPitch()
 		);
 
-		MinecraftClient.getInstance().player.sendMessage(new LiteralText("Switched to " + Formatting.GREEN + this.view + Formatting.WHITE + ".").formatted(Formatting.BOLD), true);
+		MinecraftClient.getInstance().player.sendMessage(Text.literal("Switched to " + Formatting.GREEN + this.view + Formatting.WHITE + ".").formatted(Formatting.BOLD), true);
 	}
 
 	public void togglePause() {

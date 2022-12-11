@@ -17,7 +17,6 @@ import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
 import net.minecraft.recipe.RecipeManager;
-import net.minecraft.tag.TagManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -37,8 +36,6 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 
 	@Mutable
 	@Shadow @Final private ClientCommandSource commandSource;
-
-	@Shadow private TagManager tagManager;
 
 	@Mutable
 	@Shadow @Final private DataQueryHandler dataQueryHandler;
@@ -64,10 +61,10 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 			manager.recording.getStartState().play();
 
 			manager.updateView(ReplayView.THIRD_PERSON, false);
-			this.client.interactionManager.setGameMode(packet.getGameMode());
+			this.client.interactionManager.setGameMode(packet.gameMode());
 			manager.updateView(oldView, true);
 
-			this.client.openScreen(null);
+			this.client.setScreen(null);
 			ci.cancel();
 		}
 	}
@@ -98,7 +95,7 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 		FakePlayer cameraPlayer = (FakePlayer) Playback.getManager().cameraPlayer.getPlayer();
 		PlayerEntity replayPlayer = Playback.getManager().replayPlayer.getPlayer();
 
-		cameraPlayer.updatePositionAndAngles(replayPlayer.getX(), replayPlayer.getY(), replayPlayer.getZ(), replayPlayer.yaw, replayPlayer.pitch);
+		cameraPlayer.updatePositionAndAngles(replayPlayer.getX(), replayPlayer.getY(), replayPlayer.getZ(), replayPlayer.getYaw(), replayPlayer.getPitch());
 	}
 
 	@Override
@@ -110,11 +107,11 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 	public ClientCommandSource getCommandSource() {
 		return this.commandSource;
 	}
-
+	/*
 	@Override
 	public TagManager getTagManager() {
 		return this.tagManager;
-	}
+	}*/
 
 	@Override
 	public DataQueryHandler getDataQueryManager() {
@@ -146,10 +143,11 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 		this.commandSource = commandSource;
 	}
 
+	/*
 	@Override
 	public void setTagManager(TagManager tagManager) {
 		this.tagManager = tagManager;
-	}
+	}*/
 
 	@Override
 	public void setDataQueryManager(DataQueryHandler dataQueryManager) {

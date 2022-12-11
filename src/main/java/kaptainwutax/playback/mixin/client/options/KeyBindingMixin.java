@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import kaptainwutax.playback.init.PKeyBindings;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Final;
@@ -18,20 +18,20 @@ import java.util.Set;
 @Mixin(KeyBinding.class)
 public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCaller, PKeyBindings.IKeyBindingCaller {
 
-	@Mutable @Shadow @Final private static Map<String, KeyBinding> keysById;
-	@Mutable @Shadow @Final private static Map<InputUtil.Key, KeyBinding> keyToBindings;
-	@Mutable @Shadow @Final private static Set<String> keyCategories;
-	@Mutable @Shadow @Final private static Map<String, Integer> categoryOrderMap;
+	@Mutable @Shadow @Final private static Map<String, KeyBinding> KEYS_BY_ID;
+	@Mutable @Shadow @Final private static Map<InputUtil.Key, KeyBinding> KEY_TO_BINDINGS;
+	@Mutable @Shadow @Final private static Set<String> KEY_CATEGORIES;
+	@Mutable @Shadow @Final private static Map<String, Integer> CATEGORY_ORDER_MAP;
 
 	@Shadow private int timesPressed;
 
 	@Override
 	public void resetStaticCollections() {
-		keysById = Maps.newHashMap();
-		keyToBindings = Maps.newHashMap();
-		keyCategories = Sets.newHashSet();
+		KEYS_BY_ID = Maps.newHashMap();
+		KEY_TO_BINDINGS = Maps.newHashMap();
+		KEY_CATEGORIES = Sets.newHashSet();
 
-		categoryOrderMap = Util.make(Maps.newHashMap(), (hashMap) -> {
+		CATEGORY_ORDER_MAP = Util.make(Maps.newHashMap(), (hashMap) -> {
 			hashMap.put("key.categories.movement", 1);
 			hashMap.put("key.categories.gameplay", 2);
 			hashMap.put("key.categories.inventory", 3);
@@ -45,30 +45,30 @@ public abstract class KeyBindingMixin implements PlayGameOptions.IKeyBindingCall
 	@Override
 	public void setStaticCollections(Map<String, KeyBinding> keysById, Map<InputUtil.Key, KeyBinding> keysByCode,
 	                                 Set<String> keyCategories, Map<String, Integer> categoryOrderMap) {
-		KeyBindingMixin.keysById = keysById;
-		KeyBindingMixin.keyToBindings = keysByCode;
-		KeyBindingMixin.keyCategories = keyCategories;
-		KeyBindingMixin.categoryOrderMap = categoryOrderMap;
+		KeyBindingMixin.KEYS_BY_ID = keysById;
+		KeyBindingMixin.KEY_TO_BINDINGS = keysByCode;
+		KeyBindingMixin.KEY_CATEGORIES = keyCategories;
+		KeyBindingMixin.CATEGORY_ORDER_MAP = categoryOrderMap;
 	}
 
 	@Override
 	public Map<String, KeyBinding> getKeysById() {
-		return keysById;
+		return KEYS_BY_ID;
 	}
 
 	@Override
 	public Map<InputUtil.Key, KeyBinding> getKeysByCode() {
-		return keyToBindings;
+		return KEY_TO_BINDINGS;
 	}
 
 	@Override
 	public Set<String> getKeyCategories() {
-		return keyCategories;
+		return KEY_CATEGORIES;
 	}
 
 	@Override
 	public Map<String, Integer> getCategoryOrderMap() {
-		return categoryOrderMap;
+		return CATEGORY_ORDER_MAP;
 	}
 
 

@@ -2,7 +2,7 @@ package kaptainwutax.playback.mixin.client.input;
 
 import kaptainwutax.playback.replay.PlayerFrame;
 import net.minecraft.client.input.KeyboardInput;
-import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.option.GameOptions;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;

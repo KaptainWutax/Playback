@@ -1,13 +1,13 @@
 package kaptainwutax.playback.render;
 
 import kaptainwutax.playback.render.util.Color;
+import kaptainwutax.playback.util.Matrix4f;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 
 public interface Renderer {
@@ -19,7 +19,7 @@ public interface Renderer {
 	void render(float tickDelta, MatrixStack matrices);
 
 	default int getRenderDistance() {
-		return MinecraftClient.getInstance().options.viewDistance;
+		return MinecraftClient.getInstance().options.getViewDistance().getValue();
 	}
 
 	static void render(Renderer renderer, float tickDelta, MatrixStack matrices) {
@@ -48,6 +48,7 @@ public interface Renderer {
 	}
 
 	static void putVertex(BufferBuilder buffer, Matrix4f matrix, Vec3d pos, Color color) {
+		/*
 		buffer.vertex(matrix,
 				(float)pos.getX(),
 				(float)pos.getY(),
@@ -57,7 +58,7 @@ public interface Renderer {
 				color.getFGreen(),
 				color.getFBlue(),
 				1.0F
-		).next();
+		).next();*/
 	}
 
 }

@@ -74,9 +74,9 @@ public abstract class WorldEdit implements Renderer {
 		}
 
 		if(this.isHovered()) {
-			GlStateManager.disableDepthTest();
+			//GlStateManager.disableDepthTest();
 			this.outline.render(tickDelta, matrices);
-			GlStateManager.enableDepthTest();
+			//GlStateManager.enableDepthTest();
 		}
 	}
 
@@ -85,7 +85,7 @@ public abstract class WorldEdit implements Renderer {
 	}
 
 	public Optional<Vec3d> rayTrace(Entity entity) {
-		double d = MinecraftClient.getInstance().options.viewDistance * 16.0D;
+		double d = MinecraftClient.getInstance().options.getViewDistance().getValue() * 16.0D;
 		Vec3d vec3d = entity.getCameraPosVec(1.0F);
 		Vec3d vec3d2 = entity.getRotationVec(1.0F);
 		Vec3d vec3d3 = vec3d.add(vec3d2.x * d, vec3d2.y * d, vec3d2.z * d);

@@ -15,11 +15,9 @@ import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
-import sun.nio.ch.DirectBuffer;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.function.BiConsumer;
 
 import static org.bytedeco.ffmpeg.global.avcodec.*;
 import static org.bytedeco.ffmpeg.global.avformat.*;
@@ -32,7 +30,7 @@ public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
     private final AVCodec videoCodec;
     private final AVStream videoStream;
     private final AVCodecContext videoCtx;
-    private final ByteBuffer frame;
+    private ByteBuffer frame;
     private final int stride;
     private final AVFrame codecFrame = av_frame_alloc();
     private final SwsContext swsContext;
@@ -59,7 +57,7 @@ public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
         int height = options.height;
         this.videoCtx.width(width).height(height).pix_fmt(codecPixFmt);
         this.codecFrame.width(width).height(height).format(codecPixFmt);
-        this.frame = aligned(width * height * 4, 32);
+        //this.frame = aligned(width * height * 4, 32);
         this.stride = width * 4;
         this.swsContext = sws_getContext(width, height, AV_PIX_FMT_BGRA, width, height, codecPixFmt, SWS_BICUBIC, null, null, (double[]) null);
         if (av_frame_get_buffer(this.codecFrame, 32) != 0) {
@@ -82,6 +80,7 @@ public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
         av_dump_format(this.formatCtx, 0, filename, 1);
     }
 
+    /*
     @Override
     public void captureFrame(BiConsumer<DirectBuffer, Integer> render) throws IOException {
         ByteBuffer frameBuffer = this.frame;
@@ -99,7 +98,7 @@ public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
                 dstSlice, dstStride);
         this.codecFrame.pts(this.frames++);
         encodeFrame(this.codecFrame);
-    }
+    }*/
 
     private static void flip(ByteBuffer buf, int stride) {
         long base = MemoryUtil.memAddress(buf);
@@ -188,6 +187,7 @@ public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
         return r;
     }
 
+    /*
     private static ByteBuffer aligned(int size, int alignment) {
         ByteBuffer buf = ByteBuffer.allocateDirect(size + alignment - 1);
         long address = ((DirectBuffer) buf).address();
@@ -195,5 +195,5 @@ public class LibAvEncoder extends Encoder<LibAvEncoder.Options> {
         buf.position((alignment - ((int) address & mask)) & mask);
         buf.limit(buf.position() + size);
         return buf.slice();
-    }
+    }*/
 }

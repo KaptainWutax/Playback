@@ -15,7 +15,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Matrix4f;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -61,7 +60,7 @@ public class VideoTimeline extends DrawableHelper implements Drawable, Element {
 			this.init();
 
 		//Code mostly inspired from hotbar (InGameHud.renderHotbar)
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		//RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
 		int i = this.width / 2;
 		int prevBlitOffset = this.getZOffset();
@@ -91,7 +90,7 @@ public class VideoTimeline extends DrawableHelper implements Drawable, Element {
 		}
 
 		this.setZOffset(prevBlitOffset);
-		RenderSystem.disableRescaleNormal();
+		//RenderSystem.disableRescaleNormal();
 		RenderSystem.disableBlend();
 		//int xAdd = this.width / 2;
 		//int yAdd = this.height / 2;
@@ -182,7 +181,7 @@ public class VideoTimeline extends DrawableHelper implements Drawable, Element {
 
 	public void renderTooltip(MatrixStack matrices, int x, int y, String... text) {
 		if (text.length != 0) {
-			RenderSystem.disableRescaleNormal();
+			//RenderSystem.disableRescaleNormal();
 			RenderSystem.disableDepthTest();
 			int i = 0;
 
@@ -224,12 +223,12 @@ public class VideoTimeline extends DrawableHelper implements Drawable, Element {
 			this.fillGradient(matrices, k - 3, l + n + 2, k + i + 3, l + n + 3, 1344798847, 1344798847);
 			MatrixStack matrixStack = new MatrixStack();
 			VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-			Matrix4f matrix4f = matrixStack.peek().getModel();
+			//Matrix4f matrix4f = matrixStack.peek().getModel();
 
 			for(int r = 0; r < text.length; ++r) {
 				String string2 = text[r];
 				if (string2 != null) {
-					MinecraftClient.getInstance().textRenderer.draw(string2, (float)k, (float)l, -1, true, matrix4f, immediate, false, 0, 15728880);
+					//MinecraftClient.getInstance().textRenderer.draw(string2, (float)k, (float)l, -1, true, matrix4f, immediate, false, 0, 15728880);
 				}
 
 				if (r == 0) {
@@ -242,7 +241,7 @@ public class VideoTimeline extends DrawableHelper implements Drawable, Element {
 			immediate.draw();
 			this.setZOffset(0);
 			RenderSystem.enableDepthTest();
-			RenderSystem.enableRescaleNormal();
+			//RenderSystem.enableRescaleNormal();
 		}
 	}
 

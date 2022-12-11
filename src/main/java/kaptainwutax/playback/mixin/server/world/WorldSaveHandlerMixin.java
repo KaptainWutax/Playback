@@ -2,7 +2,7 @@ package kaptainwutax.playback.mixin.server.world;
 
 import kaptainwutax.playback.Playback;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.WorldSaveHandler;
 import net.minecraft.world.level.LevelProperties;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,7 +20,7 @@ public class WorldSaveHandlerMixin {
     }
 
     @Inject(method = "loadPlayerData", at = @At("HEAD"), cancellable = true)
-    private void noLoad(PlayerEntity playerEntity, CallbackInfoReturnable<CompoundTag> cir) {
+    private void noLoad(PlayerEntity playerEntity, CallbackInfoReturnable<NbtCompound> cir) {
         if (Playback.getManager().isInReplay()) cir.setReturnValue(null);
     }
 

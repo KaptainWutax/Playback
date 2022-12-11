@@ -6,14 +6,15 @@ import com.mojang.datafixers.DataFixer;
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.PlayerFrame;
 import kaptainwutax.playback.replay.ReplayManager;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.SaveLoader;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
 import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.util.ApiServices;
 import net.minecraft.util.UserCache;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,8 +28,8 @@ import java.net.Proxy;
 @Mixin(IntegratedServer.class)
 public abstract class IntegratedServerMixin extends MinecraftServer {
 
-    public IntegratedServerMixin(Thread thread, DynamicRegistryManager.Impl impl, LevelStorage.Session session, SaveProperties saveProperties, ResourcePackManager resourcePackManager, Proxy proxy, DataFixer dataFixer, ServerResourceManager serverResourceManager, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory) {
-        super(thread, impl, session, saveProperties, resourcePackManager, proxy, dataFixer, serverResourceManager, minecraftSessionService, gameProfileRepository, userCache, worldGenerationProgressListenerFactory);
+    public IntegratedServerMixin(Thread serverThread, LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, Proxy proxy, DataFixer dataFixer, ApiServices apiServices, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory) {
+        super(serverThread, session, dataPackManager, saveLoader, proxy, dataFixer, apiServices, worldGenerationProgressListenerFactory);
     }
 
     @Inject(method = "shutdown", at = @At("RETURN"))
@@ -48,7 +49,7 @@ public abstract class IntegratedServerMixin extends MinecraftServer {
             //might also just return min instead, the integrated server doesn't load chunks anyways
             PlayerFrame p = Playback.getManager().cameraPlayer;
             if (p != null && p.options != null) {
-                viewDistance = -1 + p.options.getOptions().viewDistance;
+                viewDistance = -1 + p.options.getOptions().getViewDistance().getValue();
             }
         }
         return Math.max(min, viewDistance);

@@ -17,9 +17,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(EntitySpawnS2CPacket.class)
 public abstract class EntitySpawnS2CPacketMixin {
-    @Shadow private int pitch; //the problem is that the datatype is int not byte
-    @Shadow private int yaw; //the problem is that the datatype is int not byte
+    //@Shadow private int pitch; //the problem is that the datatype is int not byte
+    //@Shadow private int yaw; //the problem is that the datatype is int not byte
 
+    /* TODO: this is hard to fix now since read is in the constructor
     @Redirect(method = "write", require = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/PacketByteBuf;writeByte(I)Lio/netty/buffer/ByteBuf;"))
     private ByteBuf saveIntInstead(PacketByteBuf packetByteBuf, int i) {
         ByteBuf retVal;
@@ -45,5 +46,5 @@ public abstract class EntitySpawnS2CPacketMixin {
             this.pitch = buf.readInt();
             this.yaw = buf.readInt();
         }
-    }
+    }*/
 }

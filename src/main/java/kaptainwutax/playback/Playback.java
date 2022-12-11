@@ -21,7 +21,6 @@ public class Playback implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PKeyBindings.registerKeyCategories();
 		PKeyBindings.registerKeyBindings();
 		PItems.registerItems();
 	}

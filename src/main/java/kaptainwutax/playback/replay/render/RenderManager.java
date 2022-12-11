@@ -10,6 +10,7 @@ import kaptainwutax.playback.replay.render.interpolation.CatmullRomSplineInterpo
 import kaptainwutax.playback.replay.render.interpolation.ComponentKey;
 import kaptainwutax.playback.replay.render.interpolation.HierarchyInterpolator;
 import kaptainwutax.playback.replay.render.interpolation.LinearInterpolator;
+import kaptainwutax.playback.util.Matrix4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -20,8 +21,6 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
@@ -200,19 +199,20 @@ public class RenderManager {
         }
     }
 
-    public void render(MatrixStack matrices, float tickDelta, Camera camera, Matrix4f matrix4f) {
+    public void render(MatrixStack matrices, float tickDelta, Camera camera) {
         if (playingCameraPath != null || isRendering()) return;
         if (selectedCameraPath != null) {
-            renderCameraPath(matrices, tickDelta, camera, matrix4f, selectedCameraPath);
+            renderCameraPath(matrices, tickDelta, camera, selectedCameraPath);
         }
     }
 
-    public void renderCameraPath(MatrixStack matrices, float tickDelta, Camera camera, Matrix4f matrix4f, CameraPath path) {
+    public void renderCameraPath(MatrixStack matrices, float tickDelta, Camera camera, CameraPath path) {
         matrices.push();
         Vec3d camPos = camera.getPos();
         matrices.translate(-camPos.x, -camPos.y, -camPos.z);
-        Matrix4f matrix = matrices.peek().getModel();
+        //Matrix4f matrix = matrices.peek().getModel();
         RenderSystem.enableDepthTest();
+        /*
         RenderSystem.shadeModel(GL_SMOOTH);
         RenderSystem.enableAlphaTest();
         RenderSystem.defaultAlphaFunc();
@@ -285,7 +285,7 @@ public class RenderManager {
         RenderSystem.lineWidth(1.0F);
         RenderSystem.enableTexture();
         RenderSystem.shadeModel(GL_FLAT);
-        matrices.pop();
+        matrices.pop();*/
     }
 
     /**

@@ -8,7 +8,6 @@ import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.profiler.Profiler;
-import sun.nio.ch.DirectBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -16,7 +15,7 @@ public class RenderingSession {
     private final RenderManager manager;
     private final CameraPath path;
     private final Encoder<?> encoder;
-    final Framebuffer framebuffer;
+    Framebuffer framebuffer;
     private final int framesTotal;
     private int framesRendered;
     private boolean paused = true;
@@ -28,7 +27,7 @@ public class RenderingSession {
         this.path = path;
         this.framesTotal = path.getFrames();
         this.encoder = encoder;
-        this.framebuffer = new Framebuffer(encoder.options.width, encoder.options.height, true, MinecraftClient.IS_SYSTEM_MAC);
+        //this.framebuffer = new Framebuffer(encoder.options.width, encoder.options.height, true, MinecraftClient.IS_SYSTEM_MAC);
     }
 
     public void setPaused(boolean paused) {
@@ -43,6 +42,7 @@ public class RenderingSession {
         return this.inFrame;
     }
 
+
     public void render() {
         if (!isActive()) return;
         // TODO: render out of order for paths going back in time
@@ -51,7 +51,7 @@ public class RenderingSession {
             if (frame == 0) this.encoder.open();
             this.cameraState = this.path.getCameraStateAtTime(frame);
             this.inFrame = true;
-            this.encoder.captureFrame((buf, format) -> renderFrame(framebuffer, buf, format));
+            //this.encoder.captureFrame((buf, format) -> renderFrame(framebuffer, buf, format));
             this.inFrame = false;
             MinecraftClient.getInstance().onResolutionChanged();
             this.framesRendered++;
@@ -61,6 +61,7 @@ public class RenderingSession {
         }
     }
 
+    /*
     public void renderFrame(Framebuffer framebuffer, DirectBuffer buf, int format) {
         MinecraftClient client = MinecraftClient.getInstance();
         Profiler profiler = client.getProfiler();
@@ -97,5 +98,5 @@ public class RenderingSession {
         }
         profiler.pop();
         profiler.pop();
-    }
+    }*/
 }

@@ -11,8 +11,8 @@ import kaptainwutax.playback.replay.capture.StartState;
 import kaptainwutax.playback.replay.capture.TickInfo;
 import kaptainwutax.playback.util.SerializationUtil;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.GameOptions;
-import net.minecraft.client.options.Perspective;
+import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -307,7 +307,7 @@ public class Recording implements AutoCloseable {
 			manager.recording.getStartState().getJoinPacketAction().play();
 			manager.updateView(ReplayView.FIRST_PERSON, true);
 			manager.recording.getStartState().play();
-			MinecraftClient.getInstance().openScreen(null);
+			MinecraftClient.getInstance().setScreen(null);
 
 			manager.updateView(oldView, true);
 

@@ -5,7 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 /**
  * This is the Hud that always renders. When the ReplayHudScreen is not opened (clickable), still render it.
@@ -19,8 +19,12 @@ public class ReplayHud {
     }
 
     public ReplayHudScreen getScreen() {
+        if(MinecraftClient.getInstance().getNarratorManager() == null) {
+            return null;
+        }
+
         if (this.replayHudScreen == null) {
-            this.replayHudScreen = new ReplayHudScreen(new LiteralText("Replay HUD"));
+            this.replayHudScreen = new ReplayHudScreen(Text.literal("Replay HUD"));
             this.replayHudScreen.init(MinecraftClient.getInstance(), MinecraftClient.getInstance().getWindow().getScaledWidth(), MinecraftClient.getInstance().getWindow().getScaledHeight());
         }
         return this.replayHudScreen;
@@ -43,7 +47,9 @@ public class ReplayHud {
     }
 
     public void resize() {
-        this.getScreen().resize(MinecraftClient.getInstance(), MinecraftClient.getInstance().getWindow().getScaledWidth(), MinecraftClient.getInstance().getWindow().getScaledHeight());
+        ReplayHudScreen screen = this.getScreen();
+        if(screen == null) return;
+        screen.resize(MinecraftClient.getInstance(), MinecraftClient.getInstance().getWindow().getScaledWidth(), MinecraftClient.getInstance().getWindow().getScaledHeight());
     }
 
     public interface InGameHudGetters {

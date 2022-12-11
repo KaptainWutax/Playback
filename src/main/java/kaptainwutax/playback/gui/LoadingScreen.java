@@ -28,11 +28,11 @@ public class LoadingScreen extends Screen implements DoubleConsumer {
         int barY = this.height / 2;
         int barHeight = 4;
         int border = 1;
-        drawCenteredString(matrices, this.textRenderer, this.title.asString(), center, barY - 50, 0xffffff);
-        drawCenteredString(matrices, this.textRenderer, progress + "%", center, barY - 20, 0xffffff);
+        drawCenteredText(matrices, this.textRenderer, this.title.getString(), center, barY - 50, 0xffffff);
+        drawCenteredText(matrices, this.textRenderer, progress + "%", center, barY - 20, 0xffffff);
         fill(matrices, center - 50 - border, barY - barHeight - border, center + 50 + border, barY + barHeight + border, 0xff666666);
         fill(matrices, center - 50, barY - barHeight, center - 50 + progress, barY + barHeight, 0xffffffff);
-        if (joining) drawCenteredString(matrices, this.textRenderer, I18n.translate("connect.joining"), center, barY + 20, 0xffffff);
+        if (joining) drawCenteredText(matrices, this.textRenderer, I18n.translate("connect.joining"), center, barY + 20, 0xffffff);
         super.render(matrices, mouseX, mouseY, delta);
     }
 

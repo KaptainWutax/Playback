@@ -3,9 +3,9 @@ package kaptainwutax.playback.replay.render;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.Lifecycle;
 import kaptainwutax.playback.Playback;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 
 import java.util.function.Function;
 
@@ -24,7 +24,8 @@ public class CameraPathType<T extends CameraPath> {
     }
 
     private static <T extends CameraPath> CameraPathType<T> register(String id, CameraPathType<T> type) {
-        return REGISTRY.add(RegistryKey.of(REGISTRY.getKey(), Playback.createIdentifier(id)), type, Lifecycle.stable());
+        REGISTRY.add(RegistryKey.of(REGISTRY.getKey(), Playback.createIdentifier(id)), type, Lifecycle.stable());
+        return type;
     }
 
     public static Identifier getId(CameraPathType<?> type) {

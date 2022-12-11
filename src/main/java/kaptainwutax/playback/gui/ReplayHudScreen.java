@@ -27,7 +27,7 @@ public class ReplayHudScreen extends Screen {
         super.init();
         this.drawables.clear();
         this.drawables.add(this.gameTimeline = new GameTimeline((int)(this.width * 0.0125f), (int)(this.height * 0.025f)));
-        this.children.add(this.gameTimeline);
+        this.addSelectableChild(this.gameTimeline);
 //        this.addButton(new ButtonWidget(10, 10, this.width / 5, 20, "ButtonTest", b -> {
 //            System.out.println("Button Test!");
 //        }));

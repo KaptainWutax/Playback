@@ -42,12 +42,12 @@ public class Line implements Renderer {
 		BufferBuilder buffer = tessellator.getBuffer();
 
 		//This is how thick the line is.
-		GlStateManager.lineWidth(2.0f);
-		buffer.begin(GL11.GL_LINE_STRIP, VertexFormats.POSITION_COLOR);
+		//GlStateManager.lineWidth(2.0f);
+		//buffer.begin(GL11.GL_LINE_STRIP, VertexFormats.POSITION_COLOR);
 
 		//Put the start and end vertices in the buffer.
-		Renderer.putVertex(buffer, matrices.peek().getModel(), this.start, this.color);
-		Renderer.putVertex(buffer, matrices.peek().getModel(), this.end, this.color);
+		//Renderer.putVertex(buffer, matrices.peek().getModel(), this.start, this.color);
+		//Renderer.putVertex(buffer, matrices.peek().getModel(), this.end, this.color);
 
 		//Draw it all.
 		tessellator.draw();

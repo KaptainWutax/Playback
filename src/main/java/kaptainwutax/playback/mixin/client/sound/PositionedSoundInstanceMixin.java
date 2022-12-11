@@ -18,9 +18,7 @@ public abstract class PositionedSoundInstanceMixin {
 	private static void master(SoundEvent sound, float volume, float pitch, CallbackInfoReturnable<PositionedSoundInstance> ci) {
 		if(Playback.getManager().isProcessingReplay && Playback.getManager().getView() == ReplayView.THIRD_PERSON) {
 			float newValues = 0.0F;
-
-			ci.setReturnValue(new PositionedSoundInstance(sound.getId(), SoundCategory.MASTER, newValues, newValues, false,
-					0, SoundInstance.AttenuationType.NONE, 0.0F, 0.0F, 0.0F, true));
+			ci.setReturnValue(PositionedSoundInstance.master(sound, 0.0F, 0.0F));
 		}
 	}
 

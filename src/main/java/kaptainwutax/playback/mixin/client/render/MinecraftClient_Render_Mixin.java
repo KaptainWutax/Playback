@@ -4,7 +4,6 @@ import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.replay.render.RenderManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.options.Option;
 import net.minecraft.client.render.RenderTickCounter;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,14 +31,13 @@ public class MinecraftClient_Render_Mixin implements RenderManager.ISetForcedFra
         ((RenderManager.ISetForcedFrameRate)this.renderTickCounter).setFixedFrameRateForVideoRenderEnabled(enabled);
         //also set no framerate limit to render as fast as possible
         if (enabled) {
-            int limit = (int)Option.FRAMERATE_LIMIT.getMax();
-            this.prevMaxFpsReplayPlayer = Playback.getManager().replayPlayer.options.getOptions().maxFps;
-            this.prevMaxFpsCameraPlayer = Playback.getManager().cameraPlayer.options.getOptions().maxFps;
-            Playback.getManager().replayPlayer.options.getOptions().maxFps = limit;
-            Playback.getManager().cameraPlayer.options.getOptions().maxFps = limit;
+            this.prevMaxFpsReplayPlayer = Playback.getManager().replayPlayer.options.getOptions().getMaxFps().getValue();
+            this.prevMaxFpsCameraPlayer = Playback.getManager().cameraPlayer.options.getOptions().getMaxFps().getValue();
+            Playback.getManager().replayPlayer.options.getOptions().getMaxFps().setValue(260);
+            Playback.getManager().cameraPlayer.options.getOptions().getMaxFps().setValue(260);
         } else if (this.prevMaxFpsReplayPlayer != -1){
-            Playback.getManager().replayPlayer.options.getOptions().maxFps = this.prevMaxFpsReplayPlayer;
-            Playback.getManager().cameraPlayer.options.getOptions().maxFps = this.prevMaxFpsCameraPlayer;
+            Playback.getManager().replayPlayer.options.getOptions().getMaxFps().setValue( this.prevMaxFpsReplayPlayer);
+            Playback.getManager().cameraPlayer.options.getOptions().getMaxFps().setValue( this.prevMaxFpsCameraPlayer);
             this.prevMaxFpsReplayPlayer = -1;
             this.prevMaxFpsCameraPlayer = -1;
         }

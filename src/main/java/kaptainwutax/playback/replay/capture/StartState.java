@@ -6,8 +6,8 @@ import kaptainwutax.playback.replay.action.WindowFocusAction;
 import kaptainwutax.playback.replay.action.WindowSizeAction;
 import kaptainwutax.playback.util.PlaybackSerializable;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.GameOptions;
-import net.minecraft.client.options.Perspective;
+import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -51,7 +51,7 @@ public class StartState implements PlaybackSerializable {
 	}
 
 	public void play() {
-		MinecraftClient.getInstance().options.method_31043(this.getPerspective());
+		MinecraftClient.getInstance().options.setPerspective(this.getPerspective());
 		this.windowFocus.play();
 		PlayGameOptions.loadContents(MinecraftClient.getInstance().options, this.gameOptions);
 		this.windowSizeAction.play();

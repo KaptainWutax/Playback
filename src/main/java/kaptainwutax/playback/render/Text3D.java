@@ -32,8 +32,8 @@ public class Text3D implements Renderer {
 
 		float x = -this.getWidth();
 		float y = -this.getHeight();
-		this.mc.textRenderer.draw(this.text, x, y, this.color.getRGB(), false, matrices.peek().getModel(),
-				immediate, true, 0, 15);
+		//this.mc.textRenderer.draw(this.text, x, y, this.color.getRGB(), false, matrices.peek().getModel(),
+		//		immediate, true, 0, 15);
 
 		immediate.draw();
 		matrices.pop();

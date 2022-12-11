@@ -88,9 +88,9 @@ public class DebugAction extends Action {
 		}
 
 		public void load(ClientPlayerEntity player) {
-			playerId = player.getEntityId();
+			playerId = player.getId();
 			position = player.getPos();
-			rotation = new Vec3d(player.yaw, player.pitch, 0);
+			rotation = new Vec3d(player.getYaw(), player.getPitch(), 0);
 			velocity = player.getVelocity();
 			pose = player.getPose();
 			entityListSize = player.clientWorld.getRegularEntityCount();

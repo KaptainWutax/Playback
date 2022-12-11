@@ -2,12 +2,13 @@ package kaptainwutax.playback.replay.render;
 
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
+import kaptainwutax.playback.util.Quaternion;
+import kaptainwutax.playback.util.Vec3f;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
+import org.joml.Vector3f;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,7 +66,7 @@ public class CameraState {
     public static CameraState fromCamera(GameTimeStamp time, Camera camera) {
         return new CameraState(time,
                 camera.getPos().x, camera.getPos().y, camera.getPos().z, camera.getYaw(), camera.getPitch(), 0,
-                MinecraftClient.getInstance().options.fov, true, false);
+                MinecraftClient.getInstance().options.getFov().getValue(), true, false);
     }
 
     public double getX() {
@@ -102,9 +103,9 @@ public class CameraState {
 
     public Quaternion getRotationQuaternion() {
         Quaternion rotation = new Quaternion(0, 0, 0, 1);
-        rotation.hamiltonProduct(Vector3f.POSITIVE_Y.getDegreesQuaternion((float) -yaw));
-        rotation.hamiltonProduct(Vector3f.POSITIVE_X.getDegreesQuaternion((float) pitch));
-        rotation.hamiltonProduct(Vector3f.POSITIVE_Z.getDegreesQuaternion((float) roll));
+        rotation.hamiltonProduct(Vec3f.POSITIVE_Y.getDegreesQuaternion((float) -yaw));
+        rotation.hamiltonProduct(Vec3f.POSITIVE_X.getDegreesQuaternion((float) pitch));
+        rotation.hamiltonProduct(Vec3f.POSITIVE_Z.getDegreesQuaternion((float) roll));
         return rotation;
     }
 

@@ -48,9 +48,8 @@ public class PacketAction extends Action {
 	@SuppressWarnings("unchecked")
 	public void read(PacketByteBuf buf) throws IOException {
 		int id = buf.readVarInt();
-		this.packet = (Packet<ClientPlayPacketListener>) NetworkState.PLAY.getPacketHandler(NetworkSide.CLIENTBOUND, id);
+		this.packet = (Packet<ClientPlayPacketListener>) NetworkState.PLAY.getPacketHandler(NetworkSide.CLIENTBOUND, id, buf);
 		if (this.packet == null) throw new IOException("Invalid packet id " + id);
-		this.packet.read(buf);
 	}
 
 	@Override

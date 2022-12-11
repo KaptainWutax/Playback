@@ -15,10 +15,12 @@ import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.util.hit.HitResult;
 
 public class PlayerFrame {
@@ -37,7 +39,7 @@ public class PlayerFrame {
 	public PlayNetworkHandler networkHandler;
 	private final PlayRenderers renderers;
 	private final SimpleInventory creativeInventoryScreen$inventory;
-	private int creativeInventoryScreen$selectedTab;
+	private ItemGroup creativeInventoryScreen$selectedTab;
 
 	private boolean cameraOnly;
 	public boolean wasTeleported;
@@ -64,7 +66,7 @@ public class PlayerFrame {
 		this.networkHandler = networkHandler;
 		this.renderers = renderers;
 		this.creativeInventoryScreen$inventory = new SimpleInventory(45);
-		this.creativeInventoryScreen$selectedTab = 0;
+		this.creativeInventoryScreen$selectedTab = ItemGroups.INVENTORY;
 
 		this.windowFocus = windowFocus;
 		this.wasTeleported = false;
@@ -139,11 +141,14 @@ public class PlayerFrame {
 	public static PlayerFrame createFromExisting() {
 		if (creativeInventoryScreenCaller == null) {
 			//noinspection ConstantConditions
-			creativeInventoryScreenCaller = (ICreativeInventoryScreenCaller) new CreativeInventoryScreen(client.player);
+			creativeInventoryScreenCaller = (ICreativeInventoryScreenCaller) new CreativeInventoryScreen(
+				client.player,
+				client.player.networkHandler.getEnabledFeatures(),
+				client.options.getOperatorItemsTab().getValue()
+			);
 		}
 
-		((PlayGameOptions.IKeyBindingCaller)client.options.keysAll[0]).resetStaticCollections();
-		PKeyBindings.registerKeyCategories();
+		((PlayGameOptions.IKeyBindingCaller)client.options.allKeys[0]).resetStaticCollections();
 		PlayGameOptions options = new PlayGameOptions();
 		((IKeyboardInputCaller)client.player.input).setOptions(options.getOptions());
 		Mouse mouse = new Mouse(client);
@@ -162,7 +167,7 @@ public class PlayerFrame {
 		Mouse mouse = new Mouse(client);
 		ToastManager toast = new ToastManager(client);
 
-		InGameHud hud = new InGameHud(client);
+		InGameHud hud = new InGameHud(client, client.getItemRenderer());
 
 		return new PlayerFrame(player, interactionManager, options, mouse, new Keyboard(client), toast,
 				hud, MinecraftClient.getInstance().isWindowFocused(), PlayNetworkHandler.createNew(), PlayRenderers.createNew());
@@ -247,10 +252,10 @@ public class PlayerFrame {
 	public interface ICreativeInventoryScreenCaller {
 		SimpleInventory getInventory();
 
-		int getSelectedTab();
+		ItemGroup getSelectedTab();
 
 		void setInventory(SimpleInventory newVal);
 
-		void setSelectedTab(int newVal);
+		void setSelectedTab(ItemGroup newVal);
 	}
 }

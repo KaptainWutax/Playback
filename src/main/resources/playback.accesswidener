@@ -1,1 +1,4 @@
 accessWidener v1 named
+accessible class net/minecraft/client/gui/widget/ButtonListWidget$ButtonEntry
+accessible field net/minecraft/client/gui/widget/ClickableWidget x I
+accessible field net/minecraft/client/gui/widget/ClickableWidget y I

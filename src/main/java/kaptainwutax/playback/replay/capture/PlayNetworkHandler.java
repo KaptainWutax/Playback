@@ -9,7 +9,8 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.DataQueryHandler;
 import net.minecraft.command.CommandSource;
 import net.minecraft.recipe.RecipeManager;
-import net.minecraft.tag.TagManager;
+
+import java.time.Duration;
 
 public class PlayNetworkHandler {
 
@@ -23,15 +24,18 @@ public class PlayNetworkHandler {
 	public static PlayNetworkHandler createNew() {
 		return new PlayNetworkHandler(
 				new ClientPlayNetworkHandler(client, null,
-						((PacketAction.IConnectionGetter)MinecraftClient.getInstance()).getConnection(),
-						client.getSession().getProfile())
+						MinecraftClient.getInstance().getNetworkHandler().getConnection(),
+						null,
+						client.getSession().getProfile(),
+						client.getTelemetryManager().createWorldSession(false, Duration.ZERO))
 		);
 	}
 
 	public static PlayNetworkHandler createFromExisting() {
 		ClientPlayNetworkHandler clientPlayNetworkHandler = client.getNetworkHandler();
-		ClientPlayNetworkHandler internal = new ClientPlayNetworkHandler(client, null, null, null);
-		assert clientPlayNetworkHandler != null;
+		ClientPlayNetworkHandler internal = new ClientPlayNetworkHandler(client, null, clientPlayNetworkHandler.getConnection(),
+			null, clientPlayNetworkHandler.getProfile(), null);
+
 		//noinspection ConstantConditions
 		copyContents((INetworkHandlerCaller) clientPlayNetworkHandler, (INetworkHandlerCaller) internal);
 		return new PlayNetworkHandler(internal);
@@ -48,7 +52,7 @@ public class PlayNetworkHandler {
 	public static void copyContents(INetworkHandlerCaller from, INetworkHandlerCaller to) {
 		to.setAdvancementHandler(from.getAdvancementHandler());
 		to.setCommandSource(from.getCommandSource());
-		to.setTagManager(from.getTagManager());
+		//to.setTagManager(from.getTagManager());
 		to.setDataQueryManager(from.getDataQueryManager());
 		to.setChunkLoadDistance(from.getChunkLoadDistance());
 		to.setCommandDispatcher(from.getCommandDispatcher());
@@ -64,7 +68,7 @@ public class PlayNetworkHandler {
 	public interface INetworkHandlerCaller {
 		ClientAdvancementManager getAdvancementHandler();
 		ClientCommandSource getCommandSource();
-		TagManager getTagManager();
+		//TagManager getTagManager();
 		DataQueryHandler getDataQueryManager();
 		int getChunkLoadDistance();
 		CommandDispatcher<CommandSource> getCommandDispatcher();
@@ -72,7 +76,7 @@ public class PlayNetworkHandler {
 
 		void setAdvancementHandler(ClientAdvancementManager advancementHandler);
 		void setCommandSource(ClientCommandSource commandSource);
-		void setTagManager(TagManager tagManager);
+		//void setTagManager(TagManager tagManager);
 		void setDataQueryManager(DataQueryHandler dataQueryManager);
 		void setChunkLoadDistance(int chunkLoadDistance);
 		void setCommandDispatcher(CommandDispatcher<CommandSource> commandDispatcher);
