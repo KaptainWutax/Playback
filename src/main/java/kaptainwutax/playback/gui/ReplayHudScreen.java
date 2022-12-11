@@ -35,8 +35,9 @@ public class ReplayHudScreen extends Screen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.drawables.forEach(e -> e.render(matrices, mouseX, mouseY, delta));
-        super.render(matrices, mouseX, mouseY, delta);
+        //this.drawables.forEach(e -> e.render(matrices, mouseX, mouseY, delta));
+        //super.render(matrices, mouseX, mouseY, delta); TODO: re-add
+
         //Parameters have the wrong name in fillGradient: order is LEFT,TOP,RIGHT,BOTTOM
         //top left corner
         //this.fillGradient(0, 0, 20, 20, 0x8000ffff, 0x80ff00ff);
@@ -44,7 +45,8 @@ public class ReplayHudScreen extends Screen {
         //this.fillGradient(this.width-20, this.height-20, this.width, this.height, 0x800000ff, 0x80ff00ff);
     }
 
-    public boolean isPauseScreen() {
+    @Override
+    public boolean shouldPause() {
         return false;
     }
 

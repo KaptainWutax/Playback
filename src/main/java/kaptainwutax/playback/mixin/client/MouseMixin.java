@@ -21,8 +21,11 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 	@Shadow protected abstract void onMouseButton(long window, int button, int action, int mods);
 	@Shadow protected abstract void onMouseScroll(long window, double d, double e);
 	@Shadow public abstract void updateMouse();
-
 	@Shadow public abstract void onResolutionChanged();
+
+	@Shadow public abstract void lockCursor();
+
+	@Shadow public abstract void unlockCursor();
 
 	@Unique private int recursionDepth;
 	@Unique private int debug_numNonRecordedRecursiveCalls;
@@ -138,6 +141,28 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 		}
 	}
 
+	@Inject(method = "lockCursor", at = @At("HEAD"))
+	private void recordLockCursor(CallbackInfo ci) {
+		if(Playback.getManager().isRecording()) {
+			if (this.recursionDepth == 0) {
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.LOCK_CURSOR, 0, 0, 0);
+			} else {
+				debug_numNonRecordedRecursiveCalls++;
+			}
+		}
+	}
+
+	@Inject(method = "unlockCursor", at = @At("HEAD"))
+	private void recordUnlockCursor(CallbackInfo ci) {
+		if(Playback.getManager().isRecording()) {
+			if (this.recursionDepth == 0) {
+				Playback.getManager().recording.getCurrentTickInfo().recordMouse(MouseAction.ActionType.UNLOCK_CURSOR, 0, 0, 0);
+			} else {
+				debug_numNonRecordedRecursiveCalls++;
+			}
+		}
+	}
+
 	@Redirect(method = "lockCursor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/InputUtil;setCursorParameters(JIDD)V"))
 	private void setCursorParameters1(long l, int i, double d, double e) {
 		if (!Playback.getManager().isInReplay()) {
@@ -169,7 +194,11 @@ public abstract class MouseMixin implements MouseAction.IMouseCaller {
 			this.updateMouse();
 		} else if (actionType == MouseAction.ActionType.RESOLUTION_CHANGED) {
 			this.onResolutionChanged();
-		} else {
+		} else if (actionType == MouseAction.ActionType.LOCK_CURSOR) {
+			this.lockCursor();
+		}  else if (actionType == MouseAction.ActionType.UNLOCK_CURSOR) {
+			this.unlockCursor();
+		}  else {
 			throw new IllegalStateException("Unexpected value: " + actionType);
 		}
 	}

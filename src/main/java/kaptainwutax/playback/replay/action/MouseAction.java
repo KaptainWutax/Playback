@@ -71,7 +71,7 @@ public class MouseAction extends Action {
 	}
 
 	public enum ActionType {
-		POS, BUTTON, SCROLL, UPDATE, RESOLUTION_CHANGED
+		POS, BUTTON, SCROLL, UPDATE, RESOLUTION_CHANGED, LOCK_CURSOR, UNLOCK_CURSOR
 	}
 
 	public interface IMouseCaller {
