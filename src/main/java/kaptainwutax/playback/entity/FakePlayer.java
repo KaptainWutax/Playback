@@ -26,7 +26,7 @@ public class FakePlayer extends ClientPlayerEntity {
 //		this.setClientPermissionLevel(2);
 		this.input = keyboardInput;
 
-		//this.getInventory().addPickBlock(new ItemStack(PItems.FEATURE_STICK));
+		this.getInventory().addPickBlock(new ItemStack(PItems.FEATURE_STICK));
 	}
 
 	@Override
