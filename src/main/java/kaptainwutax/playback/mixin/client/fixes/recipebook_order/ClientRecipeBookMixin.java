@@ -13,7 +13,7 @@ import java.util.List;
 
 @Mixin(ClientRecipeBook.class)
 public class ClientRecipeBookMixin {
-    @Redirect(method = "toGroupedMap", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Maps;newHashMap()Ljava/util/HashMap;"))
+    @Redirect(method = "toGroupedMap", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Maps;newHashMap()Ljava/util/HashMap;", remap = false))
     private static HashMap<RecipeBookGroup, List<List<Recipe<?>>>> newLinkedHashMap() {
         //prevent ordering being dependent on identity hashcode
         return new LinkedHashMap<>();
