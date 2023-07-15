@@ -2,7 +2,6 @@ package kaptainwutax.playback.replay;
 
 import kaptainwutax.playback.Playback;
 import kaptainwutax.playback.entity.FakePlayer;
-import kaptainwutax.playback.init.PKeyBindings;
 import kaptainwutax.playback.replay.capture.PlayGameOptions;
 import kaptainwutax.playback.replay.capture.PlayNetworkHandler;
 import kaptainwutax.playback.replay.capture.PlayRenderers;
@@ -53,9 +52,9 @@ public class PlayerFrame {
 	private boolean windowFocus;
 
 	private PlayerFrame(ClientPlayerEntity player, ClientPlayerInteractionManager interactionManager,
-	                    PlayGameOptions options, Mouse mouse, Keyboard keyboard, ToastManager toastManager,
-	                    InGameHud inGameHud, boolean windowFocus, PlayNetworkHandler networkHandler,
-	                    PlayRenderers renderers) {
+						PlayGameOptions options, Mouse mouse, Keyboard keyboard, ToastManager toastManager,
+						InGameHud inGameHud, boolean windowFocus, PlayNetworkHandler networkHandler,
+						PlayRenderers renderers, SimpleInventory creativeInventoryScreen$inventory, ItemGroup creativeInventoryScreen$selectedTab) {
 		this.player = player;
 		this.interactionManager = interactionManager;
 		this.options = options;
@@ -65,8 +64,8 @@ public class PlayerFrame {
 		this.inGameHud = inGameHud;
 		this.networkHandler = networkHandler;
 		this.renderers = renderers;
-		this.creativeInventoryScreen$inventory = new SimpleInventory(45);
-		this.creativeInventoryScreen$selectedTab = ItemGroups.INVENTORY;
+		this.creativeInventoryScreen$inventory = creativeInventoryScreen$inventory;
+		this.creativeInventoryScreen$selectedTab = creativeInventoryScreen$selectedTab;
 
 		this.windowFocus = windowFocus;
 		this.wasTeleported = false;
@@ -157,7 +156,7 @@ public class PlayerFrame {
 		}
 		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client),
 				client.getToastManager(), client.inGameHud, Playback.getManager().recording.getStartState().getWindowFocus(),
-				PlayNetworkHandler.createFromExisting(), PlayRenderers.createFromExisting());
+				PlayNetworkHandler.createFromExisting(), PlayRenderers.createFromExisting(), CreativeInventoryScreen.INVENTORY, CreativeInventoryScreen.selectedTab);
 	}
 
 	public static PlayerFrame createNew() {
@@ -170,7 +169,7 @@ public class PlayerFrame {
 		InGameHud hud = new InGameHud(client, client.getItemRenderer());
 
 		return new PlayerFrame(player, interactionManager, options, mouse, new Keyboard(client), toast,
-				hud, MinecraftClient.getInstance().isWindowFocused(), PlayNetworkHandler.createNew(), PlayRenderers.createNew());
+				hud, MinecraftClient.getInstance().isWindowFocused(), PlayNetworkHandler.createNew(), PlayRenderers.createNew(), new SimpleInventory(45), ItemGroups.INVENTORY);
 	}
 
 
