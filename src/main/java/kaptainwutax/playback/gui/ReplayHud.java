@@ -19,10 +19,6 @@ public class ReplayHud {
     }
 
     public ReplayHudScreen getScreen() {
-        if(MinecraftClient.getInstance().getNarratorManager() == null) {
-            return null;
-        }
-
         if (this.replayHudScreen == null) {
             this.replayHudScreen = new ReplayHudScreen(Text.literal("Replay HUD"));
             this.replayHudScreen.init(MinecraftClient.getInstance(), MinecraftClient.getInstance().getWindow().getScaledWidth(), MinecraftClient.getInstance().getWindow().getScaledHeight());
