@@ -2,8 +2,6 @@ package kaptainwutax.playback.mixin.network;
 
 import com.google.common.collect.ImmutableSet;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import kaptainwutax.playback.Playback;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
@@ -43,7 +41,12 @@ public abstract class ClientConnectionMixin {
 			DifficultyS2CPacket.class, CustomPayloadS2CPacket.class, SynchronizeRecipesS2CPacket.class,
 			UnlockRecipesS2CPacket.class, InventoryS2CPacket.class,
 			WorldTimeUpdateS2CPacket.class, ChunkRenderDistanceCenterS2CPacket.class,
-			//WorldBorderS2CPacket.class,
+			WorldBorderCenterChangedS2CPacket.class,
+			WorldBorderInitializeS2CPacket.class,
+			WorldBorderInterpolateSizeS2CPacket.class,
+			WorldBorderSizeChangedS2CPacket.class,
+			WorldBorderWarningBlocksChangedS2CPacket.class,
+			WorldBorderWarningTimeChangedS2CPacket.class,
 			PlayerSpawnPositionS2CPacket.class, PlayerPositionLookS2CPacket.class, PlayerListS2CPacket.class, ChunkLoadDistanceS2CPacket.class
 	);
 
