@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -13,7 +14,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
  * passing null as argument.
  */
 @Mixin(CreativeInventoryScreen.class)
-public class CreativeInventoryScreenMixin {
+public abstract class CreativeInventoryScreenMixin {
+
+    @Shadow
+    protected abstract boolean shouldShowOperatorTab(PlayerEntity player);
 
     @Redirect(
             method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getInventory()Lnet/minecraft/entity/player/PlayerInventory;")
@@ -30,5 +34,15 @@ public class CreativeInventoryScreenMixin {
             return;
         }
         instance.currentScreenHandler = value;
+    }
+
+    @Redirect(
+            method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen;shouldShowOperatorTab(Lnet/minecraft/entity/player/PlayerEntity;)Z")
+    )
+    private boolean nullCheck2(CreativeInventoryScreen instance, PlayerEntity player) {
+        if (instance == null) {
+            return false;
+        }
+        return shouldShowOperatorTab(player);
     }
 }
