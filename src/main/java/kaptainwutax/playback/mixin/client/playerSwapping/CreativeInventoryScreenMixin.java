@@ -14,12 +14,13 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(CreativeInventoryScreen.class)
 public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScreen<CreativeInventoryScreen.CreativeScreenHandler> implements PlayerFrame.ICreativeInventoryScreenCaller {
-    //@Mutable
-    //@Shadow @Final private static SimpleInventory inventory;
+    @Mutable
+    @Shadow
+    @Final
+    static SimpleInventory INVENTORY;
 
-    @Shadow private static ItemGroup selectedTab;
-
-    @Shadow public abstract boolean isInventoryTabSelected();
+    @Shadow
+    private static ItemGroup selectedTab;
 
     public CreativeInventoryScreenMixin(CreativeInventoryScreen.CreativeScreenHandler screenHandler, PlayerInventory playerInventory, Text text) {
         super(screenHandler, playerInventory, text);
@@ -27,8 +28,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     @Override
     public SimpleInventory getInventory() {
-       // return inventory; //TODO: fix
-        return null;
+        return INVENTORY;
     }
 
     @Override
@@ -38,7 +38,7 @@ public abstract class CreativeInventoryScreenMixin extends AbstractInventoryScre
 
     @Override
     public void setInventory(SimpleInventory newVal) {
-      //  inventory = newVal; //TODO: fix
+        INVENTORY = newVal;
     }
 
     @Override
