@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin.client.fix_recipebook_order;
+package kaptainwutax.playback.mixin.client.fixes.recipebook_order;
 
 import net.minecraft.client.recipebook.ClientRecipeBook;
 import net.minecraft.client.recipebook.RecipeBookGroup;

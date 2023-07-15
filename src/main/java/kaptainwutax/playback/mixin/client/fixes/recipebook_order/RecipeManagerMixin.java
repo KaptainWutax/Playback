@@ -1,4 +1,4 @@
-package kaptainwutax.playback.mixin.client.fix_recipebook_order;
+package kaptainwutax.playback.mixin.client.fixes.recipebook_order;
 
 import net.minecraft.recipe.RecipeManager;
 import org.spongepowered.asm.mixin.Mixin;
