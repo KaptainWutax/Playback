@@ -6,6 +6,7 @@
     "accessors.ControlsListWidgetKeybindingEntryAccessor",
     "accessors.EditGameRulesScreenBooleanRuleWidgetAccessor",
     "accessors.EditGameRulesScreenIntRuleWidgetAccessor",
+    "client.fixes.crashes.narrator.ScreenMixin",
     "client.fixes.recipebook_order.ClientRecipeBookMixin",
     "client.fixes.recipebook_order.RecipeManagerMixin",
     "client.render.PlayerEntityRendererMixin",
