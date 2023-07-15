@@ -140,11 +140,7 @@ public class PlayerFrame {
 	public static PlayerFrame createFromExisting() {
 		if (creativeInventoryScreenCaller == null) {
 			//noinspection ConstantConditions
-			creativeInventoryScreenCaller = (ICreativeInventoryScreenCaller) new CreativeInventoryScreen(
-				client.player,
-				client.player.networkHandler.getEnabledFeatures(),
-				client.options.getOperatorItemsTab().getValue()
-			);
+			creativeInventoryScreenCaller = (ICreativeInventoryScreenCaller) new CreativeInventoryScreen(null, null, false);
 		}
 
 		((PlayGameOptions.IKeyBindingCaller)client.options.allKeys[0]).resetStaticCollections();
