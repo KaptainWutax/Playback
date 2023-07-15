@@ -24,8 +24,9 @@ import net.minecraft.util.hit.HitResult;
 
 public class PlayerFrame {
 
-	private static MinecraftClient client = MinecraftClient.getInstance();
-	private static ICreativeInventoryScreenCaller creativeInventoryScreenCaller;
+	private static final MinecraftClient client = MinecraftClient.getInstance();
+	@SuppressWarnings("ConstantConditions")
+	private static final ICreativeInventoryScreenCaller CREATIVE_INVENTORY_SCREEN_CALLER = (ICreativeInventoryScreenCaller) new CreativeInventoryScreen(null, null, false);
 
 
 	private ClientPlayerEntity player;
@@ -103,8 +104,8 @@ public class PlayerFrame {
 			this.options.apply();
 			boolean withCallback = allowSetCallback && !Playback.getManager().isOnlyAcceptingReplayedInputs();
 			withCallback = withCallback && this == Playback.getManager().getPlayerFrameForView(Playback.getManager().view);
-			((IClientCaller)client).setMouse(this.mouse, withCallback);
-			((IClientCaller)client).setKeyboard(this.keyboard, withCallback);
+			((IClientCaller) client).setMouse(this.mouse, withCallback);
+			((IClientCaller) client).setKeyboard(this.keyboard, withCallback);
 			this.applyState();
 		}
 
@@ -113,46 +114,41 @@ public class PlayerFrame {
 
 	public void copyState() {
 		this.currentScreen = client.currentScreen;
-		this.attackCooldown = ((IClientCaller)client).getAttackCooldown();
+		this.attackCooldown = ((IClientCaller) client).getAttackCooldown();
 		this.itemUseCooldown = ((IClientCaller) client).getItemUseCooldown();
 		this.crosshairTarget = client.crosshairTarget;
 		this.targetedEntity = client.targetedEntity;
 		this.windowFocus = client.isWindowFocused();
 		this.networkHandler.copyState();
-		this.creativeInventoryScreen$selectedTab = creativeInventoryScreenCaller.getSelectedTab();
+		this.creativeInventoryScreen$selectedTab = CREATIVE_INVENTORY_SCREEN_CALLER.getSelectedTab();
 	}
 
 	public void applyState() {
 		client.currentScreen = this.currentScreen;
-		((IClientCaller)client).setAttackCooldown(this.attackCooldown);
-		((IClientCaller)client).setItemUseCooldown(this.itemUseCooldown);
+		((IClientCaller) client).setAttackCooldown(this.attackCooldown);
+		((IClientCaller) client).setItemUseCooldown(this.itemUseCooldown);
 		client.crosshairTarget = this.crosshairTarget;
 		client.targetedEntity = this.targetedEntity;
-		((IClientCaller)client).setWindowFocusNoInjects(this.windowFocus);
-		((IClientCaller)client).setToastManager(this.toastManager);
-		((IClientCaller)client).setInGameHud(this.inGameHud);
+		((IClientCaller) client).setWindowFocusNoInjects(this.windowFocus);
+		((IClientCaller) client).setToastManager(this.toastManager);
+		((IClientCaller) client).setInGameHud(this.inGameHud);
 		this.networkHandler.apply();
 		this.renderers.apply();
-		creativeInventoryScreenCaller.setSelectedTab(this.creativeInventoryScreen$selectedTab);
-		creativeInventoryScreenCaller.setInventory(this.creativeInventoryScreen$inventory);
+		CREATIVE_INVENTORY_SCREEN_CALLER.setSelectedTab(this.creativeInventoryScreen$selectedTab);
+		CREATIVE_INVENTORY_SCREEN_CALLER.setInventory(this.creativeInventoryScreen$inventory);
 	}
 
 	public static PlayerFrame createFromExisting() {
-		if (creativeInventoryScreenCaller == null) {
-			//noinspection ConstantConditions
-			creativeInventoryScreenCaller = (ICreativeInventoryScreenCaller) new CreativeInventoryScreen(null, null, false);
-		}
-
-		((PlayGameOptions.IKeyBindingCaller)client.options.allKeys[0]).resetStaticCollections();
+		((PlayGameOptions.IKeyBindingCaller) client.options.allKeys[0]).resetStaticCollections();
 		PlayGameOptions options = new PlayGameOptions();
-		((IKeyboardInputCaller)client.player.input).setOptions(options.getOptions());
+		((IKeyboardInputCaller) client.player.input).setOptions(options.getOptions());
 		Mouse mouse = new Mouse(client);
 		if (client.player instanceof FakePlayer) {
 			throw new IllegalStateException("Expected real ClientPlayerEntity but got FakePlayer!");
 		}
 		return new PlayerFrame(client.player, client.interactionManager, options, mouse, new Keyboard(client),
 				client.getToastManager(), client.inGameHud, Playback.getManager().recording.getStartState().getWindowFocus(),
-				PlayNetworkHandler.createFromExisting(), PlayRenderers.createFromExisting(), CreativeInventoryScreen.INVENTORY, CreativeInventoryScreen.selectedTab);
+				PlayNetworkHandler.createFromExisting(), PlayRenderers.createFromExisting(), CREATIVE_INVENTORY_SCREEN_CALLER.getInventory(), CREATIVE_INVENTORY_SCREEN_CALLER.getSelectedTab());
 	}
 
 	public static PlayerFrame createNew() {
