@@ -10,16 +10,12 @@ import kaptainwutax.playback.replay.render.interpolation.CatmullRomSplineInterpo
 import kaptainwutax.playback.replay.render.interpolation.ComponentKey;
 import kaptainwutax.playback.replay.render.interpolation.HierarchyInterpolator;
 import kaptainwutax.playback.replay.render.interpolation.LinearInterpolator;
-import kaptainwutax.playback.util.Matrix4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 
@@ -27,10 +23,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Random;
-
-import static org.lwjgl.opengl.GL11.*;
 
 @Environment(EnvType.CLIENT)
 public class RenderManager {
@@ -322,7 +315,9 @@ public class RenderManager {
         if (!manager.isInReplay()) return true;
         if (entity == manager.cameraPlayer.getPlayer()) return false;
         if (entity == manager.replayPlayer.getPlayer()) {
-            if (manager.view == ReplayView.FIRST_PERSON) return false;
+            if (manager.view == ReplayView.FIRST_PERSON) {
+                return !this.client.options.getPerspective().isFirstPerson();
+            }
             CameraState state = getCurrentCameraState();
             return state == null || state.isRenderPlayer();
         }
