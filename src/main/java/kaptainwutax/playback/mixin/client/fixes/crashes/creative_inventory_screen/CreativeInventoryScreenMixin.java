@@ -3,6 +3,8 @@ package kaptainwutax.playback.mixin.client.fixes.crashes.creative_inventory_scre
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemGroups;
+import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.screen.ScreenHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,9 +42,21 @@ public abstract class CreativeInventoryScreenMixin {
             method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen;shouldShowOperatorTab(Lnet/minecraft/entity/player/PlayerEntity;)Z")
     )
     private boolean nullCheck2(CreativeInventoryScreen instance, PlayerEntity player) {
-        if (instance == null) {
+        if (player == null) {
             return false;
         }
         return shouldShowOperatorTab(player);
     }
+
+    @Redirect(
+            method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemGroups;updateDisplayParameters(Lnet/minecraft/resource/featuretoggle/FeatureSet;Z)Z")
+    )
+    private boolean nullCheck3(FeatureSet enabledFeatures, boolean operatorEnabled) {
+        if (enabledFeatures != null) {
+            return ItemGroups.updateDisplayParameters(enabledFeatures, operatorEnabled);
+        }
+
+        return false; // Doesn't matter what we return here
+    }
+
 }

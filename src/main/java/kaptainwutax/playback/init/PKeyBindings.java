@@ -15,7 +15,7 @@ public class PKeyBindings {
 	public static KeyBinding OPEN_REPLAY_HUD = new KeyBinding("key.playback.open_replay_hud", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, PLAYBACK_CATEGORY);
 	public static KeyBinding RENDER = new KeyBinding("key.playback.render", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R, PLAYBACK_CATEGORY);
 
-	public static KeyBinding[] SHARED_KEYBINDINGS = {TOGGLE_VIEW};
+	public static KeyBinding[] SHARED_KEYBINDINGS = {TOGGLE_VIEW, TOGGLE_PAUSE};
 
 	public static void registerKeyBindings() {
 		KeyBindingHelper.registerKeyBinding(TOGGLE_VIEW);
