@@ -3,7 +3,6 @@ package kaptainwutax.playback.gui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
@@ -36,23 +35,15 @@ public class PlaybackBrowserScreen
     protected void init() {
         this.searchBox = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 22, 200, 20, this.searchBox, Text.translatable("selectPlayback.search"));
         this.searchBox.setChangedListener(search -> this.recordingList.setSearch((String) search));
-        this.recordingList = new PlaybackListWidget(this, this.client, this.width, this.height, 48 /*TODO MAYBE 32 here*/, this.height - 64, 36, this.searchBox.getText(), this.recordingList);
+        this.recordingList = new PlaybackListWidget(this, this.client, this.width, this.height, 48, this.height - 64, 36, this.searchBox.getText(), this.recordingList);
         this.addSelectableChild(this.searchBox);
         this.addSelectableChild(this.recordingList);
-        this.loadButton = this.addDrawableChild(ButtonWidget.builder(Text.translatable("selectPlayback.load"), button -> this.recordingList.getSelectedAsOptional().ifPresent(PlaybackListWidget.ReplayEntry::loadPlayback)).dimensions(this.width / 2 - 154, this.height - 52, 150, 20).build());
+        this.loadButton = this.addDrawableChild(ButtonWidget.builder(Text.translatable("selectPlayback.load"), button -> this.recordingList.getSelectedAsOptional().ifPresent(PlaybackListWidget.ReplayEntry::loadPlayback)).dimensions(this.width / 2 - 154, this.height - 52, 308, 20).build());
         this.editButton = this.addDrawableChild(ButtonWidget.builder(Text.translatable("selectPlayback.edit"), button -> this.recordingList.getSelectedAsOptional().ifPresent(PlaybackListWidget.ReplayEntry::edit)).dimensions(this.width / 2 - 154, this.height - 28, 72, 20).build());
         this.deleteButton = this.addDrawableChild(ButtonWidget.builder(Text.translatable("selectPlayback.delete"), button -> this.recordingList.getSelectedAsOptional().ifPresent(PlaybackListWidget.ReplayEntry::deleteIfConfirmed)).dimensions(this.width / 2 - 76, this.height - 28, 72, 20).build());
-        this.addDrawableChild(ButtonWidget.builder(ScreenTexts.CANCEL, button -> this.client.setScreen(this.parent)).dimensions(this.width / 2 + 82, this.height - 28, 72, 20).build());
+        this.addDrawableChild(ButtonWidget.builder(ScreenTexts.CANCEL, button -> this.client.setScreen(this.parent)).dimensions(this.width / 2 + 4, this.height - 28, 150, 20).build());
         this.playbackSelected(false);
         this.setInitialFocus(this.searchBox);
-
-        this.loadButton = this.addDrawableChild(ButtonWidget.builder(Text.literal("Load"), (buttonWidget) -> {
-            this.recordingList.getSelectedAsOptional().ifPresent((PlaybackListWidget.ReplayEntry replayEntry) -> replayEntry.getRecordingSummary().load());
-        }).dimensions(this.width / 2 - 154, this.height - 52, 150, 20).build());
-        this.loadButton.active = false;
-        this.addDrawableChild(ButtonWidget.builder(Text.literal(I18n.translate("gui.cancel")), b -> this.close())
-                .dimensions(this.width / 2 + 4, this.height - 52, 150, 20)
-                .build());
     }
 
     @Override
@@ -80,6 +71,9 @@ public class PlaybackBrowserScreen
         this.loadButton.active = active;
         this.deleteButton.active = active;
         this.editButton.active = active;
+
+        //TODO implement editing (e.g. renaming the file / display name)
+        this.editButton.active = false;
     }
 
     @Override

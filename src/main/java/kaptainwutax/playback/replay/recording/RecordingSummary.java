@@ -113,4 +113,8 @@ public class RecordingSummary {
         GameJoinS2CPacket joinPacket = this.startState.getJoinPacket();
         return joinPacket == null ? "Unknown Gamemode" : joinPacket.gameMode().getTranslatableName().getString();
     }
+
+    public boolean deleteRecording() {
+        return this.file.delete();
+    }
 }

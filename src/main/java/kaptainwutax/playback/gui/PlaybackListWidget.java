@@ -391,14 +391,12 @@ public class PlaybackListWidget
         }
 
         public void delete() {
-            LevelStorage levelStorage = this.client.getLevelStorage();
-            String replayName = recordingSummary.getName();
-            try (LevelStorage.Session session = levelStorage.createSession(replayName);) {
-                session.deleteSessionLock();
-            } catch (IOException iOException) {
-                SystemToast.add(client.getToastManager(), SystemToast.Type.WORLD_ACCESS_FAILURE, Text.translatable("selectReplay.delete_failure"), Text.literal(replayName));
-                LOGGER.error("Failed to delete replay {}", replayName, iOException);
+            if (this.recordingSummary.deleteRecording()) {
+                this.reloadContent();
             }
+        }
+
+        public void reloadContent() {
             PlaybackListWidget.this.load();
         }
 
@@ -422,7 +420,7 @@ public class PlaybackListWidget
             } catch (IOException iOException) {
                 SystemToast.add(client.getToastManager(), SystemToast.Type.WORLD_ACCESS_FAILURE, Text.translatable("selectReplay.access_failure"), Text.literal(replayName));
                 LOGGER.error("Failed to access replay {}", replayName, iOException);
-                PlaybackListWidget.this.load();
+                this.reloadContent();
             }
         }
 
