@@ -56,7 +56,7 @@ public class PlaybackListWidget
     static final Logger LOGGER = LogUtils.getLogger();
     static final DateFormat DATE_FORMAT = new SimpleDateFormat();
     //TODO get our own textures and translatable strings
-    static final Identifier UNKNOWN_SERVER_LOCATION = new Identifier("textures/misc/unknown_world.png");
+    static final Identifier UNKNOWN_SERVER_LOCATION = new Identifier("textures/misc/unknown_server.png");
     static final Identifier WORLD_SELECTION_LOCATION = new Identifier("textures/gui/world_selection.png");
     //    static final Text INCOMPATIBLE_PLAYBACK = Text.translatable("selectReplay.tooltip.incompatible_playback").formatted(Formatting.RED);
     static final Text INCOMPATIBLE_PLAYBACK = Text.translatable("multiplayer.status.incompatible").formatted(Formatting.RED);
