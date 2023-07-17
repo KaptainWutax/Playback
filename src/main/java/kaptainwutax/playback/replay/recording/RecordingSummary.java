@@ -83,7 +83,11 @@ public class RecordingSummary {
     }
 
     public String getDisplayName() {
-        return this.file.getName();
+        int lastIndex = this.file.getName().lastIndexOf('.');
+        if (lastIndex == -1) {
+            return this.file.getName();
+        }
+        return this.file.getName().substring(0, lastIndex);
     }
 
     public String getName() {

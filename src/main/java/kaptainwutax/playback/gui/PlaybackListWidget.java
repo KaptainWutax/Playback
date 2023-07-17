@@ -55,9 +55,11 @@ public class PlaybackListWidget
         extends AlwaysSelectedEntryListWidget<PlaybackListWidget.Entry> {
     static final Logger LOGGER = LogUtils.getLogger();
     static final DateFormat DATE_FORMAT = new SimpleDateFormat();
-    static final Identifier UNKNOWN_SERVER_LOCATION = new Identifier("textures/misc/unknown_playback.png");
-    static final Identifier WORLD_SELECTION_LOCATION = new Identifier("textures/gui/replay_selection.png");
-    static final Text INCOMPATIBLE_PLAYBACK = Text.translatable("selectReplay.tooltip.incompatible_playback").formatted(Formatting.RED);
+    //TODO get our own textures and translatable strings
+    static final Identifier UNKNOWN_SERVER_LOCATION = new Identifier("textures/misc/unknown_world.png");
+    static final Identifier WORLD_SELECTION_LOCATION = new Identifier("textures/gui/world_selection.png");
+    //    static final Text INCOMPATIBLE_PLAYBACK = Text.translatable("selectReplay.tooltip.incompatible_playback").formatted(Formatting.RED);
+    static final Text INCOMPATIBLE_PLAYBACK = Text.translatable("multiplayer.status.incompatible").formatted(Formatting.RED);
     private final PlaybackBrowserScreen parent;
     private final LoadingEntry loadingEntry;
     private CompletableFuture<List<RecordingSummary>> recordingSummariesFuture;
@@ -224,7 +226,8 @@ public class PlaybackListWidget
     @Environment(value = EnvType.CLIENT)
     public static class LoadingEntry
             extends Entry {
-        private static final Text LOADING_LIST_TEXT = Text.translatable("selectReplay.loading_list");
+//        private static final Text LOADING_LIST_TEXT = Text.translatable("selectReplay.loading_list");
+private static final Text LOADING_LIST_TEXT = Text.literal("Loading Recordings");
         private final MinecraftClient client;
 
         public LoadingEntry(MinecraftClient client) {
