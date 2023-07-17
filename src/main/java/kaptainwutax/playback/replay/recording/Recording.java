@@ -174,7 +174,7 @@ public class Recording implements AutoCloseable {
 
 	public RecordingSummary readSummary() throws IOException {
 		loadHeader();
-		return new RecordingSummary(file, version, randomAccessFile.length(), lastTick, startState);
+		return new RecordingSummary(file, null, version, randomAccessFile.length(), lastTick, startState);
 	}
 
 	public CompletableFuture<Void> loadAsync(DoubleConsumer progressListener) {
